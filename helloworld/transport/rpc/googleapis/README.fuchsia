@@ -1,0 +1,11 @@
+Name: Google APIs
+License: Apache 2.0
+License File: LICENSE
+Upstream Git: https://github.com/googleapis/googleapis
+Description:
+
+Public interface definitions of Google APIs.
+
+Changes from upstream:
+
+* add BUILD.gn files needed to generate Firestore protos and gRPC bindings

@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package helloworld_openapi3;
+option go_package = "github.com/unionj-cloud/helloworld/transport/rpc";
+
+import "google/api/annotations.proto";
+
+import "google/protobuf/descriptor.proto";
+
+import "google/protobuf/empty.proto";
+
+message GreetingReq {
+  string greeting = 1;
+}
+
+message GreetingResp {
+  string data = 1;
+}
+
+message Order {
+  string col = 1;
+
+  string sort = 2;
+}
+
+message Page {
+  repeated Order orders = 1;
+
+  int32 page_no = 2;
+
+  int32 size = 3;
+}
+
+message PageFilter {
+  int32 dept = 1;
+
+  string name = 2;
+}
+
+message PageQuery {
+  PageFilter filter = 1;
+
+  Page page = 2;
+}
+
+message Items {
+}
+
+message PageRet {
+  bool has_next = 1;
+
+  Items items = 2;
+
+  int32 page_no = 3;
+
+  int32 page_size = 4;
+
+  int32 total = 5;
+}
+
+message UserVo {
+  string dept = 1;
+
+  int32 id = 2;
+
+  string name = 3;
+
+  string phone = 4;
+}
+
+//POST_greetingParameters holds parameters to POST_greeting
+message POSTGreetingRequest {
+  GreetingReq application_x_www_form_urlencoded = 1;
+}
+
+service Helloworld_openapi3 {
+  rpc POSTGreeting ( POSTGreetingRequest ) returns ( GreetingResp ) {
+    option (google.api.http) = { post:"/greeting" body:"application_x_www_form_urlencoded"  };
+  }
+}
+

@@ -1,0 +1,6 @@
+version: '3'
+services:
+  wordcloud:
+    image: wubin1989/wordcloud-ui:2021120802
+    ports:
+      - "80:80"

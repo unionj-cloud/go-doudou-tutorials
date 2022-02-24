@@ -2,24 +2,22 @@ package vo
 
 //go:generate go-doudou name --file $GOFILE
 
+type Lang string
+
+const (
+	Zh Lang = "zh"
+	En Lang = "en"
+)
+
 type SegPayload struct {
 	Text string `json:"text"`
+	// 文本语言
+	// 仅支持中文和英文
+	// text language
+	// only support zh and en
+	Lang string `json:"lang"`
 }
 
 type SegResult struct {
-	WordFreq WordFreqResult
-}
-
-type WordFreqResult [][]interface{}
-
-func (self WordFreqResult) Len() int {
-	return len(self)
-}
-
-func (self WordFreqResult) Less(i, j int) bool {
-	return self[i][2].(float64) > self[j][2].(float64)
-}
-
-func (self WordFreqResult) Swap(i, j int) {
-	self[i], self[j] = self[j], self[i]
+	WordFreq [][]interface{}
 }

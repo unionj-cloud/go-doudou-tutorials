@@ -1,10 +1,12 @@
-package lib_test
+package zh_test
 
 import (
 	"context"
+	"fmt"
 	"github.com/stretchr/testify/assert"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/vo"
+	"github.com/stretchr/testify/require"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/zh"
 	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
 	thulac "github.com/unionj-cloud/thulacgo"
 	"path/filepath"
@@ -36,7 +38,7 @@ func TestGoThulac_DoSeg(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		wantRs  vo.WordFreqResult
+		wantRs  nlp.WordFreqResult
 		wantErr bool
 	}{
 		{
@@ -79,7 +81,7 @@ func TestGoThulac_DoSeg(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			self := &lib.GoThulac{
+			self := &zh.GoThulac{
 				Lac: tt.fields.lac,
 				Sep: tt.fields.sep,
 			}
@@ -91,4 +93,17 @@ func TestGoThulac_DoSeg(t *testing.T) {
 			assert.ElementsMatch(t, gotRs, tt.wantRs, "DoSeg() gotRs = %v, want %v", gotRs, tt.wantRs)
 		})
 	}
+}
+
+func TestEnglish(t *testing.T) {
+	modelpath := filepath.Join(testDir, "models")
+	userpath := filepath.Join(testDir, "userword.txt")
+	lac := thulac.NewThulacgo(modelpath, userpath, false, false, false, '_')
+	self := &zh.GoThulac{
+		Lac: lac,
+		Sep: "_",
+	}
+	gotRs, err := self.DoSeg(context.Background(), "hello world", nil, -1, -1)
+	require.NoError(t, err)
+	fmt.Println(gotRs)
 }

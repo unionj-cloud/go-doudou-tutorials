@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/config"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/zh"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/transport/httpsrv"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/framework/registry"
@@ -29,7 +29,7 @@ func main() {
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
-	golac := lib.NewGoThulac(conf.BizConf.ModelPath, "", false, false, false, "_")
+	golac := zh.NewGoThulac(conf.BizConf.ModelPath, "", false, false, false, "_")
 	defer golac.Free()
 
 	svc := service.NewWordcloudSeg(conf, golac)

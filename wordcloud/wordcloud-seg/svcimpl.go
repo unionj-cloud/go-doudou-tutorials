@@ -2,19 +2,35 @@ package service
 
 import (
 	"context"
+	"github.com/pkg/errors"
+
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/en"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/zh"
 
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/config"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/vo"
 )
 
 type WordcloudSegImpl struct {
 	conf  *config.Config
-	golac *lib.GoThulac
+	golac *zh.GoThulac
 }
 
 func (receiver *WordcloudSegImpl) Seg(ctx context.Context, payload vo.SegPayload) (rs vo.SegResult, err error) {
-	seg, err := receiver.golac.DoSeg(ctx, payload.Text, lib.Pos, -1, -1)
+	var seg nlp.WordFreqResult
+	var tokenizer nlp.Tokenizer
+	switch vo.Lang(payload.Lang) {
+	case "":
+		fallthrough
+	case vo.Zh:
+		tokenizer = receiver.golac
+	case vo.En:
+		tokenizer = &en.EnglishTokenizer{}
+	default:
+		return vo.SegResult{}, errors.New("not support")
+	}
+	seg, err = tokenizer.DoSeg(ctx, payload.Text, nil, -1, -1)
 	if err != nil {
 		return vo.SegResult{}, err
 	}
@@ -23,7 +39,7 @@ func (receiver *WordcloudSegImpl) Seg(ctx context.Context, payload vo.SegPayload
 	}, nil
 }
 
-func NewWordcloudSeg(conf *config.Config, golac *lib.GoThulac) WordcloudSeg {
+func NewWordcloudSeg(conf *config.Config, golac *zh.GoThulac) WordcloudSeg {
 	return &WordcloudSegImpl{
 		conf,
 		golac,

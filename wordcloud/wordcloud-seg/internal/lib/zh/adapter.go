@@ -1,8 +1,8 @@
-package lib
+package zh
 
 import (
 	"context"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/vo"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
 	"github.com/unionj-cloud/go-doudou/toolkit/sliceutils"
 	thulac "github.com/unionj-cloud/thulacgo"
 	"sort"
@@ -10,19 +10,13 @@ import (
 	"unicode/utf8"
 )
 
-type SegRequest struct {
-	Text string   `json:"text"`
-	Pos  []string `json:"pos"`
-	Top  int      `json:"top"`
-	Min  int      `json:"min"`
-}
-
-type SegResponse struct {
-	Result vo.WordFreqResult `json:"result"`
-}
-
 var Pos = []string{"n", "a", "np", "ns", "ni", "nz", "uw", "v"}
 
+// n/名词 np/人名 ns/地名 ni/机构名 nz/其它专名
+//m/数词 q/量词 mq/数量词 t/时间词 f/方位词 s/处所词
+//v/动词 a/形容词 d/副词 h/前接成分 k/后接成分
+//i/习语 j/简称 r/代词 c/连词 p/介词 u/助词 y/语气助词
+//e/叹词 o/拟声词 g/语素 w/标点 x/其它
 var posdict = map[string]string{
 	"n":  "名词",
 	"a":  "形容词",
@@ -32,15 +26,6 @@ var posdict = map[string]string{
 	"nz": "其他专名",
 	"uw": "保留词",
 	"v":  "动词",
-}
-
-type token struct {
-	word string
-	pos  string
-}
-
-type Adapter interface {
-	DoSeg(ctx context.Context, s string, pos []string, top int, min int) (rs vo.WordFreqResult, err error)
 }
 
 type GoThulac struct {
@@ -56,7 +41,11 @@ func NewGoThulac(modelpath string, userpath string, justseg bool, t2s bool, ufil
 	}
 }
 
-func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int, min int) (rs vo.WordFreqResult, err error) {
+func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int, min int) (rs nlp.WordFreqResult, err error) {
+	if len(pos) == 0 {
+		pos = Pos
+	}
+	
 	var words []string
 
 	select {
@@ -66,9 +55,9 @@ func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int
 		words = self.Lac.SegToSlice(s)
 	}
 
-	rr := &SegResponse{}
-	var result vo.WordFreqResult
-	tokenmap := make(map[token]float64)
+	rr := &nlp.SegResponse{}
+	var result nlp.WordFreqResult
+	tokenmap := make(map[nlp.Token]float64)
 
 	for _, item := range words {
 		splits := strings.Split(item, self.Sep)
@@ -80,7 +69,7 @@ func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int
 		if len(pos) > 0 && !sliceutils.StringContains(pos, p) {
 			continue
 		}
-		token := token{
+		token := nlp.Token{
 			w,
 			p,
 		}
@@ -92,7 +81,7 @@ func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int
 		}
 	}
 	for k, v := range tokenmap {
-		result = append(result, []interface{}{k.word, posdict[k.pos], v})
+		result = append(result, []interface{}{k.Word, posdict[k.Pos], v})
 	}
 
 	sort.Sort(result)

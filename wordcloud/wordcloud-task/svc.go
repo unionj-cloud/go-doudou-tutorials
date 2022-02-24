@@ -8,6 +8,9 @@ import (
 type WordcloudTask interface {
 	// TaskSave save word cloud task 保存词云图任务
 	TaskSave(ctx context.Context,
+		// 用户ID
+		// user ID
+		userId int,
 		// source file url 原文件链接
 		srcUrl string) (
 		// task ID 任务ID

@@ -22,10 +22,11 @@ type WordcloudTaskClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudTaskClientProxy) TaskSave(ctx context.Context, srcUrl string) (data int, err error) {
+func (receiver *WordcloudTaskClientProxy) TaskSave(ctx context.Context, userId int, srcUrl string) (data int, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
 		_, data, err = receiver.client.TaskSave(
 			ctx,
+			userId,
 			srcUrl,
 		)
 		if err != nil {

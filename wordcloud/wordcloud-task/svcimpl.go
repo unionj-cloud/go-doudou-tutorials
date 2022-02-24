@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/dao"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/domain"
@@ -15,21 +16,7 @@ type WordcloudTaskImpl struct {
 	db   *sqlx.DB
 }
 
-type ctxKey int
-
-const userIdKey ctxKey = ctxKey(0)
-
-func NewUserIdContext(ctx context.Context, id int) context.Context {
-	return context.WithValue(ctx, userIdKey, id)
-}
-
-func UserIdFromContext(ctx context.Context) (int, bool) {
-	userId, ok := ctx.Value(userIdKey).(int)
-	return userId, ok
-}
-
-func (receiver *WordcloudTaskImpl) TaskSave(ctx context.Context, srcUrl string) (data int, err error) {
-	userId, _ := UserIdFromContext(ctx)
+func (receiver *WordcloudTaskImpl) TaskSave(ctx context.Context, userId int, srcUrl string) (data int, err error) {
 	taskDao := dao.NewWordCloudTaskDao(receiver.db)
 	task := domain.WordCloudTask{
 		SrcUrl: srcUrl,

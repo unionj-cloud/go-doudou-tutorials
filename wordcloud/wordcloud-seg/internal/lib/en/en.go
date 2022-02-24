@@ -12,7 +12,7 @@ import (
 type EnglishTokenizer struct {
 }
 
-var Pos = []string{"PDT", "RB", "#", "CC", "WRB", "RBS", "WDT", "IN", "JJR", "SYM", "VBN", "WP", "MD", "NNP", "NNPS", "NNS", "PRP", "EX", "FW", "VBP", "POS", "VBG", "RBR", "RP", "VBD", "VBZ", "DT", "LS", "JJ", "JJS", "NN", "PRP$", "TO", "UH", "$", "CD", "VB", "WP$"}
+var Pos = []string{"NNP", "NNPS", "NNS", "NN"}
 
 // https://github.com/jdkato/prose#tagging
 var posdict = map[string]string{

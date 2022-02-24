@@ -6,6 +6,10 @@ import (
 )
 
 type WordcloudMaker interface {
-	// You can define your service methods as your need. Below is an example.
-	PageUsers(ctx context.Context, query vo.PageQuery) (code int, data vo.PageRet, err error)
+	// Make 生成词云图接口
+	// make word cloud image
+	Make(ctx context.Context, payload vo.MakePayload) (
+		// 词云图链接
+		// word cloud image url
+		data string, err error)
 }

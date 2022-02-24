@@ -10,6 +10,7 @@ const (
 )
 
 type SegPayload struct {
+	// 文本
 	Text string `json:"text"`
 	// 文本语言
 	// 仅支持中文和英文

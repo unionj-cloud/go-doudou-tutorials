@@ -3,10 +3,10 @@ module github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg
 go 1.17
 
 require (
-	github.com/go-ego/gse v0.69.15
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3
+	github.com/jdkato/prose/v2 v2.0.0
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/opentracing-contrib/go-stdlib v1.0.0
@@ -19,7 +19,6 @@ require (
 	github.com/unionj-cloud/go-doudou v1.0.0-beta1
 	github.com/unionj-cloud/thulacgo v0.1.6
 	github.com/ztrue/tracerr v0.3.0
-	go.uber.org/atomic v1.7.0
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 
@@ -47,7 +46,6 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
-	github.com/jdkato/prose/v2 v2.0.0 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/logrusorgru/aurora v0.0.0-20200102142835-e9ef32dff381 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
@@ -67,8 +65,8 @@ require (
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
-	github.com/vcaesar/cedar v0.20.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/net v0.0.0-20210614182718-04defd469f4e // indirect
 	golang.org/x/sys v0.0.0-20210816074244-15123e1e1f71 // indirect
 	gonum.org/v1/gonum v0.7.0 // indirect

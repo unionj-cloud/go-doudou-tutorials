@@ -10,7 +10,7 @@ import (
 	"unicode/utf8"
 )
 
-var Pos = []string{"n", "a", "np", "ns", "ni", "nz", "uw", "v"}
+var Pos = []string{"n", "np", "ns", "ni", "nz", "uw"}
 
 // n/名词 np/人名 ns/地名 ni/机构名 nz/其它专名
 //m/数词 q/量词 mq/数量词 t/时间词 f/方位词 s/处所词
@@ -45,7 +45,7 @@ func (self *GoThulac) DoSeg(ctx context.Context, s string, pos []string, top int
 	if len(pos) == 0 {
 		pos = Pos
 	}
-	
+
 	var words []string
 
 	select {

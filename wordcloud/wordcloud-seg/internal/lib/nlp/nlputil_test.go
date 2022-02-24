@@ -2,11 +2,7 @@ package nlp_test
 
 import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
-	"io"
-	"os"
 	"testing"
-
-	"go.uber.org/atomic"
 )
 
 func TestRemoveUrl(t *testing.T) {
@@ -82,51 +78,6 @@ func TestCleanChineseText(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := nlp.CleanChineseText(tt.args.text); got != tt.want {
 				t.Errorf("CleanChineseText() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestProcessLine(t *testing.T) {
-	type args struct {
-		r io.Reader
-	}
-
-	f, err := os.Open("2019.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	tests := []struct {
-		name    string
-		args    args
-		want    int64
-		wantErr bool
-	}{
-		{
-			name: "2",
-			args: args{
-				r: f,
-			},
-			want:    14419,
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			lineCount := atomic.NewInt64(0)
-			err = nlp.ProcessLine(tt.args.r, 5, 60, &nlp.ChineseCorpusCleaner{}, func(s string) error {
-				lineCount.Inc()
-				return nil
-			})
-
-			if (err != nil) != tt.wantErr {
-				t.Errorf("CountLine() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if lineCount.Load() != tt.want {
-				t.Errorf("CountLine() = %d, want %d", lineCount, tt.want)
 			}
 		})
 	}

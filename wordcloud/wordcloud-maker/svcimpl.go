@@ -3,12 +3,14 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/unionj-cloud/go-doudou/framework/logger"
 	"io"
 	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
 
@@ -139,7 +141,7 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 	if err != nil {
 		return "", err
 	}
-
+	now := time.Now()
 	cctx, cancel := chromedp.NewContext(ctx)
 	defer cancel()
 
@@ -147,6 +149,8 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 	if err = chromedp.Run(cctx, elementScreenshot(fmt.Sprintf("file://%s", pathutils.Abs(outhtml)), `canvas`, &buf)); err != nil {
 		return "", err
 	}
+
+	logger.Info(time.Since(now))
 	outimg := filepath.Join(outputDir, "wordcloud.png")
 	if err = ioutil.WriteFile(outimg, buf, 0o644); err != nil {
 		return "", err

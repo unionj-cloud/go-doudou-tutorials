@@ -7,6 +7,12 @@ var wordcloudtaskdaosql = `{{define "NoneZeroSet"}}
 	{{- if .ImgUrl}}
 	` + "`" + `img_url` + "`" + `=:img_url,
 	{{- end}}
+	{{- if .Lang}}
+	` + "`" + `lang` + "`" + `=:lang,
+	{{- end}}
+	{{- if .Top}}
+	` + "`" + `top` + "`" + `=:top,
+	{{- end}}
 	{{- if .Status}}
 	` + "`" + `status` + "`" + `=:status,
 	{{- end}}
@@ -27,6 +33,8 @@ INSERT INTO ` + "`" + `tutorial` + "`" + `.` + "`" + `t_word_cloud_task` + "`" +
 ` + "`" + `id` + "`" + `,
 ` + "`" + `src_url` + "`" + `,
 ` + "`" + `img_url` + "`" + `,
+` + "`" + `lang` + "`" + `,
+` + "`" + `top` + "`" + `,
 ` + "`" + `status` + "`" + `,
 ` + "`" + `error` + "`" + `,
 ` + "`" + `user_id` + "`" + `,
@@ -35,6 +43,8 @@ VALUES (
 	   :id,
 	   :src_url,
 	   :img_url,
+	   :lang,
+	   :top,
 	   :status,
 	   :error,
 	   :user_id,
@@ -46,6 +56,8 @@ UPDATE ` + "`" + `tutorial` + "`" + `.` + "`" + `t_word_cloud_task` + "`" + `
 SET
 	` + "`" + `src_url` + "`" + `=:src_url,
 	` + "`" + `img_url` + "`" + `=:img_url,
+	` + "`" + `lang` + "`" + `=:lang,
+	` + "`" + `top` + "`" + `=:top,
 	` + "`" + `status` + "`" + `=:status,
 	` + "`" + `error` + "`" + `=:error,
 	` + "`" + `user_id` + "`" + `=:user_id,
@@ -68,6 +80,8 @@ INSERT INTO ` + "`" + `tutorial` + "`" + `.` + "`" + `t_word_cloud_task` + "`" +
 ` + "`" + `id` + "`" + `,
 ` + "`" + `src_url` + "`" + `,
 ` + "`" + `img_url` + "`" + `,
+` + "`" + `lang` + "`" + `,
+` + "`" + `top` + "`" + `,
 ` + "`" + `status` + "`" + `,
 ` + "`" + `error` + "`" + `,
 ` + "`" + `user_id` + "`" + `,
@@ -76,6 +90,8 @@ VALUES (
         :id,
         :src_url,
         :img_url,
+        :lang,
+        :top,
         :status,
         :error,
         :user_id,
@@ -83,6 +99,8 @@ VALUES (
 UPDATE
 		` + "`" + `src_url` + "`" + `=:src_url,
 		` + "`" + `img_url` + "`" + `=:img_url,
+		` + "`" + `lang` + "`" + `=:lang,
+		` + "`" + `top` + "`" + `=:top,
 		` + "`" + `status` + "`" + `=:status,
 		` + "`" + `error` + "`" + `=:error,
 		` + "`" + `user_id` + "`" + `=:user_id,
@@ -95,6 +113,8 @@ INSERT INTO ` + "`" + `tutorial` + "`" + `.` + "`" + `t_word_cloud_task` + "`" +
 ` + "`" + `id` + "`" + `,
 ` + "`" + `src_url` + "`" + `,
 ` + "`" + `img_url` + "`" + `,
+` + "`" + `lang` + "`" + `,
+` + "`" + `top` + "`" + `,
 ` + "`" + `status` + "`" + `,
 ` + "`" + `error` + "`" + `,
 ` + "`" + `user_id` + "`" + `,
@@ -103,6 +123,8 @@ VALUES (
         :id,
         :src_url,
         :img_url,
+        :lang,
+        :top,
         :status,
         :error,
         :user_id,
@@ -122,6 +144,8 @@ UPDATE ` + "`" + `tutorial` + "`" + `.` + "`" + `t_word_cloud_task` + "`" + `
 SET
 	` + "`" + `src_url` + "`" + `=:src_url,
 	` + "`" + `img_url` + "`" + `=:img_url,
+	` + "`" + `lang` + "`" + `=:lang,
+	` + "`" + `top` + "`" + `=:top,
 	` + "`" + `status` + "`" + `=:status,
 	` + "`" + `error` + "`" + `=:error,
 	` + "`" + `user_id` + "`" + `=:user_id,

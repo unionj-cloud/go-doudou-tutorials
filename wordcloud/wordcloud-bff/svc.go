@@ -7,5 +7,14 @@ import (
 )
 
 type WordcloudBff interface {
-	Upload(ctx context.Context, file v3.FileModel) (data vo.UploadResult, err error)
+	Upload(ctx context.Context,
+		// 文本文件
+		// text file
+		file v3.FileModel,
+		// 语种
+		// language
+		lang string,
+		// 取词频前top的词
+		// only take top frequent words into word cloud
+		top *int) (data vo.UploadResult, err error)
 }

@@ -28,13 +28,12 @@ func (receiver *WordcloudTaskClient) SetProvider(provider registry.IServiceProvi
 func (receiver *WordcloudTaskClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudTaskClient) TaskSave(ctx context.Context, userId int, srcUrl string) (_resp *resty.Response, data int, err error) {
+func (receiver *WordcloudTaskClient) TaskSave(ctx context.Context, payload vo.TaskPayload) (_resp *resty.Response, data int, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
 	_req.SetContext(ctx)
-	_urlValues.Set("userId", fmt.Sprintf("%v", userId))
-	_urlValues.Set("srcUrl", fmt.Sprintf("%v", srcUrl))
+	_req.SetBody(payload)
 	_path := "/task/save"
 	if _req.Body != nil {
 		_req.SetQueryParamsFromValues(_urlValues)

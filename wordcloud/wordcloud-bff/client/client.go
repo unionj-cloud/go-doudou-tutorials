@@ -29,12 +29,16 @@ func (receiver *WordcloudBffClient) SetProvider(provider registry.IServiceProvid
 func (receiver *WordcloudBffClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudBffClient) Upload(ctx context.Context, file v3.FileModel) (_resp *resty.Response, data vo.UploadResult, err error) {
+func (receiver *WordcloudBffClient) Upload(ctx context.Context, file v3.FileModel, lang string, top *int) (_resp *resty.Response, data vo.UploadResult, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
 	_req.SetContext(ctx)
 	_req.SetFileReader("file", file.Filename, file.Reader)
+	_urlValues.Set("lang", fmt.Sprintf("%v", lang))
+	if top != nil {
+		_urlValues.Set("top", fmt.Sprintf("%v", *top))
+	}
 	_path := "/upload"
 	if _req.Body != nil {
 		_req.SetQueryParamsFromValues(_urlValues)

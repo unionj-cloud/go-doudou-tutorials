@@ -23,11 +23,13 @@ type WordcloudBffClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, file v3.FileModel) (data vo.UploadResult, err error) {
+func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, file v3.FileModel, lang string, top *int) (data vo.UploadResult, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
 		_, data, err = receiver.client.Upload(
 			ctx,
 			file,
+			lang,
+			top,
 		)
 		if err != nil {
 			return errors.Wrap(err, "call Upload fail")

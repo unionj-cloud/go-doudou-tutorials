@@ -16,11 +16,13 @@ type WordcloudTaskImpl struct {
 	db   *sqlx.DB
 }
 
-func (receiver *WordcloudTaskImpl) TaskSave(ctx context.Context, userId int, srcUrl string) (data int, err error) {
+func (receiver *WordcloudTaskImpl) TaskSave(ctx context.Context, payload vo.TaskPayload) (data int, err error) {
 	taskDao := dao.NewWordCloudTaskDao(receiver.db)
 	task := domain.WordCloudTask{
-		SrcUrl: srcUrl,
-		UserId: userId,
+		SrcUrl: payload.SrcUrl,
+		UserId: payload.UserId,
+		Lang:   payload.Lang,
+		Top:    payload.Top,
 	}
 	_, err = taskDao.Insert(ctx, &task)
 	if err != nil {

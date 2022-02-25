@@ -18,8 +18,9 @@ export class LogoutService extends BizService{
   /**
   * GET /logout
   *
-  * GetLogout 退出登录
-  * GetLogout is used for logging out
+  * GetLogout 注销token
+  * GetLogout is used for revoking a token
+  * https://github.com/dgrijalva/jwt-go/issues/214
   * @returns Promise<GetLogoutResp> 
   */
   getLogout(
@@ -29,6 +30,8 @@ export class LogoutService extends BizService{
       client = this.axios.$get
     }
     return client(this.addPrefix(`/logout`),
+          {
+          }
         )
   }
 

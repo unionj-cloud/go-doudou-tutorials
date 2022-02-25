@@ -35,6 +35,8 @@ export class PageService extends BizService{
     }
     return client(this.addPrefix(`/page/users`),
           payload,
+          {
+          }
         )
   }
 

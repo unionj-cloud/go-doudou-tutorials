@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/slok/goresilience"
 	"github.com/slok/goresilience/circuitbreaker"
@@ -193,7 +192,7 @@ func WithLogger(logger *logrus.Logger) ProxyOption {
 	}
 }
 
-func NewUsersvcClientProxy(client *UsersvcClient, opts ...ProxyOption) *UsersvcClientProxy {
+func NewUsersvcClientProxy(client *UsersvcClient, rec metrics.Recorder, opts ...ProxyOption) *UsersvcClientProxy {
 	cp := &UsersvcClientProxy{
 		client: client,
 		logger: logrus.StandardLogger(),
@@ -205,7 +204,7 @@ func NewUsersvcClientProxy(client *UsersvcClient, opts ...ProxyOption) *UsersvcC
 
 	if cp.runner == nil {
 		var mid []goresilience.Middleware
-		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user_client", metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)))
+		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user_client", rec))
 		mid = append(mid, circuitbreaker.NewMiddleware(circuitbreaker.Config{
 			ErrorPercentThresholdToOpen:        50,
 			MinimumRequestToOpen:               6,

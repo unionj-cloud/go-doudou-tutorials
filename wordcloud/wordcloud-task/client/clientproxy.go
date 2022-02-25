@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/slok/goresilience"
 	"github.com/slok/goresilience/circuitbreaker"
@@ -22,12 +21,11 @@ type WordcloudTaskClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudTaskClientProxy) TaskSave(ctx context.Context, userId int, srcUrl string) (data int, err error) {
+func (receiver *WordcloudTaskClientProxy) TaskSave(ctx context.Context, payload vo.TaskPayload) (data int, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
 		_, data, err = receiver.client.TaskSave(
 			ctx,
-			userId,
-			srcUrl,
+			payload,
 		)
 		if err != nil {
 			return errors.Wrap(err, "call TaskSave fail")
@@ -95,7 +93,7 @@ func WithLogger(logger *logrus.Logger) ProxyOption {
 	}
 }
 
-func NewWordcloudTaskClientProxy(client *WordcloudTaskClient, opts ...ProxyOption) *WordcloudTaskClientProxy {
+func NewWordcloudTaskClientProxy(client *WordcloudTaskClient, rec metrics.Recorder, opts ...ProxyOption) *WordcloudTaskClientProxy {
 	cp := &WordcloudTaskClientProxy{
 		client: client,
 		logger: logrus.StandardLogger(),
@@ -107,7 +105,7 @@ func NewWordcloudTaskClientProxy(client *WordcloudTaskClient, opts ...ProxyOptio
 
 	if cp.runner == nil {
 		var mid []goresilience.Middleware
-		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task_client", metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)))
+		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task_client", rec))
 		mid = append(mid, circuitbreaker.NewMiddleware(circuitbreaker.Config{
 			ErrorPercentThresholdToOpen:        50,
 			MinimumRequestToOpen:               6,

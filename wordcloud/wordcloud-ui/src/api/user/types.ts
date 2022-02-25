@@ -7,7 +7,7 @@
 export interface GetLogoutResp {
     /**
     * 成功返回OK
-OK if success
+return OK if success
     */
     data: string;
 }
@@ -137,6 +137,16 @@ return user ID if success
 }
 
 
+export interface PublicTokenValidateReq {
+    token: string;
+}
+
+
+export interface PublicTokenValidateResp {
+    user: UserVo;
+}
+
+
 export interface UploadAvatarReq {
     /**
     * 用户头像
@@ -157,7 +167,8 @@ return OK if success
 
 
 /**
-* 用户详情
+* 
+用户详情
 user detail
 用户详情
 user detail

@@ -9,6 +9,7 @@ import (
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/vo"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
+	"github.com/unionj-cloud/go-doudou/toolkit/cast"
 	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
 )
 
@@ -20,6 +21,8 @@ func (receiver *WordcloudBffHandlerImpl) Upload(_writer http.ResponseWriter, _re
 	var (
 		ctx  context.Context
 		file v3.FileModel
+		lang string
+		top  *int
 		data vo.UploadResult
 		err  error
 	)
@@ -50,9 +53,29 @@ func (receiver *WordcloudBffHandlerImpl) Upload(_writer http.ResponseWriter, _re
 		http.Error(_writer, "missing parameter file", http.StatusBadRequest)
 		return
 	}
+	if _err := _req.ParseForm(); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["lang"]; exists {
+		lang = _req.FormValue("lang")
+	} else {
+		http.Error(_writer, "missing parameter lang", http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["top"]; exists {
+		if casted, err := cast.ToIntE(_req.FormValue("top")); err != nil {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+			return
+		} else {
+			top = &casted
+		}
+	}
 	data, err = receiver.wordcloudBff.Upload(
 		ctx,
 		file,
+		lang,
+		top,
 	)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {

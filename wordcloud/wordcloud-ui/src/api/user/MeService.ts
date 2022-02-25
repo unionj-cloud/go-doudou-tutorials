@@ -29,6 +29,8 @@ export class MeService extends BizService{
       client = this.axios.$get
     }
     return client(this.addPrefix(`/me`),
+          {
+          }
         )
   }
 

@@ -36,6 +36,8 @@ export class UploadService extends BizService{
     }
     return client(this.addPrefix(`/upload/avatar`),
           formData,
+          {
+          }
         )
   }
 

@@ -1,6 +1,6 @@
 module github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker
 
-go 1.17
+go 1.16
 
 require (
 	github.com/chromedp/chromedp v0.7.8
@@ -18,7 +18,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
 	github.com/unionj-cloud/go-doudou v1.0.0-beta1
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0
 )
 
 require (
@@ -101,5 +100,3 @@ require (
 	gopkg.in/ini.v1 v1.57.0 // indirect
 	gopkg.in/neurosnap/sentences.v1 v1.0.6 // indirect
 )
-
-replace github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0 => ../wordcloud-seg

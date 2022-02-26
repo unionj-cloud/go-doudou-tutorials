@@ -11,7 +11,6 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/internal/middleware"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/transport/httpsrv"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
 	"github.com/unionj-cloud/go-doudou/framework/registry"
 	"github.com/unionj-cloud/go-doudou/framework/tracing"
 	"os"
@@ -19,9 +18,6 @@ import (
 
 func main() {
 	conf := config.LoadFromEnv()
-
-	logger.Init()
-
 	conn, err := db.NewDb(conf.DbConf)
 	if err != nil {
 		panic(err)

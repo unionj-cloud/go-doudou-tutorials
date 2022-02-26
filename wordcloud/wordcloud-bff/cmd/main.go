@@ -47,15 +47,15 @@ func main() {
 		taskClient = taskclient.NewWordcloudTaskClient()
 	}
 
+	tracer, closer := tracing.Init()
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+
 	rec := metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)
 
 	userClientProxy := userclient.NewUsersvcClientProxy(userClient, rec)
 	makerClientProxy := makerclient.NewWordcloudMakerClientProxy(makerClient, rec)
 	taskClientProxy := taskclient.NewWordcloudTaskClientProxy(taskClient, rec)
-
-	tracer, closer := tracing.Init()
-	defer closer.Close()
-	opentracing.SetGlobalTracer(tracer)
 
 	endpoint := conf.BizConf.OssEndpoint
 	accessKeyID := conf.BizConf.OssKey

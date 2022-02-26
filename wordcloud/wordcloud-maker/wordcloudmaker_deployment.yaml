@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordcloudmaker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordcloudmaker
+  template:
+    metadata:
+      labels:
+        app: wordcloudmaker
+    spec:
+      containers:
+        - name: wordcloudmaker
+          image: wubin1989/wordcloud_wordcloudmaker:v20220226170222
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 6060
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordcloudmaker-service
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app: wordcloudmaker
+  ports:
+    - protocol: TCP
+      port: 6060
+      targetPort: 6060

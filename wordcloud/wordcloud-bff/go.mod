@@ -16,5 +16,8 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
 	github.com/unionj-cloud/go-doudou v1.0.0-beta1
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220226035033-774ebe5d000c
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220226080020-5270e8b73bfd
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd // indirect
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220226080020-5270e8b73bfd
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220226080020-5270e8b73bfd
 )

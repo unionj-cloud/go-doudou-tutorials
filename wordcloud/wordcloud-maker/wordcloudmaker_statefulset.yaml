@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wordcloudmaker-statefulset
+spec:
+  selector:
+    matchLabels:
+      app: wordcloudmaker
+  serviceName: wordcloudmaker-svc-headless
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: wordcloudmaker
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: wordcloudmaker
+          image: wubin1989/wordcloud_wordcloudmaker:v20220226170222
+          imagePullPolicy: Always
+          ports:
+            - name: http-port
+              containerPort: 6060
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordcloudmaker-svc-headless
+spec:
+  selector:
+    app: wordcloudmaker
+  ports:
+    - protocol: TCP
+      port: 6060
+      targetPort: 6060
+  clusterIP: None

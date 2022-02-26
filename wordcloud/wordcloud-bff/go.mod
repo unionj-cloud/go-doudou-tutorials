@@ -36,6 +36,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.2 // indirect
 	github.com/go-echarts/go-echarts/v2 v2.2.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/go-rod/rod v0.102.1 // indirect
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
@@ -84,6 +85,9 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0 // indirect
 	github.com/unionj-cloud/thulacgo v0.1.6 // indirect
+	github.com/ysmood/goob v0.3.1 // indirect
+	github.com/ysmood/gson v0.6.4 // indirect
+	github.com/ysmood/leakless v0.7.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	github.com/ztrue/tracerr v0.3.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

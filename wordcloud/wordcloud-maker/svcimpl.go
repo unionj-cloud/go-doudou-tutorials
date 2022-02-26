@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/go-rod/rod"
 	"github.com/unionj-cloud/go-doudou/framework/logger"
 	"io"
 	"io/ioutil"
@@ -34,13 +35,16 @@ type WordcloudMakerImpl struct {
 	conf        *config.Config
 	segClient   segsvc.WordcloudSeg
 	minioClient *minio.Client
+	browser     *rod.Browser
 }
 
-func NewWordcloudMaker(conf *config.Config, segClient segsvc.WordcloudSeg, minioClient *minio.Client) WordcloudMaker {
+func NewWordcloudMaker(conf *config.Config, segClient segsvc.WordcloudSeg,
+	minioClient *minio.Client, browser *rod.Browser) WordcloudMaker {
 	return &WordcloudMakerImpl{
 		conf,
 		segClient,
 		minioClient,
+		browser,
 	}
 }
 
@@ -142,19 +146,15 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 		return "", err
 	}
 	now := time.Now()
-	cctx, cancel := chromedp.NewContext(ctx)
-	defer cancel()
-
-	var buf []byte
-	if err = chromedp.Run(cctx, elementScreenshot(fmt.Sprintf("file://%s", pathutils.Abs(outhtml)), `canvas`, &buf)); err != nil {
+	rpage := receiver.browser.MustPage(fmt.Sprintf("file://%s", pathutils.Abs(outhtml))).MustWaitLoad()
+	time.Sleep(1 * time.Second)
+	el, err := rpage.Timeout(10 * time.Second).Element("canvas")
+	if err != nil {
 		return "", err
 	}
-
-	logger.Info(time.Since(now))
 	outimg := filepath.Join(outputDir, "wordcloud.png")
-	if err = ioutil.WriteFile(outimg, buf, 0o644); err != nil {
-		return "", err
-	}
+	el.MustScreenshot(outimg)
+	logger.Info(time.Since(now))
 
 	bucketName := receiver.conf.BizConf.OssBucket
 	objectName := fmt.Sprintf("%s_wordcloud.png", fmt.Sprint(span))

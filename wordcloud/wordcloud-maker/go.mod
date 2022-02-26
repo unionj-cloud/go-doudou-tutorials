@@ -6,6 +6,7 @@ require (
 	github.com/chromedp/chromedp v0.7.8
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-resty/resty/v2 v2.6.0
+	github.com/go-rod/rod v0.102.1
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3
 	github.com/jmoiron/sqlx v1.3.1
@@ -14,7 +15,6 @@ require (
 	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
 	github.com/unionj-cloud/go-doudou v1.0.0-beta1
@@ -71,6 +71,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
+	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.26.0 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
@@ -84,6 +85,9 @@ require (
 	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/unionj-cloud/thulacgo v0.1.6 // indirect
+	github.com/ysmood/goob v0.3.1 // indirect
+	github.com/ysmood/gson v0.6.4 // indirect
+	github.com/ysmood/leakless v0.7.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	github.com/ztrue/tracerr v0.3.0 // indirect
 	go.uber.org/atomic v1.7.0 // indirect

@@ -3,6 +3,7 @@ module github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff
 go 1.16
 
 require (
+	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3

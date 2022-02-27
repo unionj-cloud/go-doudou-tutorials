@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-rod/rod"
+	"github.com/go-rod/rod/lib/launcher"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/opentracing/opentracing-go"
@@ -54,7 +55,10 @@ func main() {
 		panic(err)
 	}
 
-	svc := service.NewWordcloudMaker(conf, segClientProxy, minioClient, rod.New().MustConnect())
+	path, _ := launcher.LookPath()
+	u := launcher.New().Bin(path).MustLaunch()
+	browser := rod.New().ControlURL(u).MustConnect()
+	svc := service.NewWordcloudMaker(conf, segClientProxy, minioClient, browser)
 	handler := httpsrv.NewWordcloudMakerHandler(svc)
 	srv := ddhttp.NewDefaultHttpSrv()
 	srv.AddRoute(httpsrv.Routes(handler)...)

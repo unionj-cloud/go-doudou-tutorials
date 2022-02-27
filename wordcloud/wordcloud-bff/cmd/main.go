@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/opentracing/opentracing-go"
@@ -15,6 +17,8 @@ import (
 	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
+	"github.com/unionj-cloud/go-doudou/framework/ratelimit"
+	"github.com/unionj-cloud/go-doudou/framework/ratelimit/redisrate"
 	"github.com/unionj-cloud/go-doudou/framework/registry"
 	"github.com/unionj-cloud/go-doudou/framework/tracing"
 	"os"
@@ -75,6 +79,20 @@ func main() {
 	handler := httpsrv.NewWordcloudBffHandler(svc)
 	srv := ddhttp.NewDefaultHttpSrv()
 	srv.AddMiddleware(httpsrv.Auth(userClientProxy))
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr: fmt.Sprintf("%s:6379", conf.RedisConf.Host),
+	})
+
+	fn := redisrate.LimitFn(func(ctx context.Context) ratelimit.Limit {
+		return ratelimit.PerSecondBurst(conf.ConConf.RatelimitRate, conf.ConConf.RatelimitBurst)
+	})
+
+	srv.AddMiddleware(
+		ddhttp.BulkHead(conf.ConConf.BulkheadWorkers, conf.ConConf.BulkheadMaxwaittime),
+		httpsrv.RedisRateLimit(rdb, fn),
+	)
+
 	srv.AddRoute(httpsrv.Routes(handler)...)
 	srv.Run()
 }

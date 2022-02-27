@@ -1,7 +1,7 @@
-filebeat.inputs:
-  - type: log
-    paths:
-      - /var/log/*.log
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
 
 processors:
   - decode_json_fields:
@@ -12,7 +12,7 @@ processors:
 output.elasticsearch:
   hosts: ["elasticsearch:9200"]
   indices:
-    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+    - index: "go-doudou-wordcloud-filebeat"
 
 logging.json: true
 logging.metrics.enabled: false

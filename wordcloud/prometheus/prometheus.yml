@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - 'alert.rules'
+
+scrape_configs:
+  - job_name: "go-doudou-wordcloud"
+    basic_auth:
+      username: admin
+      password: admin
+    metrics_path: /go-doudou/prometheus
+    file_sd_configs:
+      - files:
+          - sd/go-doudou.json

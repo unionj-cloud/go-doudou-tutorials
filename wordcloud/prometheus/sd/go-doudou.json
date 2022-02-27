@@ -1,0 +1,98 @@
+[
+    {
+        "targets": [],
+        "labels": {}
+    },
+    {
+        "targets": [],
+        "labels": {}
+    },
+    {
+        "targets": [
+            "172.28.0.14:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.14:6060",
+            "build_time": "2022-02-27 16:20:44",
+            "build_user": "wubin1989",
+            "go_ver": "go1.16.6",
+            "godoudou_ver": "",
+            "hostname": "wordcloud-bff",
+            "service_id": "wordcloud-bff"
+        }
+    },
+    {
+        "targets": [
+            "172.28.0.15:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.15:6060",
+            "build_time": "2022-02-26 17:09:08",
+            "build_user": "wubin1989",
+            "go_ver": "go1.16.6",
+            "godoudou_ver": "v1.0.0-beta1",
+            "hostname": "wordcloud-tasksvc",
+            "service_id": "wordcloud-tasksvc"
+        }
+    },
+    {
+        "targets": [
+            "172.28.0.13:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.13:6060",
+            "build_time": "2022-02-27 07:30:32",
+            "build_user": "wubin1989",
+            "go_ver": "go1.16.6",
+            "godoudou_ver": "",
+            "hostname": "987dda6e8a8f",
+            "service_id": "wordcloud-makersvc"
+        }
+    },
+    {
+        "targets": [
+            "172.28.0.12:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.12:6060",
+            "build_time": "2022-02-26 17:06:19",
+            "build_user": "wubin1989",
+            "go_ver": "go1.16.6",
+            "godoudou_ver": "",
+            "hostname": "4d6d24f9b1e9",
+            "service_id": "wordcloud-segsvc"
+        }
+    },
+    {
+        "targets": [
+            "172.28.0.16:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.16:6060",
+            "build_time": "2022-02-27 18:10:23",
+            "build_user": "wubin1989",
+            "go_ver": "go1.16.6",
+            "godoudou_ver": "v1.0.0-beta1",
+            "hostname": "wordcloud-usersvc",
+            "service_id": "wordcloud-usersvc"
+        }
+    },
+    {
+        "targets": [
+            "172.28.0.8:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.8:6060",
+            "build_time": "2022-02-27 23:37:58",
+            "build_user": "",
+            "go_ver": "go1.16.12",
+            "godoudou_ver": "v1.0.0-beta1",
+            "hostname": "wordcloud-prometheus",
+            "service_id": "wordcloud-prometheus"
+        }
+    },
+    {
+        "targets": [],
+        "labels": {}
+    }
+]

@@ -61,9 +61,9 @@ services:
       - "9001:9001"
     depends_on:
       - minio1
-      - minio2
-      - minio3
-      - minio4
+#      - minio2
+#      - minio3
+#      - minio4
     networks:
       - tutorial
 

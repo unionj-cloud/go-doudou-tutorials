@@ -15,7 +15,6 @@ import (
 
 	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
 
-	"github.com/chromedp/chromedp"
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
@@ -66,13 +65,6 @@ func wcBase(data map[string]interface{}) *charts.WordCloud {
 				}),
 		)
 	return wc
-}
-
-func elementScreenshot(urlstr, sel string, res *[]byte) chromedp.Tasks {
-	return chromedp.Tasks{
-		chromedp.Navigate(urlstr),
-		chromedp.Screenshot(sel, res, chromedp.NodeVisible),
-	}
 }
 
 func getPublicOssUrl(endpoint, bucketName, objectName string) string {

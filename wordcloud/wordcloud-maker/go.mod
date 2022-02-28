@@ -3,7 +3,6 @@ module github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker
 go 1.16
 
 require (
-	github.com/chromedp/chromedp v0.7.8
 	github.com/go-echarts/go-echarts/v2 v2.2.4
 	github.com/go-resty/resty/v2 v2.6.0
 	github.com/go-rod/rod v0.102.1
@@ -24,4 +23,5 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20220221023154-0b2280d3ff96 // indirect
 	github.com/smartystreets/assertions v1.2.1 // indirect
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 )

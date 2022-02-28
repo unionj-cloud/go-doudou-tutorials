@@ -1,210 +1,210 @@
 version: '3.9'
 
 services:
-#  wordcloud-prometheus:
-#    container_name: wordcloud-prometheus
-#    hostname: wordcloud-prometheus
-#    image: wubin1989/go-doudou-prometheus-sd:v1.0.0-beta1
-#    environment:
-#      - GDD_SERVICE_NAME=wordcloud-prometheus
-#      - PROM_REFRESH_INTERVAL=15s
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#    volumes:
-#      - ./prometheus/:/etc/prometheus/
-#    ports:
-#      - "9090:9090"
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
-#    networks:
-#      - tutorial
-#
-#  wordcloud-usersvc:
-#    container_name: wordcloud-usersvc
-#    hostname: wordcloud-usersvc
-#    image: wordcloud_usersvc:latest
-#    environment:
-#      - GDD_PORT=6060
-#      - DB_HOST=db
-#      - GDD_SERVICE_NAME=wordcloud-usersvc
-#      - GDD_MODE=micro
-#      - GDD_MEM_SEED=wordcloud-prometheus
-#      - JAEGER_AGENT_HOST=jaeger
-#      - JAEGER_AGENT_PORT=6831
-#      - GDD_LOG_LEVEL=debug
-#      - GDD_MEM_LOG_DISABLE=true
-#      - GDD_ENV=test
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#    ports:
-#      - "6061:6060"
-#    networks:
-#      - tutorial
-#    depends_on:
-#      wordcloud-prometheus:
-#        condition: service_healthy
-#      db:
-#        condition: service_healthy
-#
-#  wordcloud-tasksvc:
-#    container_name: wordcloud-tasksvc
-#    hostname: wordcloud-tasksvc
-#    image: wordcloud_wordcloudtask:latest
-#    environment:
-#      - GDD_PORT=6060
-#      - DB_HOST=db
-#      - GDD_SERVICE_NAME=wordcloud-tasksvc
-#      - GDD_MODE=micro
-#      - GDD_MEM_SEED=wordcloud-prometheus
-#      - JAEGER_AGENT_HOST=jaeger
-#      - JAEGER_AGENT_PORT=6831
-#      - GDD_LOG_LEVEL=debug
-#      - GDD_MEM_LOG_DISABLE=true
-#      - GDD_ENV=test
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#    networks:
-#      - tutorial
-#    depends_on:
-#      wordcloud-prometheus:
-#        condition: service_healthy
-#      db:
-#        condition: service_healthy
-#
-#  wordcloud-segsvc:
-#    image: wordcloud_wordcloudseg:latest
-#    environment:
-#      - GDD_PORT=6060
-#      - GDD_SERVICE_NAME=wordcloud-segsvc
-#      - GDD_MODE=micro
-#      - GDD_MEM_SEED=wordcloud-prometheus
-#      - JAEGER_AGENT_HOST=jaeger
-#      - JAEGER_AGENT_PORT=6831
-#      - GDD_LOG_LEVEL=debug
-#      - GDD_MEM_LOG_DISABLE=true
-#      - GDD_ENV=test
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#    deploy:
-#      replicas: 1
-#    networks:
-#      - tutorial
-#    depends_on:
-#      wordcloud-prometheus:
-#        condition: service_healthy
-#
-#  wordcloud-makersvc:
-#    image: wordcloud_wordcloudmaker:latest
-#    environment:
-#      - GDD_PORT=6060
-#      - GDD_SERVICE_NAME=wordcloud-makersvc
-#      - GDD_MODE=micro
-#      - GDD_MEM_SEED=wordcloud-prometheus
-#      - JAEGER_AGENT_HOST=jaeger
-#      - JAEGER_AGENT_PORT=6831
-#      - GDD_LOG_LEVEL=debug
-#      - GDD_MEM_LOG_DISABLE=true
-#      - GDD_ENV=test
-#      - BIZ_OSS_ENDPOINT=minio:9000
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#    deploy:
-#      replicas: 1
-#    networks:
-#      - tutorial
-#    depends_on:
-#      wordcloud-prometheus:
-#        condition: service_healthy
-#
-#  wordcloud-bff:
-#    container_name: wordcloud-bff
-#    hostname: wordcloud-bff
-#    image: wordcloud_wordcloudbff:latest
-#    environment:
-#      - GDD_PORT=6060
-#      - GDD_SERVICE_NAME=wordcloud-bff
-#      - GDD_MODE=micro
-#      - GDD_MEM_SEED=wordcloud-prometheus
-#      - JAEGER_AGENT_HOST=jaeger
-#      - JAEGER_AGENT_PORT=6831
-#      - GDD_LOG_LEVEL=debug
-#      - GDD_MEM_LOG_DISABLE=true
-#      - GDD_ENV=test
-#      - BIZ_OSS_ENDPOINT=minio:9000
-#      - REDIS_HOST=redis
-#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-#      - CONCURRENCY_RATELIMIT_RATE=100
-#      - CONCURRENCY_RATELIMIT_BURST=200
-#      - CONCURRENCY_BULKHEAD_WORKERS=30
-#      - CONCURRENCY_BULKHEAD_MAXWAITTIME=10s
-#    ports:
-#      - "6060:6060"
-#    networks:
-#      - tutorial
-#    depends_on:
-#      wordcloud-prometheus:
-#        condition: service_healthy
-#
-#  #  wordcloud:
-#  #    image: wordcloud-ui:latest
-#  #    ports:
-#  #      - "80:80"
-#
-#  db:
-#    container_name: db
-#    hostname: db
-#    image: mysql:5.7
-#    restart: always
-#    environment:
-#      MYSQL_ROOT_PASSWORD: 1234
-#    ports:
-#      - 3306:3306
-#    volumes:
-#      - $PWD/my:/etc/mysql/conf.d
-#      - $PWD/sqlscripts:/docker-entrypoint-initdb.d
-#    healthcheck:
-#      test: "/usr/bin/mysql --user=root --password=1234 --execute \"SHOW DATABASES;\""
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
-#    networks:
-#      - tutorial
-#
-#  redis:
-#    container_name: redis
-#    hostname: redis
-#    image: redis:6.2-alpine
-#    ports:
-#      - 6379:6379
-#    command: redis-server --save 60 1 --loglevel warning
-#    networks:
-#      - tutorial
-#
-#  jaeger:
-#    container_name: jaeger
-#    hostname: jaeger
-#    image: jaegertracing/all-in-one:latest
-#    ports:
-#      - "6831:6831/udp"
-#      - "16686:16686"
-#    networks:
-#      - tutorial
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    hostname: grafana
-#    volumes:
-#      - ./grafana/provisioning:/etc/grafana/provisioning
-#    environment:
-#      - GF_AUTH_DISABLE_LOGIN_FORM=false
-#      - GF_AUTH_ANONYMOUS_ENABLED=false
-#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-#      - GF_SECURITY_ADMIN_PASSWORD=admin
-#      - GF_SECURITY_ADMIN_USER=admin
-#    ports:
-#      - 3000:3000
-#    networks:
-#      - tutorial
+  wordcloud-prometheus:
+    container_name: wordcloud-prometheus
+    hostname: wordcloud-prometheus
+    image: wubin1989/go-doudou-prometheus-sd:v1.0.0-beta1
+    environment:
+      - GDD_SERVICE_NAME=wordcloud-prometheus
+      - PROM_REFRESH_INTERVAL=15s
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    ports:
+      - "9090:9090"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - tutorial
+
+  wordcloud-usersvc:
+    container_name: wordcloud-usersvc
+    hostname: wordcloud-usersvc
+    image: wordcloud_usersvc:latest
+    environment:
+      - GDD_PORT=6060
+      - DB_HOST=db
+      - GDD_SERVICE_NAME=wordcloud-usersvc
+      - GDD_MODE=micro
+      - GDD_MEM_SEED=wordcloud-prometheus
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - GDD_LOG_LEVEL=debug
+      - GDD_MEM_LOG_DISABLE=true
+      - GDD_ENV=test
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+    ports:
+      - "6061:6060"
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-prometheus:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  wordcloud-tasksvc:
+    container_name: wordcloud-tasksvc
+    hostname: wordcloud-tasksvc
+    image: wordcloud_wordcloudtask:latest
+    environment:
+      - GDD_PORT=6060
+      - DB_HOST=db
+      - GDD_SERVICE_NAME=wordcloud-tasksvc
+      - GDD_MODE=micro
+      - GDD_MEM_SEED=wordcloud-prometheus
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - GDD_LOG_LEVEL=debug
+      - GDD_MEM_LOG_DISABLE=true
+      - GDD_ENV=test
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-prometheus:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+
+  wordcloud-segsvc:
+    image: wordcloud_wordcloudseg:latest
+    environment:
+      - GDD_PORT=6060
+      - GDD_SERVICE_NAME=wordcloud-segsvc
+      - GDD_MODE=micro
+      - GDD_MEM_SEED=wordcloud-prometheus
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - GDD_LOG_LEVEL=debug
+      - GDD_MEM_LOG_DISABLE=true
+      - GDD_ENV=test
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+    deploy:
+      replicas: 1
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-prometheus:
+        condition: service_healthy
+
+  wordcloud-makersvc:
+    image: wordcloud_wordcloudmaker:latest
+    environment:
+      - GDD_PORT=6060
+      - GDD_SERVICE_NAME=wordcloud-makersvc
+      - GDD_MODE=micro
+      - GDD_MEM_SEED=wordcloud-prometheus
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - GDD_LOG_LEVEL=debug
+      - GDD_MEM_LOG_DISABLE=true
+      - GDD_ENV=test
+      - BIZ_OSS_ENDPOINT=minio:9000
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+    deploy:
+      replicas: 1
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-prometheus:
+        condition: service_healthy
+
+  wordcloud-bff:
+    container_name: wordcloud-bff
+    hostname: wordcloud-bff
+    image: wordcloud_wordcloudbff:latest
+    environment:
+      - GDD_PORT=6060
+      - GDD_SERVICE_NAME=wordcloud-bff
+      - GDD_MODE=micro
+      - GDD_MEM_SEED=wordcloud-prometheus
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
+      - GDD_LOG_LEVEL=debug
+      - GDD_MEM_LOG_DISABLE=true
+      - GDD_ENV=test
+      - BIZ_OSS_ENDPOINT=minio:9000
+      - REDIS_HOST=redis
+      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - CONCURRENCY_RATELIMIT_RATE=100
+      - CONCURRENCY_RATELIMIT_BURST=200
+      - CONCURRENCY_BULKHEAD_WORKERS=30
+      - CONCURRENCY_BULKHEAD_MAXWAITTIME=10s
+    ports:
+      - "6060:6060"
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-prometheus:
+        condition: service_healthy
+
+  #  wordcloud:
+  #    image: wordcloud-ui:latest
+  #    ports:
+  #      - "80:80"
+
+  db:
+    container_name: db
+    hostname: db
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - 3306:3306
+    volumes:
+      - $PWD/my:/etc/mysql/conf.d
+      - $PWD/sqlscripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=1234 --execute \"SHOW DATABASES;\""
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - tutorial
+
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis:6.2-alpine
+    ports:
+      - 6379:6379
+    command: redis-server --save 60 1 --loglevel warning
+    networks:
+      - tutorial
+
+  jaeger:
+    container_name: jaeger
+    hostname: jaeger
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp"
+      - "16686:16686"
+    networks:
+      - tutorial
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    ports:
+      - 3000:3000
+    networks:
+      - tutorial
 
   minio:
     container_name: minio

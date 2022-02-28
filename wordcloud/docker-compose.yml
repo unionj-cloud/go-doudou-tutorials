@@ -114,6 +114,8 @@ services:
     depends_on:
       wordcloud-prometheus:
         condition: service_healthy
+      minio:
+        condition: service_healthy
 
   wordcloud-bff:
     container_name: wordcloud-bff
@@ -142,6 +144,8 @@ services:
       - tutorial
     depends_on:
       wordcloud-prometheus:
+        condition: service_healthy
+      minio:
         condition: service_healthy
 
   #  wordcloud:

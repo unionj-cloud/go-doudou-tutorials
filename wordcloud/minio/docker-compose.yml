@@ -29,26 +29,26 @@ services:
       - data1-1:/data1
       - data1-2:/data2
 
-  minio2:
-    <<: *minio-common
-    hostname: minio2
-    volumes:
-      - data2-1:/data1
-      - data2-2:/data2
-
-  minio3:
-    <<: *minio-common
-    hostname: minio3
-    volumes:
-      - data3-1:/data1
-      - data3-2:/data2
-
-  minio4:
-    <<: *minio-common
-    hostname: minio4
-    volumes:
-      - data4-1:/data1
-      - data4-2:/data2
+#  minio2:
+#    <<: *minio-common
+#    hostname: minio2
+#    volumes:
+#      - data2-1:/data1
+#      - data2-2:/data2
+#
+#  minio3:
+#    <<: *minio-common
+#    hostname: minio3
+#    volumes:
+#      - data3-1:/data1
+#      - data3-2:/data2
+#
+#  minio4:
+#    <<: *minio-common
+#    hostname: minio4
+#    volumes:
+#      - data4-1:/data1
+#      - data4-2:/data2
 
   minio:
     container_name: minio

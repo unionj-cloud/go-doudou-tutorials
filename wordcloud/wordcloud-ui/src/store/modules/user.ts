@@ -1,23 +1,24 @@
-import type {UserInfo} from '/#/store';
-import type {ErrorMessageMode} from '/#/axios';
-import {defineStore} from 'pinia';
-import {store} from '/@/store';
-import {RoleEnum} from '/@/enums/roleEnum';
-import {PageEnum} from '/@/enums/pageEnum';
-import {ROLES_KEY, TOKEN_KEY, USER_INFO_KEY} from '/@/enums/cacheEnum';
-import {getAuthCache, setAuthCache} from '/@/utils/auth';
-import {GetUserInfoModel, LoginParams} from '/@/api/sys/model/userModel';
-import {useI18n} from '/@/hooks/web/useI18n';
-import {useMessage} from '/@/hooks/web/useMessage';
-import {router} from '/@/router';
-import {usePermissionStore} from '/@/store/modules/permission';
-import {RouteRecordRaw} from 'vue-router';
-import {PAGE_NOT_FOUND_ROUTE} from '/@/router/routes/basic';
-import {isArray} from '/@/utils/is';
-import {h} from 'vue';
-import {PublicService} from '/@/api/user/PublicService';
-import axios from 'axios'
-import MeService from "/@/api/user/MeService";
+import type { UserInfo } from '/#/store';
+import type { ErrorMessageMode } from '/#/axios';
+import { defineStore } from 'pinia';
+import { store } from '/@/store';
+import { RoleEnum } from '/@/enums/roleEnum';
+import { PageEnum } from '/@/enums/pageEnum';
+import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '/@/enums/cacheEnum';
+import { getAuthCache, setAuthCache } from '/@/utils/auth';
+import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel';
+import { useI18n } from '/@/hooks/web/useI18n';
+import { useMessage } from '/@/hooks/web/useMessage';
+import { router } from '/@/router';
+import { usePermissionStore } from '/@/store/modules/permission';
+import { RouteRecordRaw } from 'vue-router';
+import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
+import { isArray } from '/@/utils/is';
+import { h } from 'vue';
+import axios from 'axios';
+import PublicService from '/@/api/user/PublicService';
+import MeService from '/@/api/user/MeService';
+import LogoutService from '/@/api/user/LogoutService';
 
 interface UserState {
   userInfo: Nullable<UserInfo>;
@@ -91,9 +92,9 @@ export const useUserStore = defineStore({
       },
     ): Promise<GetUserInfoModel | null> {
       try {
-        const {goHome = true, mode, ...loginParams} = params;
-        const ps = new PublicService(axios)
-        const loginResp = await ps.postPublicLogIn(loginParams)
+        const { goHome = true, mode, ...loginParams } = params;
+        const ps = new PublicService(axios);
+        const loginResp = await ps.postPublicLogIn(loginParams);
         // save token
         this.setToken(loginResp.data);
         return this.afterLoginAction(goHome);
@@ -125,9 +126,9 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null;
-      const ms = new MeService(axios)
-      const resp = await ms.getMe()
-      const user = resp.data
+      const ms = new MeService(axios);
+      const resp = await ms.getMe();
+      const user = resp.data;
       const userInfo: UserInfo = {
         userId: user.id,
         username: user.username,
@@ -139,8 +140,8 @@ export const useUserStore = defineStore({
             value: 'super',
           },
         ],
-      }
-      const {roles = []} = userInfo;
+      };
+      const { roles = [] } = userInfo;
       if (isArray(roles)) {
         const roleList = roles.map((item) => item.value) as RoleEnum[];
         this.setRoleList(roleList);
@@ -157,7 +158,7 @@ export const useUserStore = defineStore({
     async logout(goLogin = false) {
       if (this.getToken) {
         try {
-          // await doLogout();
+          await new LogoutService(axios).getLogout();
         } catch {
           console.log('注销Token失败');
         }
@@ -172,8 +173,8 @@ export const useUserStore = defineStore({
      * @description: Confirm before logging out
      */
     confirmLoginOut() {
-      const {createConfirm} = useMessage();
-      const {t} = useI18n();
+      const { createConfirm } = useMessage();
+      const { t } = useI18n();
       createConfirm({
         iconType: 'warning',
         title: () => h('span', t('sys.app.logoutTip')),

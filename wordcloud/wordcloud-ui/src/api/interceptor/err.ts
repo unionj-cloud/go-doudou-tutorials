@@ -1,6 +1,7 @@
 import { useMessage } from '/@/hooks/web/useMessage';
 import { useI18n } from '/@/hooks/web/useI18n';
 const { createErrorModal } = useMessage();
+import { useUserStoreWithOut } from '/@/store/modules/user';
 
 export const err = (error: any) => {
   if (error.response) {
@@ -18,6 +19,9 @@ export const err = (error: any) => {
         getContainer: () => document.body,
       });
       setTimeout(() => {
+        const userStore = useUserStoreWithOut();
+        userStore.setToken(undefined);
+        userStore.logout(true);
         window.location.href = `${import.meta.env.VITE_APP_LOGIN_PAGE}`;
       }, 2000);
     } else {

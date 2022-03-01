@@ -27,6 +27,11 @@ export default {
     menuLoading: '菜单加载中...',
     underConstruction: '建设中...',
   },
+  wordcloud: {
+    pageTitle: '词云图',
+    containerTitle: '文本文件上传',
+    lang: '语种',
+  },
   errorLog: {
     tableTitle: '错误日志列表',
     tableColumnType: '类型',

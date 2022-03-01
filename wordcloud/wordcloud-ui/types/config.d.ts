@@ -147,6 +147,7 @@ export interface GlobConfig {
   // Project abbreviation
   shortName: string;
 
+  bffUrl: string;
   userUrl: string;
 }
 export interface GlobEnvConfig {
@@ -161,5 +162,6 @@ export interface GlobEnvConfig {
   // Upload url
   VITE_GLOB_UPLOAD_URL?: string;
 
+  VITE_GLOB_BFF_API: string;
   VITE_GLOB_USER_API: string;
 }

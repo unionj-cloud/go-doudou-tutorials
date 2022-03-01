@@ -12,6 +12,7 @@ const dashboard: AppRouteModule = {
     orderNo: 10,
     icon: 'ion:grid-outline',
     title: t('routes.dashboard.dashboard'),
+    hideMenu: true,
   },
   children: [
     {

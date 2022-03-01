@@ -7,8 +7,8 @@
     "url": "https://github.com/anncwb"
   },
   "scripts": {
-    "pullbff": "pullcode -u http://admin:admin@localhost:6060/go-doudou/openapi.json -o src/api/bff",
-    "pulluser": "pullcode -u http://admin:admin@localhost:6061/go-doudou/openapi.json -o src/api/user",
+    "pullbff": "pullcode -u http://admin:admin@162.14.116.92:6060/go-doudou/openapi.json -o src/api/bff",
+    "pulluser": "pullcode -u http://admin:admin@162.14.116.92:6061/go-doudou/openapi.json -o src/api/user",
     "bootstrap": "yarn install",
     "serve": "npm run dev",
     "dev": "vite",

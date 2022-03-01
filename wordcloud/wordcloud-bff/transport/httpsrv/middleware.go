@@ -2,14 +2,14 @@ package httpsrv
 
 import (
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
-	user "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user"
+	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
 	"github.com/unionj-cloud/go-doudou/framework/ratelimit/redisrate"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-func Auth(userClient user.Usersvc) func(inner http.Handler) http.Handler {
+func Auth(userClient *userclient.UsersvcClientProxy) func(inner http.Handler) http.Handler {
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authHeader := r.Header.Get("Authorization")

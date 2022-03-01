@@ -25,10 +25,9 @@
       />
     </FormItem>
 
-    <ARow class="enter-x">
+    <!-- <ARow class="enter-x">
       <ACol :span="12">
         <FormItem>
-          <!-- No logic, you need to deal with it yourself -->
           <Checkbox v-model:checked="rememberMe" size="small">
             {{ t('sys.login.rememberMe') }}
           </Checkbox>
@@ -36,13 +35,12 @@
       </ACol>
       <ACol :span="12">
         <FormItem :style="{ 'text-align': 'right' }">
-          <!-- No logic, you need to deal with it yourself -->
           <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
             {{ t('sys.login.forgetPassword') }}
           </Button>
         </FormItem>
       </ACol>
-    </ARow>
+    </ARow> -->
 
     <FormItem class="enter-x">
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
@@ -51,9 +49,9 @@
 <!--      <Button size="large" class="mt-4 enter-x" block @click="handleRegister">-->
 <!--        {{ t('sys.login.registerButton') }}-->
 <!--      </Button>-->
-      <Button size="large" class="mt-4 enter-x" block @click="setLoginState(LoginStateEnum.REGISTER)">
+      <!-- <Button size="large" class="mt-4 enter-x" block @click="setLoginState(LoginStateEnum.REGISTER)">
         {{ t('sys.login.registerButton') }}
-      </Button>
+      </Button> -->
     </FormItem>
 <!--    <ARow class="enter-x">-->
 <!--      <ACol :md="8" :xs="24">-->
@@ -145,7 +143,7 @@
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
-          description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.realName}`,
+          description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.username}`,
           duration: 3,
         });
       }

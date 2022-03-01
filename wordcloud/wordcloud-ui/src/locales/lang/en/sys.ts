@@ -28,6 +28,11 @@ export default {
     menuLoading: 'Menu loading...',
     underConstruction: 'Under Construction...',
   },
+  wordcloud: {
+    pageTitle: 'Word Cloud',
+    containerTitle: 'Text File Upload',
+    lang: 'Language',
+  },
   errorLog: {
     tableTitle: 'Error log list',
     tableColumnType: 'Type',

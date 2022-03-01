@@ -31,6 +31,7 @@ export default {
     pageTitle: '词云图',
     containerTitle: '文本文件上传',
     lang: '语种',
+    tableTitle: '任务列表',
   },
   errorLog: {
     tableTitle: '错误日志列表',

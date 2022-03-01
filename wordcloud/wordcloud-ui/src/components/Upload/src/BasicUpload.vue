@@ -11,12 +11,12 @@
             {{ fileList.length }}
           </template>
         </template>
-        <a-button @click="openPreviewModal">
+        <!-- <a-button @click="openPreviewModal">
           <Icon icon="bi:eye" />
           <template v-if="fileList.length && showPreviewNumber">
             {{ fileList.length }}
           </template>
-        </a-button>
+        </a-button> -->
       </Tooltip>
     </a-button-group>
 
@@ -28,12 +28,12 @@
       @delete="handleDelete"
     />
 
-    <UploadPreviewModal
+    <!-- <UploadPreviewModal
       :value="fileList"
       @register="registerPreviewModal"
       @list-change="handlePreviewChange"
       @delete="handlePreviewDelete"
-    />
+    /> -->
   </div>
 </template>
 <script lang="ts">
@@ -85,9 +85,11 @@
 
       // 上传modal保存操作
       function handleChange(urls: string[]) {
-        fileList.value = [...unref(fileList), ...(urls || [])];
-        emit('update:value', fileList.value);
-        emit('change', fileList.value);
+        // fileList.value = [...unref(fileList), ...(urls || [])];
+        // emit('update:value', fileList.value);
+        // emit('change', fileList.value);
+        emit('update:value', urls || []);
+        emit('change', urls || []);
       }
 
       // 预览modal保存操作

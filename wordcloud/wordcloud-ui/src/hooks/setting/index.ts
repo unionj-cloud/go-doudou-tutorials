@@ -12,6 +12,7 @@ export const useGlobSetting = (): Readonly<GlobConfig> => {
     VITE_GLOB_UPLOAD_URL,
     VITE_GLOB_BFF_API,
     VITE_GLOB_USER_API,
+    VITE_GLOB_OSS_API,
   } = getAppEnvConfig();
 
   if (!/[a-zA-Z\_]*/.test(VITE_GLOB_APP_SHORT_NAME)) {
@@ -29,6 +30,7 @@ export const useGlobSetting = (): Readonly<GlobConfig> => {
     uploadUrl: VITE_GLOB_UPLOAD_URL,
     bffUrl: VITE_GLOB_BFF_API,
     userUrl: VITE_GLOB_USER_API,
+    ossUrl: VITE_GLOB_OSS_API,
   };
   return glob as Readonly<GlobConfig>;
 };

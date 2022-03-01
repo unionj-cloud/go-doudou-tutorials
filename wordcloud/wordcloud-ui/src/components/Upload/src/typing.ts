@@ -1,4 +1,4 @@
-import { UploadApiResult } from '/@/api/bff/types';
+import { UploadResp } from '/@/api/bff/types';
 
 export enum UploadResultStatus {
   SUCCESS = 'success',
@@ -14,7 +14,7 @@ export interface FileItem {
   percent: number;
   file: File;
   status?: UploadResultStatus;
-  responseData?: UploadApiResult;
+  responseData?: UploadResp;
   uuid: string;
 }
 

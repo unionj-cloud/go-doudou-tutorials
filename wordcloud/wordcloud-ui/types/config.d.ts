@@ -149,6 +149,7 @@ export interface GlobConfig {
 
   bffUrl: string;
   userUrl: string;
+  ossUrl: string;
 }
 export interface GlobEnvConfig {
   // Site title
@@ -164,4 +165,5 @@ export interface GlobEnvConfig {
 
   VITE_GLOB_BFF_API: string;
   VITE_GLOB_USER_API: string;
+  VITE_GLOB_OSS_API: string;
 }

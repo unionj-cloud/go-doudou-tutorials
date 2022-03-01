@@ -29,3 +29,45 @@ type TaskFail struct {
 	// 错误信息
 	Error string `json:"error"`
 }
+
+type TaskVo struct {
+	Id       int
+	SrcUrl   string
+	ImgUrl   string
+	Lang     string
+	Top      int
+	Status   string
+	Error    string
+	UserId   int
+	CreateAt string
+}
+
+type Order struct {
+	Col  string `json:"col"`
+	Sort string `json:"sort"`
+}
+
+type Page struct {
+	// 排序规则
+	Orders []Order `json:"orders"`
+	// 页码
+	PageNo int `json:"pageNo"`
+	// 每页行数
+	Size int `json:"size"`
+}
+
+// 分页筛选条件
+type PageQuery struct {
+	Page Page `json:"page"`
+}
+
+type PageRet struct {
+	Items    interface{} `json:"items"`
+	PageNo   int         `json:"pageNo"`
+	PageSize int         `json:"pageSize"`
+	Total    int         `json:"total"`
+	HasNext  bool        `json:"hasNext"`
+}
+
+type TaskPageRet struct {
+}

@@ -22,4 +22,16 @@ type WordcloudTask interface {
 		// return OK if success
 		// 成功返回OK
 		data string, err error)
+
+	// TaskPage
+	TaskPage(ctx context.Context,
+		// 分页请求参数
+		// pagination parameter
+		query vo.PageQuery) (
+		// 分页结果
+		// pagination result
+		data vo.PageRet,
+		// 错误信息
+		// error
+		err error)
 }

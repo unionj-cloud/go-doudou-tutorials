@@ -30,6 +30,7 @@ export function getAppEnvConfig() {
     VITE_GLOB_UPLOAD_URL,
     VITE_GLOB_BFF_API,
     VITE_GLOB_USER_API,
+    VITE_GLOB_OSS_API,
   } = ENV;
 
   if (!/^[a-zA-Z\_]*$/.test(VITE_GLOB_APP_SHORT_NAME)) {
@@ -46,6 +47,7 @@ export function getAppEnvConfig() {
     VITE_GLOB_UPLOAD_URL,
     VITE_GLOB_BFF_API,
     VITE_GLOB_USER_API,
+    VITE_GLOB_OSS_API,
   };
 }
 

@@ -32,6 +32,7 @@ export default {
     pageTitle: 'Word Cloud',
     containerTitle: 'Text File Upload',
     lang: 'Language',
+    tableTitle: 'Task List',
   },
   errorLog: {
     tableTitle: 'Error log list',

@@ -22,7 +22,7 @@ var svc service.WordcloudBff
 func TestMain(m *testing.M) {
 	conf := config.LoadFromEnv()
 	userRestyClient := ddhttp.NewClient()
-	userRestyClient.SetHeader("Authorization", fmt.Sprintf("Bearer %s", conf.BizConf.JwtToken))
+	//userRestyClient.SetHeader("Authorization", fmt.Sprintf("Bearer %s", conf.BizConf.JwtToken))
 	userClient := userclient.NewUsersvcClient(ddhttp.WithClient(userRestyClient))
 	taskClient := taskclient.NewWordcloudTaskClient()
 	rec := metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)

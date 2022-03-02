@@ -13,11 +13,11 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/vo"
-	makersvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker"
+	makerclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/client"
 	makervo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
-	tasksvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task"
+	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
 	taskvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
-	usersvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user"
+	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
 	"github.com/unionj-cloud/go-doudou/toolkit/copier"
 	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
 )
@@ -25,9 +25,9 @@ import (
 type WordcloudBffImpl struct {
 	conf        *config.Config
 	minioClient *minio.Client
-	makerClient makersvc.WordcloudMaker
-	taskClient  tasksvc.WordcloudTask
-	userClient  usersvc.Usersvc
+	makerClient *makerclient.WordcloudMakerClientProxy
+	taskClient  *taskclient.WordcloudTaskClientProxy
+	userClient  *userclient.UsersvcClientProxy
 }
 
 type ctxKey int
@@ -87,7 +87,7 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 		tp.Top = *top
 	}
 
-	taskId, err := receiver.taskClient.TaskSave(ctx, tp)
+	_, taskId, err := receiver.taskClient.TaskSave(ctx, nil, tp)
 	if err != nil {
 		return vo.UploadResult{}, err
 	}
@@ -102,11 +102,11 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 		mp.Top = *top
 	}
 
-	imgUrl, err := receiver.makerClient.Make(ctx, mp)
+	_, imgUrl, err := receiver.makerClient.Make(ctx, nil, mp)
 	if err != nil {
 		// if fail call TaskFail api
 		old := err
-		_, err = receiver.taskClient.TaskFail(ctx, taskvo.TaskFail{
+		_, _, err = receiver.taskClient.TaskFail(ctx, nil, taskvo.TaskFail{
 			TaskId: taskId,
 			Error:  err.Error(),
 		})
@@ -117,7 +117,7 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 	}
 
 	// if success call TaskSuccess api
-	_, err = receiver.taskClient.TaskSuccess(ctx, taskvo.TaskSuccess{
+	_, _, err = receiver.taskClient.TaskSuccess(ctx, nil, taskvo.TaskSuccess{
 		TaskId: taskId,
 		ImgUrl: imgUrl,
 	})
@@ -133,7 +133,7 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 }
 
 func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
-	makerClient makersvc.WordcloudMaker, taskClient tasksvc.WordcloudTask, userClient usersvc.Usersvc) WordcloudBff {
+	makerClient *makerclient.WordcloudMakerClientProxy, taskClient *taskclient.WordcloudTaskClientProxy, userClient *userclient.UsersvcClientProxy) WordcloudBff {
 	return &WordcloudBffImpl{
 		conf,
 		minioClient,
@@ -151,7 +151,7 @@ func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQue
 		pq.Page.Orders[i].Col = strcase.ToSnake(item.Col)
 	}
 	pq.Filter.UserId = userId
-	page, err := receiver.taskClient.TaskPage(ctx, pq)
+	_, page, err := receiver.taskClient.TaskPage(ctx, nil, pq)
 	if err != nil {
 		return vo.TaskPageRet{}, err
 	}
@@ -161,7 +161,7 @@ func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQue
 		usermap[item.UserId] = ""
 	}
 	for k, _ := range usermap {
-		user, err := receiver.userClient.GetUser(ctx, k)
+		_, user, err := receiver.userClient.GetUser(ctx, nil, k)
 		if err != nil {
 			return vo.TaskPageRet{}, err
 		}

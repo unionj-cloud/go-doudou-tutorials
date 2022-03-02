@@ -20,7 +20,7 @@ func Auth(userClient *userclient.UsersvcClientProxy) func(inner http.Handler) ht
 				w.Write([]byte("Unauthorised.\n"))
 				return
 			}
-			inner.ServeHTTP(w, r.WithContext(service.NewUserIdContext(r.Context(), userVo.Id)))
+			inner.ServeHTTP(w, r.WithContext(service.NewUserIdContext(service.NewTokenContext(r.Context(), tokenString), userVo.Id)))
 		})
 	}
 }

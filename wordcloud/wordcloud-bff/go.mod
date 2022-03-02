@@ -18,8 +18,7 @@ require (
 	github.com/slok/goresilience v0.2.0
 	github.com/stretchr/testify v1.7.0
 	github.com/unionj-cloud/go-doudou v1.0.0-beta3
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220302180046-99a4ef236594
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220302180046-99a4ef236594 // indirect
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220302180046-99a4ef236594
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220302180046-99a4ef236594
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220302181606-7c755974b8cb
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220302181606-7c755974b8cb
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220302181606-7c755974b8cb
 )

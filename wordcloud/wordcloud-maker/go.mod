@@ -22,6 +22,6 @@ require (
 require (
 	github.com/gopherjs/gopherjs v0.0.0-20220221023154-0b2280d3ff96 // indirect
 	github.com/smartystreets/assertions v1.2.1 // indirect
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg 7c75597
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 )

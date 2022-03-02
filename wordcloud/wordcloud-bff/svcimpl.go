@@ -43,6 +43,17 @@ func UserIdFromContext(ctx context.Context) (int, bool) {
 	return userId, ok
 }
 
+const tokenKey ctxKey = ctxKey(1)
+
+func NewTokenContext(ctx context.Context, token string) context.Context {
+	return context.WithValue(ctx, tokenKey, token)
+}
+
+func TokenFromContext(ctx context.Context) (string, bool) {
+	token, ok := ctx.Value(tokenKey).(string)
+	return token, ok
+}
+
 func getPublicOssUrl(endpoint, bucketName, objectName string) string {
 	return fmt.Sprintf("http://%s/%s/%s", endpoint, bucketName, objectName)
 }
@@ -160,8 +171,11 @@ func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQue
 	for _, item := range page.Items {
 		usermap[item.UserId] = ""
 	}
+	token, _ := TokenFromContext(ctx)
+	headers := make(map[string]string)
+	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
 	for k, _ := range usermap {
-		_, user, err := receiver.userClient.GetUser(ctx, nil, k)
+		_, user, err := receiver.userClient.GetUser(ctx, headers, k)
 		if err != nil {
 			return vo.TaskPageRet{}, err
 		}

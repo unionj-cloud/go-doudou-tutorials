@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -22,10 +23,11 @@ type WordcloudSegClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudSegClientProxy) Seg(ctx context.Context, payload vo.SegPayload) (rs vo.SegResult, err error) {
+func (receiver *WordcloudSegClientProxy) Seg(ctx context.Context, _headers map[string]string, payload vo.SegPayload) (_resp *resty.Response, rs vo.SegResult, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, rs, err = receiver.client.Seg(
+		_resp, rs, err = receiver.client.Seg(
 			ctx,
+			_headers,
 			payload,
 		)
 		if err != nil {

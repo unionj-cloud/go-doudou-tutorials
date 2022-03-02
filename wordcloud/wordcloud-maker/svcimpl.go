@@ -3,8 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/go-rod/rod"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -12,6 +10,9 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/go-rod/rod"
+	"github.com/unionj-cloud/go-doudou/framework/logger"
 
 	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
 

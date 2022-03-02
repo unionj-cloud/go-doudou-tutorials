@@ -29,7 +29,6 @@ type BizConf struct {
 	OssKey      string `split_words:"true"`
 	OssSecret   string `split_words:"true"`
 	OssBucket   string `split_words:"true"`
-	JwtToken    string `split_words:"true"`
 }
 
 func LoadFromEnv() *Config {

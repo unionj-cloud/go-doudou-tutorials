@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -23,10 +24,11 @@ type WordcloudBffClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, file v3.FileModel, lang string, top *int) (data vo.UploadResult, err error) {
+func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, _headers map[string]string, file v3.FileModel, lang string, top *int) (_resp *resty.Response, data vo.UploadResult, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.Upload(
+		_resp, data, err = receiver.client.Upload(
 			ctx,
+			_headers,
 			file,
 			lang,
 			top,
@@ -41,6 +43,26 @@ func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, file v3.Fil
 			receiver.logger.Error(_err)
 		}
 		err = errors.Wrap(_err, "call Upload fail")
+	}
+	return
+}
+func (receiver *WordcloudBffClientProxy) TaskPage(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, data, err = receiver.client.TaskPage(
+			ctx,
+			_headers,
+			query,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call TaskPage fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call TaskPage fail")
 	}
 	return
 }
@@ -91,24 +113,4 @@ func NewWordcloudBffClientProxy(client *WordcloudBffClient, opts ...ProxyOption)
 	}
 
 	return cp
-}
-
-func (receiver *WordcloudBffClientProxy) TaskPage(ctx context.Context, query vo.PageQuery) (data vo.TaskPageRet, err error) {
-	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.TaskPage(
-			ctx,
-			query,
-		)
-		if err != nil {
-			return errors.Wrap(err, "call TaskPage fail")
-		}
-		return nil
-	}); _err != nil {
-		// you can implement your fallback logic here
-		if errors.Is(_err, rerrors.ErrCircuitOpen) {
-			receiver.logger.Error(_err)
-		}
-		err = errors.Wrap(_err, "call TaskPage fail")
-	}
-	return
 }

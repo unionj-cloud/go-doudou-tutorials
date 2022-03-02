@@ -28,10 +28,13 @@ func (receiver *WordcloudTaskClient) SetProvider(provider registry.IServiceProvi
 func (receiver *WordcloudTaskClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudTaskClient) TaskSave(ctx context.Context, payload vo.TaskPayload) (_resp *resty.Response, data int, err error) {
+func (receiver *WordcloudTaskClient) TaskSave(ctx context.Context, _headers map[string]string, payload vo.TaskPayload) (_resp *resty.Response, data int, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(payload)
 	_path := "/task/save"
@@ -58,10 +61,13 @@ func (receiver *WordcloudTaskClient) TaskSave(ctx context.Context, payload vo.Ta
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *WordcloudTaskClient) TaskSuccess(ctx context.Context, payload vo.TaskSuccess) (_resp *resty.Response, data string, err error) {
+func (receiver *WordcloudTaskClient) TaskSuccess(ctx context.Context, _headers map[string]string, payload vo.TaskSuccess) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(payload)
 	_path := "/task/success"
@@ -88,10 +94,13 @@ func (receiver *WordcloudTaskClient) TaskSuccess(ctx context.Context, payload vo
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *WordcloudTaskClient) TaskFail(ctx context.Context, payload vo.TaskFail) (_resp *resty.Response, data string, err error) {
+func (receiver *WordcloudTaskClient) TaskFail(ctx context.Context, _headers map[string]string, payload vo.TaskFail) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(payload)
 	_path := "/task/fail"
@@ -118,10 +127,13 @@ func (receiver *WordcloudTaskClient) TaskFail(ctx context.Context, payload vo.Ta
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *WordcloudTaskClient) TaskPage(ctx context.Context, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+func (receiver *WordcloudTaskClient) TaskPage(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(query)
 	_path := "/task/page"

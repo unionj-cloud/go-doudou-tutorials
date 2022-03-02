@@ -31,9 +31,6 @@ func main() {
 	var makerClient *makerclient.WordcloudMakerClient
 	var taskClient *taskclient.WordcloudTaskClient
 
-	userRestyClient := ddhttp.NewClient()
-	userRestyClient.SetHeader("Authorization", fmt.Sprintf("Bearer %s", conf.BizConf.JwtToken))
-
 	if os.Getenv("GDD_MODE") == "micro" {
 		err := registry.NewNode()
 		if err != nil {
@@ -41,7 +38,7 @@ func main() {
 		}
 		defer registry.Shutdown()
 		userProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-usersvc")
-		userClient = userclient.NewUsersvcClient(ddhttp.WithProvider(userProvider), ddhttp.WithClient(userRestyClient))
+		userClient = userclient.NewUsersvcClient(ddhttp.WithProvider(userProvider))
 
 		makerProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-makersvc")
 		makerClient = makerclient.NewWordcloudMakerClient(ddhttp.WithProvider(makerProvider))
@@ -49,7 +46,7 @@ func main() {
 		taskProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-tasksvc")
 		taskClient = taskclient.NewWordcloudTaskClient(ddhttp.WithProvider(taskProvider))
 	} else {
-		userClient = userclient.NewUsersvcClient(ddhttp.WithClient(userRestyClient))
+		userClient = userclient.NewUsersvcClient()
 		makerClient = makerclient.NewWordcloudMakerClient()
 		taskClient = taskclient.NewWordcloudTaskClient()
 	}

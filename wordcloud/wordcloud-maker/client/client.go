@@ -28,10 +28,13 @@ func (receiver *WordcloudMakerClient) SetProvider(provider registry.IServiceProv
 func (receiver *WordcloudMakerClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudMakerClient) Make(ctx context.Context, payload vo.MakePayload) (_resp *resty.Response, data string, err error) {
+func (receiver *WordcloudMakerClient) Make(ctx context.Context, _headers map[string]string, payload vo.MakePayload) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(payload)
 	_path := "/make"

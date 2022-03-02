@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/iancoleman/strcase"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/iancoleman/strcase"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"

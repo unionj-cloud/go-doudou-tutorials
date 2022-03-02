@@ -4,7 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/slok/goresilience"
 	"github.com/slok/goresilience/circuitbreaker"
@@ -21,10 +23,11 @@ type WordcloudMakerClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *WordcloudMakerClientProxy) Make(ctx context.Context, payload vo.MakePayload) (data string, err error) {
+func (receiver *WordcloudMakerClientProxy) Make(ctx context.Context, _headers map[string]string, payload vo.MakePayload) (_resp *resty.Response, data string, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.Make(
+		_resp, data, err = receiver.client.Make(
 			ctx,
+			_headers,
 			payload,
 		)
 		if err != nil {
@@ -55,7 +58,7 @@ func WithLogger(logger *logrus.Logger) ProxyOption {
 	}
 }
 
-func NewWordcloudMakerClientProxy(client *WordcloudMakerClient, rec metrics.Recorder, opts ...ProxyOption) *WordcloudMakerClientProxy {
+func NewWordcloudMakerClientProxy(client *WordcloudMakerClient, opts ...ProxyOption) *WordcloudMakerClientProxy {
 	cp := &WordcloudMakerClientProxy{
 		client: client,
 		logger: logrus.StandardLogger(),
@@ -67,7 +70,7 @@ func NewWordcloudMakerClientProxy(client *WordcloudMakerClient, rec metrics.Reco
 
 	if cp.runner == nil {
 		var mid []goresilience.Middleware
-		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker_client", rec))
+		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker_client", metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)))
 		mid = append(mid, circuitbreaker.NewMiddleware(circuitbreaker.Config{
 			ErrorPercentThresholdToOpen:        50,
 			MinimumRequestToOpen:               6,

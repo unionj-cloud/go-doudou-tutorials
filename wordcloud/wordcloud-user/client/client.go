@@ -35,10 +35,13 @@ func (receiver *UsersvcClient) SetProvider(provider registry.IServiceProvider) {
 func (receiver *UsersvcClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *UsersvcClient) PageUsers(ctx context.Context, query vo.PageQuery) (_resp *resty.Response, data vo.PageRet, err error) {
+func (receiver *UsersvcClient) PageUsers(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.PageRet, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(query)
 	_path := "/page/users"
@@ -65,10 +68,13 @@ func (receiver *UsersvcClient) PageUsers(ctx context.Context, query vo.PageQuery
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) GetUser(ctx context.Context, userId int) (_resp *resty.Response, data vo.UserVo, err error) {
+func (receiver *UsersvcClient) GetUser(ctx context.Context, _headers map[string]string, userId int) (_resp *resty.Response, data vo.UserVo, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_urlValues.Set("userId", fmt.Sprintf("%v", userId))
 	_path := "/user"
@@ -91,10 +97,13 @@ func (receiver *UsersvcClient) GetUser(ctx context.Context, userId int) (_resp *
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) GetMe(ctx context.Context) (_resp *resty.Response, data vo.UserVo, err error) {
+func (receiver *UsersvcClient) GetMe(ctx context.Context, _headers map[string]string) (_resp *resty.Response, data vo.UserVo, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_path := "/me"
 	_resp, _err = _req.SetQueryParamsFromValues(_urlValues).
@@ -116,10 +125,13 @@ func (receiver *UsersvcClient) GetMe(ctx context.Context) (_resp *resty.Response
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) PublicSignUp(ctx context.Context, username string, password string, code *string) (_resp *resty.Response, data int, err error) {
+func (receiver *UsersvcClient) PublicSignUp(ctx context.Context, _headers map[string]string, username string, password string, code *string) (_resp *resty.Response, data int, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_urlValues.Set("username", fmt.Sprintf("%v", username))
 	_urlValues.Set("password", fmt.Sprintf("%v", password))
@@ -150,10 +162,13 @@ func (receiver *UsersvcClient) PublicSignUp(ctx context.Context, username string
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) PublicLogIn(ctx context.Context, username string, password string) (_resp *resty.Response, data string, err error) {
+func (receiver *UsersvcClient) PublicLogIn(ctx context.Context, _headers map[string]string, username string, password string) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_urlValues.Set("username", fmt.Sprintf("%v", username))
 	_urlValues.Set("password", fmt.Sprintf("%v", password))
@@ -181,10 +196,13 @@ func (receiver *UsersvcClient) PublicLogIn(ctx context.Context, username string,
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) UploadAvatar(ctx context.Context, avatar v3.FileModel, id int) (_resp *resty.Response, data string, err error) {
+func (receiver *UsersvcClient) UploadAvatar(ctx context.Context, _headers map[string]string, avatar v3.FileModel, id int) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetFileReader("avatar", avatar.Filename, avatar.Reader)
 	_urlValues.Set("id", fmt.Sprintf("%v", id))
@@ -212,10 +230,13 @@ func (receiver *UsersvcClient) UploadAvatar(ctx context.Context, avatar v3.FileM
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) GetPublicDownloadAvatar(ctx context.Context, userId int) (_resp *resty.Response, data *os.File, err error) {
+func (receiver *UsersvcClient) GetPublicDownloadAvatar(ctx context.Context, _headers map[string]string, userId int) (_resp *resty.Response, data *os.File, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_urlValues.Set("userId", fmt.Sprintf("%v", userId))
 	_req.SetDoNotParseResponse(true)
@@ -256,10 +277,13 @@ func (receiver *UsersvcClient) GetPublicDownloadAvatar(ctx context.Context, user
 	data = _outFile
 	return
 }
-func (receiver *UsersvcClient) GetLogout(ctx context.Context) (_resp *resty.Response, data string, err error) {
+func (receiver *UsersvcClient) GetLogout(ctx context.Context, _headers map[string]string) (_resp *resty.Response, data string, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_path := "/logout"
 	_resp, _err = _req.SetQueryParamsFromValues(_urlValues).
@@ -281,10 +305,13 @@ func (receiver *UsersvcClient) GetLogout(ctx context.Context) (_resp *resty.Resp
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *UsersvcClient) PublicTokenValidate(ctx context.Context, token string) (_resp *resty.Response, user vo.UserVo, err error) {
+func (receiver *UsersvcClient) PublicTokenValidate(ctx context.Context, _headers map[string]string, token string) (_resp *resty.Response, user vo.UserVo, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_urlValues.Set("token", fmt.Sprintf("%v", token))
 	_path := "/public/token/validate"

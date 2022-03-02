@@ -28,10 +28,13 @@ func (receiver *WordcloudSegClient) SetProvider(provider registry.IServiceProvid
 func (receiver *WordcloudSegClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudSegClient) Seg(ctx context.Context, payload vo.SegPayload) (_resp *resty.Response, rs vo.SegResult, err error) {
+func (receiver *WordcloudSegClient) Seg(ctx context.Context, _headers map[string]string, payload vo.SegPayload) (_resp *resty.Response, rs vo.SegResult, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(payload)
 	_path := "/seg"

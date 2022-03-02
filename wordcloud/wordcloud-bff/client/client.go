@@ -29,10 +29,13 @@ func (receiver *WordcloudBffClient) SetProvider(provider registry.IServiceProvid
 func (receiver *WordcloudBffClient) SetClient(client *resty.Client) {
 	receiver.client = client
 }
-func (receiver *WordcloudBffClient) Upload(ctx context.Context, file v3.FileModel, lang string, top *int) (_resp *resty.Response, data vo.UploadResult, err error) {
+func (receiver *WordcloudBffClient) Upload(ctx context.Context, _headers map[string]string, file v3.FileModel, lang string, top *int) (_resp *resty.Response, data vo.UploadResult, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetFileReader("file", file.Filename, file.Reader)
 	_urlValues.Set("lang", fmt.Sprintf("%v", lang))
@@ -63,10 +66,13 @@ func (receiver *WordcloudBffClient) Upload(ctx context.Context, file v3.FileMode
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
 	_req.SetContext(ctx)
 	_req.SetBody(query)
 	_path := "/task/page"

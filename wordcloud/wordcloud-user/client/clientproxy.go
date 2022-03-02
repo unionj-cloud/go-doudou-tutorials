@@ -5,7 +5,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-resty/resty/v2"
 	"github.com/pkg/errors"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/slok/goresilience"
 	"github.com/slok/goresilience/circuitbreaker"
@@ -23,10 +25,11 @@ type UsersvcClientProxy struct {
 	runner goresilience.Runner
 }
 
-func (receiver *UsersvcClientProxy) PageUsers(ctx context.Context, query vo.PageQuery) (data vo.PageRet, err error) {
+func (receiver *UsersvcClientProxy) PageUsers(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.PageRet, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.PageUsers(
+		_resp, data, err = receiver.client.PageUsers(
 			ctx,
+			_headers,
 			query,
 		)
 		if err != nil {
@@ -42,10 +45,11 @@ func (receiver *UsersvcClientProxy) PageUsers(ctx context.Context, query vo.Page
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) GetUser(ctx context.Context, userId int) (data vo.UserVo, err error) {
+func (receiver *UsersvcClientProxy) GetUser(ctx context.Context, _headers map[string]string, userId int) (_resp *resty.Response, data vo.UserVo, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.GetUser(
+		_resp, data, err = receiver.client.GetUser(
 			ctx,
+			_headers,
 			userId,
 		)
 		if err != nil {
@@ -61,10 +65,11 @@ func (receiver *UsersvcClientProxy) GetUser(ctx context.Context, userId int) (da
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) GetMe(ctx context.Context) (data vo.UserVo, err error) {
+func (receiver *UsersvcClientProxy) GetMe(ctx context.Context, _headers map[string]string) (_resp *resty.Response, data vo.UserVo, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.GetMe(
+		_resp, data, err = receiver.client.GetMe(
 			ctx,
+			_headers,
 		)
 		if err != nil {
 			return errors.Wrap(err, "call GetMe fail")
@@ -79,10 +84,11 @@ func (receiver *UsersvcClientProxy) GetMe(ctx context.Context) (data vo.UserVo, 
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) PublicSignUp(ctx context.Context, username string, password string, code *string) (data int, err error) {
+func (receiver *UsersvcClientProxy) PublicSignUp(ctx context.Context, _headers map[string]string, username string, password string, code *string) (_resp *resty.Response, data int, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.PublicSignUp(
+		_resp, data, err = receiver.client.PublicSignUp(
 			ctx,
+			_headers,
 			username,
 			password,
 			code,
@@ -100,10 +106,11 @@ func (receiver *UsersvcClientProxy) PublicSignUp(ctx context.Context, username s
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) PublicLogIn(ctx context.Context, username string, password string) (data string, err error) {
+func (receiver *UsersvcClientProxy) PublicLogIn(ctx context.Context, _headers map[string]string, username string, password string) (_resp *resty.Response, data string, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.PublicLogIn(
+		_resp, data, err = receiver.client.PublicLogIn(
 			ctx,
+			_headers,
 			username,
 			password,
 		)
@@ -120,10 +127,11 @@ func (receiver *UsersvcClientProxy) PublicLogIn(ctx context.Context, username st
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) UploadAvatar(ctx context.Context, avatar v3.FileModel, id int) (data string, err error) {
+func (receiver *UsersvcClientProxy) UploadAvatar(ctx context.Context, _headers map[string]string, avatar v3.FileModel, id int) (_resp *resty.Response, data string, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.UploadAvatar(
+		_resp, data, err = receiver.client.UploadAvatar(
 			ctx,
+			_headers,
 			avatar,
 			id,
 		)
@@ -140,10 +148,11 @@ func (receiver *UsersvcClientProxy) UploadAvatar(ctx context.Context, avatar v3.
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) GetPublicDownloadAvatar(ctx context.Context, userId int) (data *os.File, err error) {
+func (receiver *UsersvcClientProxy) GetPublicDownloadAvatar(ctx context.Context, _headers map[string]string, userId int) (_resp *resty.Response, data *os.File, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.GetPublicDownloadAvatar(
+		_resp, data, err = receiver.client.GetPublicDownloadAvatar(
 			ctx,
+			_headers,
 			userId,
 		)
 		if err != nil {
@@ -159,10 +168,11 @@ func (receiver *UsersvcClientProxy) GetPublicDownloadAvatar(ctx context.Context,
 	}
 	return
 }
-func (receiver *UsersvcClientProxy) GetLogout(ctx context.Context) (data string, err error) {
+func (receiver *UsersvcClientProxy) GetLogout(ctx context.Context, _headers map[string]string) (_resp *resty.Response, data string, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, data, err = receiver.client.GetLogout(
+		_resp, data, err = receiver.client.GetLogout(
 			ctx,
+			_headers,
 		)
 		if err != nil {
 			return errors.Wrap(err, "call GetLogout fail")
@@ -174,6 +184,26 @@ func (receiver *UsersvcClientProxy) GetLogout(ctx context.Context) (data string,
 			receiver.logger.Error(_err)
 		}
 		err = errors.Wrap(_err, "call GetLogout fail")
+	}
+	return
+}
+func (receiver *UsersvcClientProxy) PublicTokenValidate(ctx context.Context, _headers map[string]string, token string) (_resp *resty.Response, user vo.UserVo, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, user, err = receiver.client.PublicTokenValidate(
+			ctx,
+			_headers,
+			token,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call PublicTokenValidate fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call PublicTokenValidate fail")
 	}
 	return
 }
@@ -192,7 +222,7 @@ func WithLogger(logger *logrus.Logger) ProxyOption {
 	}
 }
 
-func NewUsersvcClientProxy(client *UsersvcClient, rec metrics.Recorder, opts ...ProxyOption) *UsersvcClientProxy {
+func NewUsersvcClientProxy(client *UsersvcClient, opts ...ProxyOption) *UsersvcClientProxy {
 	cp := &UsersvcClientProxy{
 		client: client,
 		logger: logrus.StandardLogger(),
@@ -204,7 +234,7 @@ func NewUsersvcClientProxy(client *UsersvcClient, rec metrics.Recorder, opts ...
 
 	if cp.runner == nil {
 		var mid []goresilience.Middleware
-		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user_client", rec))
+		mid = append(mid, metrics.NewMiddleware("github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user_client", metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)))
 		mid = append(mid, circuitbreaker.NewMiddleware(circuitbreaker.Config{
 			ErrorPercentThresholdToOpen:        50,
 			MinimumRequestToOpen:               6,
@@ -224,24 +254,4 @@ func NewUsersvcClientProxy(client *UsersvcClient, rec metrics.Recorder, opts ...
 	}
 
 	return cp
-}
-
-func (receiver *UsersvcClientProxy) PublicTokenValidate(ctx context.Context, token string) (user vo.UserVo, err error) {
-	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_, user, err = receiver.client.PublicTokenValidate(
-			ctx,
-			token,
-		)
-		if err != nil {
-			return errors.Wrap(err, "call PublicTokenValidate fail")
-		}
-		return nil
-	}); _err != nil {
-		// you can implement your fallback logic here
-		if errors.Is(_err, rerrors.ErrCircuitOpen) {
-			receiver.logger.Error(_err)
-		}
-		err = errors.Wrap(_err, "call PublicTokenValidate fail")
-	}
-	return
 }

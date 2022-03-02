@@ -16,9 +16,10 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
+	github.com/stretchr/testify v1.7.0
 	github.com/unionj-cloud/go-doudou v1.0.0-beta1
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220226080020-5270e8b73bfd
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd // indirect
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task 92f21e1
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220302070144-3ea10b521d65
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220226080020-5270e8b73bfd
 )

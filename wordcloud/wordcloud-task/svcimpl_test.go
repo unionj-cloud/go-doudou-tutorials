@@ -13,7 +13,6 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/db"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/domain"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
 	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
 	"testing"
 	"time"
@@ -62,11 +61,11 @@ func TestMain(m *testing.M) {
 
 	m.Run()
 
-	got, err := taskDao.DeleteMany(context.Background(), query.C().Col("delete_at").IsNull())
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(got)
+	//got, err := taskDao.DeleteMany(context.Background(), query.C().Col("delete_at").IsNull())
+	//if err != nil {
+	//	panic(err)
+	//}
+	//fmt.Println(got)
 }
 
 func TestWordcloudTaskImpl_TaskPage(t *testing.T) {

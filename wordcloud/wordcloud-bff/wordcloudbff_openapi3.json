@@ -67,19 +67,6 @@
   },
   "components": {
     "schemas": {
-      "Filter": {
-        "title": "Filter",
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        },
-        "required": [
-          "userId"
-        ]
-      },
       "Order": {
         "title": "Order",
         "type": "object",
@@ -128,16 +115,12 @@
         "title": "PageQuery",
         "type": "object",
         "properties": {
-          "filter": {
-            "$ref": "#/components/schemas/Filter"
-          },
           "page": {
             "$ref": "#/components/schemas/Page"
           }
         },
         "description": "分页请求参数\npagination parameter\n分页筛选条件",
         "required": [
-          "filter",
           "page"
         ]
       },
@@ -213,10 +196,10 @@
         "description": "分页结果\npagination result\n",
         "required": [
           "items",
-          "pageNo",
           "pageSize",
           "total",
-          "hasNext"
+          "hasNext",
+          "pageNo"
         ]
       },
       "TaskVo": {

@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/iancoleman/strcase"
 	"io"
 	"os"
 	"path/filepath"
@@ -15,6 +16,8 @@ import (
 	makervo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
 	tasksvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task"
 	taskvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
+	usersvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user"
+	"github.com/unionj-cloud/go-doudou/toolkit/copier"
 	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
 )
 
@@ -23,6 +26,7 @@ type WordcloudBffImpl struct {
 	minioClient *minio.Client
 	makerClient makersvc.WordcloudMaker
 	taskClient  tasksvc.WordcloudTask
+	userClient  usersvc.Usersvc
 }
 
 type ctxKey int
@@ -128,18 +132,45 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 }
 
 func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
-	makerClient makersvc.WordcloudMaker, taskClient tasksvc.WordcloudTask) WordcloudBff {
+	makerClient makersvc.WordcloudMaker, taskClient tasksvc.WordcloudTask, userClient usersvc.Usersvc) WordcloudBff {
 	return &WordcloudBffImpl{
 		conf,
 		minioClient,
 		makerClient,
 		taskClient,
+		userClient,
 	}
 }
 
 func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQuery) (data vo.TaskPageRet, err error) {
 	userId, _ := UserIdFromContext(ctx)
 	var pq taskvo.PageQuery
-
-	receiver.taskClient.TaskPage(ctx, query)
+	copier.DeepCopy(query, &pq)
+	for i, item := range pq.Page.Orders {
+		pq.Page.Orders[i].Col = strcase.ToSnake(item.Col)
+	}
+	pq.Filter.UserId = userId
+	page, err := receiver.taskClient.TaskPage(ctx, pq)
+	if err != nil {
+		return vo.TaskPageRet{}, err
+	}
+	copier.DeepCopy(page.PageRet, &data.PageRet)
+	usermap := make(map[int]string)
+	for _, item := range page.Items {
+		usermap[item.UserId] = ""
+	}
+	for k, _ := range usermap {
+		user, err := receiver.userClient.GetUser(ctx, k)
+		if err != nil {
+			return vo.TaskPageRet{}, err
+		}
+		usermap[k] = user.Username
+	}
+	for _, item := range page.Items {
+		var taskVo vo.TaskVo
+		copier.DeepCopy(item, &taskVo)
+		taskVo.Username = usermap[item.UserId]
+		data.Items = append(data.Items, taskVo)
+	}
+	return
 }

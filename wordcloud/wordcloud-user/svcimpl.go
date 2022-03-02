@@ -152,14 +152,12 @@ func (receiver *UsersvcImpl) PublicLogIn(ctx context.Context, username string, p
 	if len(users) == 0 || !lib.CheckPasswordHash(password, users[0].Password) {
 		return "", ddhttp.NewBizError(lib.ErrUsernameOrPasswordIncorrect, ddhttp.WithStatusCode(401))
 	}
-	now := time.Now()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	return lib.JwtToken(receiver.conf.BizConf.JwtSecret, jwt.MapClaims{
 		"userId": users[0].Id,
-		"exp":    now.Add(12 * time.Hour).Unix(),
+		"exp":    time.Now().Add(12 * time.Hour).Unix(),
 		//"iat":    now.Unix(),
 		//"nbf":    now.Unix(),
 	})
-	return token.SignedString([]byte(receiver.conf.BizConf.JwtSecret))
 }
 
 func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileModel, id int) (data string, err error) {

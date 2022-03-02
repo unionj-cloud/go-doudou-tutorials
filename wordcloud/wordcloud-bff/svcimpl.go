@@ -138,5 +138,8 @@ func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
 }
 
 func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQuery) (data vo.TaskPageRet, err error) {
-	return
+	userId, _ := UserIdFromContext(ctx)
+	var pq taskvo.PageQuery
+
+	receiver.taskClient.TaskPage(ctx, query)
 }

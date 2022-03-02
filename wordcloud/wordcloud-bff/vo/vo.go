@@ -38,14 +38,9 @@ type Page struct {
 	Size int `json:"size"`
 }
 
-type Filter struct {
-	UserId int `json:"userId"`
-}
-
 // 分页筛选条件
 type PageQuery struct {
-	Filter Filter `json:"filter"`
-	Page   Page   `json:"page"`
+	Page Page `json:"page"`
 }
 
 type PageRet struct {

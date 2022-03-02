@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"github.com/unionj-cloud/go-doudou/toolkit/copier"
+	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
+	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/dao"
@@ -60,4 +63,32 @@ func NewWordcloudTask(conf *config.Config, db *sqlx.DB) WordcloudTask {
 		conf,
 		db,
 	}
+}
+
+func (receiver *WordcloudTaskImpl) TaskPage(ctx context.Context, pq vo.PageQuery) (data vo.TaskPageRet, err error) {
+	taskDao := dao.NewWordCloudTaskDao(receiver.db)
+	var page query.Page
+	for _, item := range pq.Page.Orders {
+		page.Orders = append(page.Orders, query.Order{
+			Col:  item.Col,
+			Sort: sortenum.Sort(item.Sort),
+		})
+	}
+	page.Size = pq.Page.Size
+	pageNo := pq.Page.PageNo
+	if pageNo < 1 {
+		pageNo = 1
+	}
+	page.Offset = (pageNo - 1) * pq.Page.Size
+	var where query.Q
+	where = query.C().Col("delete_at").IsNull()
+	if pq.Filter.UserId > 0 {
+		where = query.C().Col("user_id").Eq(pq.Filter.UserId)
+	}
+	pr, err := taskDao.PageMany(ctx, page, where)
+	if err != nil {
+		return vo.TaskPageRet{}, err
+	}
+	copier.DeepCopy(pr, &data)
+	return data, nil
 }

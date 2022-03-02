@@ -63,6 +63,36 @@ func (receiver *WordcloudBffClient) Upload(ctx context.Context, file v3.FileMode
 	}
 	return _resp, _result.Data, nil
 }
+func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	_req.SetContext(ctx)
+	_req.SetBody(query)
+	_path := "/task/page"
+	if _req.Body != nil {
+		_req.SetQueryParamsFromValues(_urlValues)
+	} else {
+		_req.SetFormDataFromValues(_urlValues)
+	}
+	_resp, _err = _req.Post(_path)
+	if _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		err = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+		Data vo.TaskPageRet `json:"data"`
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, _result.Data, nil
+}
 
 func NewWordcloudBffClient(opts ...ddhttp.DdClientOption) *WordcloudBffClient {
 	defaultProvider := ddhttp.NewServiceProvider("WORDCLOUDBFF")

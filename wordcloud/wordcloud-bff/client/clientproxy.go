@@ -92,3 +92,23 @@ func NewWordcloudBffClientProxy(client *WordcloudBffClient, opts ...ProxyOption)
 
 	return cp
 }
+
+func (receiver *WordcloudBffClientProxy) TaskPage(ctx context.Context, query vo.PageQuery) (data vo.TaskPageRet, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_, data, err = receiver.client.TaskPage(
+			ctx,
+			query,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call TaskPage fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call TaskPage fail")
+	}
+	return
+}

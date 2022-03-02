@@ -28,7 +28,7 @@ type WordcloudBff interface {
 		query vo.PageQuery) (
 		// 分页结果
 		// pagination result
-		data vo.PageRet,
+		data vo.TaskPageRet,
 		// 错误信息
 		// error
 		err error)

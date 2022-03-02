@@ -10,6 +10,7 @@ type WordcloudTaskHandler interface {
 	TaskSave(w http.ResponseWriter, r *http.Request)
 	TaskSuccess(w http.ResponseWriter, r *http.Request)
 	TaskFail(w http.ResponseWriter, r *http.Request)
+	TaskPage(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler WordcloudTaskHandler) []ddmodel.Route {
@@ -31,6 +32,12 @@ func Routes(handler WordcloudTaskHandler) []ddmodel.Route {
 			"POST",
 			"/task/fail",
 			handler.TaskFail,
+		},
+		{
+			"TaskPage",
+			"POST",
+			"/task/page",
+			handler.TaskPage,
 		},
 	}
 }

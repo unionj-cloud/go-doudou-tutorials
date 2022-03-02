@@ -31,15 +31,15 @@ type TaskFail struct {
 }
 
 type TaskVo struct {
-	Id       int
-	SrcUrl   string
-	ImgUrl   string
-	Lang     string
-	Top      int
-	Status   string
-	Error    string
-	UserId   int
-	CreateAt string
+	Id       int    `json:"id"`
+	SrcUrl   string `json:"srcUrl"`
+	ImgUrl   string `json:"imgUrl"`
+	Lang     string `json:"lang"`
+	Top      int    `json:"top"`
+	Status   string `json:"status"`
+	Error    string `json:"error"`
+	UserId   int    `json:"userId"`
+	CreateAt string `json:"createAt"`
 }
 
 type Order struct {
@@ -56,9 +56,14 @@ type Page struct {
 	Size int `json:"size"`
 }
 
+type Filter struct {
+	UserId int `json:"userId"`
+}
+
 // 分页筛选条件
 type PageQuery struct {
-	Page Page `json:"page"`
+	Filter Filter `json:"filter"`
+	Page   Page   `json:"page"`
 }
 
 type PageRet struct {
@@ -70,4 +75,6 @@ type PageRet struct {
 }
 
 type TaskPageRet struct {
+	PageRet
+	Items []TaskVo `json:"items"`
 }

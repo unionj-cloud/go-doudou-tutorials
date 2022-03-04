@@ -22,13 +22,10 @@ type WordcloudBff interface {
 
 	// 词云图任务分页接口
 	// word cloud task pagination
-	TaskPage(ctx context.Context,
-		// 分页请求参数
-		// pagination parameter
-		query vo.PageQuery) (
+	GetTaskPage(ctx context.Context, page, pageSize int) (
 		// 分页结果
 		// pagination result
-		data vo.TaskPageRet,
+		result vo.TaskPageRet,
 		// 错误信息
 		// error
 		err error)

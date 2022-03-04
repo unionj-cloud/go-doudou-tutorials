@@ -218,7 +218,6 @@
       // 点击开始上传
       async function handleStartUpload() {
         const { maxNumber } = props;
-        debugger;
         if ((fileListRef.value.length + props.previewFileList?.length ?? 0) > maxNumber) {
           return createMessage.warning(t('component.upload.maxNumber', [maxNumber]));
         }

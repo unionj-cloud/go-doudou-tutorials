@@ -46,15 +46,16 @@ func (receiver *WordcloudBffClientProxy) Upload(ctx context.Context, _headers ma
 	}
 	return
 }
-func (receiver *WordcloudBffClientProxy) TaskPage(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+func (receiver *WordcloudBffClientProxy) GetTaskPage(ctx context.Context, _headers map[string]string, page int, pageSize int) (_resp *resty.Response, result vo.TaskPageRet, err error) {
 	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
-		_resp, data, err = receiver.client.TaskPage(
+		_resp, result, err = receiver.client.GetTaskPage(
 			ctx,
 			_headers,
-			query,
+			page,
+			pageSize,
 		)
 		if err != nil {
-			return errors.Wrap(err, "call TaskPage fail")
+			return errors.Wrap(err, "call GetTaskPage fail")
 		}
 		return nil
 	}); _err != nil {
@@ -62,7 +63,7 @@ func (receiver *WordcloudBffClientProxy) TaskPage(ctx context.Context, _headers 
 		if errors.Is(_err, rerrors.ErrCircuitOpen) {
 			receiver.logger.Error(_err)
 		}
-		err = errors.Wrap(_err, "call TaskPage fail")
+		err = errors.Wrap(_err, "call GetTaskPage fail")
 	}
 	return
 }

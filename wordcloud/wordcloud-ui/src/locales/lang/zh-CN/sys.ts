@@ -32,6 +32,15 @@ export default {
     containerTitle: '文本文件上传',
     lang: '语种',
     tableTitle: '任务列表',
+    inputFile: '上传文件',
+    imgUrl: '词云图',
+    status: '状态',
+    error: '错误信息',
+    createAt: '创建时间',
+  },
+  table: {
+    refreshCurrentPage: '刷新当前页',
+    refreshCurrentPageReturnFirst: '刷新并返回第一页',
   },
   errorLog: {
     tableTitle: '错误日志列表',

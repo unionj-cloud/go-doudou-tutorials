@@ -36,7 +36,7 @@ type TaskVo struct {
 	ImgUrl   string `json:"imgUrl"`
 	Lang     string `json:"lang"`
 	Top      int    `json:"top"`
-	Status   string `json:"status"`
+	Status   int    `json:"status"`
 	Error    string `json:"error"`
 	UserId   int    `json:"userId"`
 	CreateAt string `json:"createAt"`

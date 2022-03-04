@@ -1,6 +1,6 @@
 <template>
-  <PageWrapper :title="pageTitle" contentFullHeight>
-    <CollapseContainer :title="containerTitle">
+  <PageWrapper :title="t('sys.wordcloud.pageTitle')" contentFullHeight>
+    <CollapseContainer :title="t('sys.wordcloud.containerTitle')">
       <BasicForm
         autoFocusFirstItem
         :labelWidth="200"
@@ -20,11 +20,23 @@
       <img v-if="downloadUrl" :src="downloadUrl" />
     </CollapseContainer>
     <br />
-    <CollapseContainer :title="tableTitle">
+    <CollapseContainer :title="t('sys.wordcloud.tableTitle')">
       <BasicTable @register="registerTable">
         <template #toolbar>
-          <a-button type="primary" @click="handleReloadCurrent"> 刷新当前页 </a-button>
-          <a-button type="primary" @click="handleReload"> 刷新并返回第一页 </a-button>
+          <a-button type="primary" @click="handleReloadCurrent">
+            {{ t('sys.table.refreshCurrentPage') }}
+          </a-button>
+          <a-button type="primary" @click="handleReload">
+            {{ t('sys.table.refreshCurrentPageReturnFirst') }}
+          </a-button>
+        </template>
+        <template #srcUrl="{ record }">
+          <a :href="filefix(record.srcUrl)"> {{ filenamefix(record.srcUrl) }} </a>
+        </template>
+        <template #imgUrl="{ record }">
+          <a :href="filefix(record.imgUrl)" target="_blank">
+            <img :src="filefix(record.imgUrl)" />
+          </a>
         </template>
       </BasicTable>
     </CollapseContainer>
@@ -32,7 +44,6 @@
 </template>
 <script lang="ts">
   import { useI18n } from '/@/hooks/web/useI18n';
-  const { t } = useI18n();
   import { defineComponent, ref, unref, computed } from 'vue';
   import { BasicForm, FormSchema } from '/@/components/Form/index';
   import { BasicUpload } from '/@/components/Upload';
@@ -42,51 +53,13 @@
   import { useGlobSetting } from '/@/hooks/setting';
   import { BasicColumn, BasicTable, useTable } from '/@/components/Table';
   const { bffUrl = '', ossUrl = '' } = useGlobSetting();
-
-  function getBasicColumns(): BasicColumn[] {
-    return [
-      {
-        title: 'ID',
-        dataIndex: 'id',
-        fixed: 'left',
-        width: 200,
-      },
-      {
-        title: '上传文件',
-        dataIndex: 'srcUrl',
-        width: 150,
-      },
-      {
-        title: '语种',
-        dataIndex: 'lang',
-        width: 150,
-      },
-      {
-        title: '词云图',
-        dataIndex: 'imgUrl',
-      },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        width: 150,
-      },
-      {
-        title: '错误信息',
-        width: 150,
-        dataIndex: 'error',
-      },
-      {
-        title: '创建时间',
-        width: 150,
-        dataIndex: 'createAt',
-      },
-    ];
-  }
+  import { demoListApi } from '/@/api/demo/table';
 
   export default defineComponent({
     components: { BasicForm, CollapseContainer, PageWrapper, BasicUpload, BasicTable },
     setup() {
-      const langRef = ref(0);
+      const { t } = useI18n();
+      const langRef = ref('zh');
 
       const schemas: FormSchema[] = [
         {
@@ -96,6 +69,7 @@
           colProps: {
             span: 8,
           },
+          defaultValue: 'zh',
           componentProps: {
             options: [
               {
@@ -108,7 +82,6 @@
               },
             ],
             onChange: (e: any) => {
-              console.log(e.target.value);
               langRef.value = e.target.value;
             },
           },
@@ -123,13 +96,42 @@
       });
 
       const downloadUrl = ref('');
-      const pageTitle = t('sys.wordcloud.pageTitle');
-      const containerTitle = t('sys.wordcloud.containerTitle');
-      const tableTitle = t('sys.wordcloud.tableTitle');
-
+      const columns: BasicColumn[] = [
+        {
+          title: 'ID',
+          dataIndex: 'id',
+          fixed: 'left',
+        },
+        {
+          title: t('sys.wordcloud.inputFile'),
+          dataIndex: 'srcUrl',
+          slots: { customRender: 'srcUrl' },
+        },
+        {
+          title: t('sys.wordcloud.lang'),
+          dataIndex: 'lang',
+        },
+        {
+          title: t('sys.wordcloud.imgUrl'),
+          dataIndex: 'imgUrl',
+          slots: { customRender: 'imgUrl' },
+        },
+        {
+          title: t('sys.wordcloud.status'),
+          dataIndex: 'status',
+        },
+        {
+          title: t('sys.wordcloud.error'),
+          dataIndex: 'error',
+        },
+        {
+          title: t('sys.wordcloud.createAt'),
+          dataIndex: 'createAt',
+        },
+      ];
       const [registerTable, { reload }] = useTable({
         api: demoListApi,
-        columns: getBasicColumns(),
+        columns,
         pagination: { pageSize: 10 },
       });
       function handleReloadCurrent() {
@@ -147,9 +149,7 @@
         uploadParams,
         uploadApi,
         downloadUrl,
-        pageTitle,
-        containerTitle,
-        tableTitle,
+        t,
         handleChange: (list: string[]) => {
           const imgUrl = list.length > 0 ? list[list.length - 1] : '';
           if (imgUrl) {
@@ -160,6 +160,21 @@
         handleReloadCurrent,
         handleReload,
       };
+    },
+
+    methods: {
+      filefix: (input: string) => {
+        if (!input) {
+          return '';
+        }
+        return input.replaceAll(new URL(input).origin, ossUrl);
+      },
+      filenamefix: (input: string) => {
+        if (!input) {
+          return '';
+        }
+        return input.slice(input.lastIndexOf('/') + 1);
+      },
     },
   });
 </script>

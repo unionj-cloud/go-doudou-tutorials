@@ -33,6 +33,15 @@ export default {
     containerTitle: 'Text File Upload',
     lang: 'Language',
     tableTitle: 'Task List',
+    inputFile: 'Input File',
+    imgUrl: 'Word Cloud',
+    status: 'Status',
+    error: 'Error',
+    createAt: 'Created At',
+  },
+  table: {
+    refreshCurrentPage: 'Refresh',
+    refreshCurrentPageReturnFirst: 'Refresh and Return First Page',
   },
   errorLog: {
     tableTitle: 'Error log list',

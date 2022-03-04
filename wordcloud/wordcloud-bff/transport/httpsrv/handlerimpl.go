@@ -103,26 +103,45 @@ func NewWordcloudBffHandler(wordcloudBff service.WordcloudBff) WordcloudBffHandl
 	}
 }
 
-func (receiver *WordcloudBffHandlerImpl) TaskPage(_writer http.ResponseWriter, _req *http.Request) {
+func (receiver *WordcloudBffHandlerImpl) GetTaskPage(_writer http.ResponseWriter, _req *http.Request) {
 	var (
-		ctx   context.Context
-		query vo.PageQuery
-		data  vo.TaskPageRet
-		err   error
+		ctx      context.Context
+		page     int
+		pageSize int
+		result   vo.TaskPageRet
+		err      error
 	)
 	ctx = _req.Context()
-	if _req.Body == nil {
-		http.Error(_writer, "missing request body", http.StatusBadRequest)
+	if _err := _req.ParseForm(); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
 		return
-	} else {
-		if _err := json.NewDecoder(_req.Body).Decode(&query); _err != nil {
-			http.Error(_writer, _err.Error(), http.StatusBadRequest)
-			return
-		}
 	}
-	data, err = receiver.wordcloudBff.TaskPage(
+	if _, exists := _req.Form["page"]; exists {
+		if casted, err := cast.ToIntE(_req.FormValue("page")); err != nil {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+			return
+		} else {
+			page = casted
+		}
+	} else {
+		http.Error(_writer, "missing parameter page", http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["pageSize"]; exists {
+		if casted, err := cast.ToIntE(_req.FormValue("pageSize")); err != nil {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+			return
+		} else {
+			pageSize = casted
+		}
+	} else {
+		http.Error(_writer, "missing parameter pageSize", http.StatusBadRequest)
+		return
+	}
+	result, err = receiver.wordcloudBff.GetTaskPage(
 		ctx,
-		query,
+		page,
+		pageSize,
 	)
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
@@ -135,9 +154,9 @@ func (receiver *WordcloudBffHandlerImpl) TaskPage(_writer http.ResponseWriter, _
 		return
 	}
 	if _err := json.NewEncoder(_writer).Encode(struct {
-		Data vo.TaskPageRet `json:"data"`
+		Result vo.TaskPageRet `json:"result"`
 	}{
-		Data: data,
+		Result: result,
 	}); _err != nil {
 		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
 		return

@@ -8,7 +8,7 @@ import (
 
 type WordcloudBffHandler interface {
 	Upload(w http.ResponseWriter, r *http.Request)
-	TaskPage(w http.ResponseWriter, r *http.Request)
+	GetTaskPage(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler WordcloudBffHandler) []ddmodel.Route {
@@ -21,9 +21,9 @@ func Routes(handler WordcloudBffHandler) []ddmodel.Route {
 		},
 		{
 			"TaskPage",
-			"POST",
+			"GET",
 			"/task/page",
-			handler.TaskPage,
+			handler.GetTaskPage,
 		},
 	}
 }

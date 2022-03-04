@@ -154,21 +154,25 @@ func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
 	}
 }
 
-func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQuery) (data vo.TaskPageRet, err error) {
+func (receiver *WordcloudBffImpl) GetTaskPage(ctx context.Context, page int, pageSize int) (result vo.TaskPageRet, err error) {
 	userId, _ := UserIdFromContext(ctx)
-	var pq taskvo.PageQuery
-	copier.DeepCopy(query, &pq)
+	pq := taskvo.PageQuery{
+		Page: taskvo.Page{
+			PageNo: page,
+			Size:   pageSize,
+		},
+	}
 	for i, item := range pq.Page.Orders {
 		pq.Page.Orders[i].Col = strcase.ToSnake(item.Col)
 	}
 	pq.Filter.UserId = userId
-	_, page, err := receiver.taskClient.TaskPage(ctx, nil, pq)
+	_, ret, err := receiver.taskClient.TaskPage(ctx, nil, pq)
 	if err != nil {
 		return vo.TaskPageRet{}, err
 	}
-	copier.DeepCopy(page.PageRet, &data.PageRet)
+	copier.DeepCopy(ret.PageRet, &result.PageRet)
 	usermap := make(map[int]string)
-	for _, item := range page.Items {
+	for _, item := range ret.Items {
 		usermap[item.UserId] = ""
 	}
 	token, _ := TokenFromContext(ctx)
@@ -181,11 +185,11 @@ func (receiver *WordcloudBffImpl) TaskPage(ctx context.Context, query vo.PageQue
 		}
 		usermap[k] = user.Username
 	}
-	for _, item := range page.Items {
+	for _, item := range ret.Items {
 		var taskVo vo.TaskVo
 		copier.DeepCopy(item, &taskVo)
 		taskVo.Username = usermap[item.UserId]
-		data.Items = append(data.Items, taskVo)
+		result.Items = append(result.Items, taskVo)
 	}
 	return
 }

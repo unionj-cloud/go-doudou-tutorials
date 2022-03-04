@@ -66,7 +66,7 @@ func (receiver *WordcloudBffClient) Upload(ctx context.Context, _headers map[str
 	}
 	return _resp, _result.Data, nil
 }
-func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, _headers map[string]string, query vo.PageQuery) (_resp *resty.Response, data vo.TaskPageRet, err error) {
+func (receiver *WordcloudBffClient) GetTaskPage(ctx context.Context, _headers map[string]string, page int, pageSize int) (_resp *resty.Response, result vo.TaskPageRet, err error) {
 	var _err error
 	_urlValues := url.Values{}
 	_req := receiver.client.R()
@@ -74,14 +74,11 @@ func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, _headers map[s
 		_req.SetHeaders(_headers)
 	}
 	_req.SetContext(ctx)
-	_req.SetBody(query)
+	_urlValues.Set("page", fmt.Sprintf("%v", page))
+	_urlValues.Set("pageSize", fmt.Sprintf("%v", pageSize))
 	_path := "/task/page"
-	if _req.Body != nil {
-		_req.SetQueryParamsFromValues(_urlValues)
-	} else {
-		_req.SetFormDataFromValues(_urlValues)
-	}
-	_resp, _err = _req.Post(_path)
+	_resp, _err = _req.SetQueryParamsFromValues(_urlValues).
+		Get(_path)
 	if _err != nil {
 		err = errors.Wrap(_err, "error")
 		return
@@ -91,13 +88,13 @@ func (receiver *WordcloudBffClient) TaskPage(ctx context.Context, _headers map[s
 		return
 	}
 	var _result struct {
-		Data vo.TaskPageRet `json:"data"`
+		Result vo.TaskPageRet `json:"result"`
 	}
 	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
 		err = errors.Wrap(_err, "error")
 		return
 	}
-	return _resp, _result.Data, nil
+	return _resp, _result.Result, nil
 }
 
 func NewWordcloudBffClient(opts ...ddhttp.DdClientOption) *WordcloudBffClient {

@@ -356,7 +356,6 @@ github.com/go-sql-driver/mysql v1.6.0 h1:BCTh4TKNUYmOmMUcQ3IipzF5prigylS7XXjEkfC
 github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=
 github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/melR3HDY=
 github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg7847qk6SyHyPtNmDHnmrv/HOrqktSC+C9fM+CJOE=
-github.com/gobwas/glob v0.2.3/go.mod h1:d3Ez4x06l9bZtSvzIay5+Yzi0fmZzPgnTbPcKjJAkT8=
 github.com/goccy/go-yaml v1.8.9/go.mod h1:U/jl18uSupI5rdI2jmuCswEA2htH9eXfferR3KfscvA=
 github.com/godbus/dbus v0.0.0-20151105175453-c7fdd8b5cd55/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
 github.com/godbus/dbus v0.0.0-20180201030542-885f9cc04c9c/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
@@ -867,11 +866,10 @@ github.com/uber/jaeger-client-go v2.30.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v2.4.1+incompatible h1:td4jdvLcExb4cBISKIpHuGoVXh+dVKhn2Um6rjCsSsg=
 github.com/uber/jaeger-lib v2.4.1+incompatible/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
-github.com/unionj-cloud/go-doudou v1.0.0-beta1/go.mod h1:Oi5p7GKohXYLKFynbm8YfiTNxnAZGM1cSWdTD358erE=
 github.com/unionj-cloud/go-doudou v1.0.0-beta3 h1:xiDvQRgoXmHRLFBPrKrGcI1U3SDpFxMFbP88DEZe9lM=
 github.com/unionj-cloud/go-doudou v1.0.0-beta3/go.mod h1:w3faBu8KVFtiUqWmFDdKxk+isKlde+98RlKuPyRwHk0=
-github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd h1:rDgUo3jh4plxoE9A1aZc5w3SnHsvIDUUVnygH6ARdyk=
-github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220226080020-5270e8b73bfd/go.mod h1:YSqEWJGV9VNrK3OSzJxN88/emkd8CROQs1RFOF7rOco=
+github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220304053347-db65a67cf7d3 h1:u32/J1nmSkn5K+5WIl8gz5ZGnJNrDlslwfu8FFJUc5E=
+github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220304053347-db65a67cf7d3/go.mod h1:B2MoD8oUZKwhZ+oJdXAxASDmTJ2oobH2rdprNZnyQDs=
 github.com/unionj-cloud/thulacgo v0.1.6 h1:pQJw9xSbmCJZ/dQqq87Bomo07qfhV1cQM0EsS4GP7Io=
 github.com/unionj-cloud/thulacgo v0.1.6/go.mod h1:yFSSAAiL6oGmyucfXKkK8zxoyXihq7VWS2jbWVfIl7c=
 github.com/urfave/cli v0.0.0-20171014202726-7bc6a0acffa5/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=

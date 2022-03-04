@@ -38,6 +38,12 @@
             <img :src="filefix(record.imgUrl)" />
           </a>
         </template>
+        <template #lang="{ record }">
+          {{ langfix(record.lang) }}
+        </template>
+        <template #status="{ record }">
+          {{ statusfix(record.status) }}
+        </template>
       </BasicTable>
     </CollapseContainer>
   </PageWrapper>
@@ -110,6 +116,7 @@
         {
           title: t('sys.wordcloud.lang'),
           dataIndex: 'lang',
+          slots: { customRender: 'lang' },
         },
         {
           title: t('sys.wordcloud.imgUrl'),
@@ -119,6 +126,7 @@
         {
           title: t('sys.wordcloud.status'),
           dataIndex: 'status',
+          slots: { customRender: 'status' },
         },
         {
           title: t('sys.wordcloud.error'),
@@ -174,6 +182,40 @@
           return '';
         }
         return input.slice(input.lastIndexOf('/') + 1);
+      },
+      statusfix: function (input: number) {
+        let ret = '';
+        switch (input) {
+          case 0:
+            ret = this.t('sys.wordcloud.waiting');
+            break;
+          case 1:
+            ret = this.t('sys.wordcloud.doing');
+            break;
+          case 2:
+            ret = this.t('sys.wordcloud.success');
+            break;
+          case 3:
+            ret = this.t('sys.wordcloud.fail');
+            break;
+          default:
+            ret = this.t('sys.wordcloud.unknown');
+        }
+        return ret;
+      },
+      langfix: function (input: string) {
+        let ret = '';
+        switch (input) {
+          case 'zh':
+            ret = this.t('sys.wordcloud.chinese');
+            break;
+          case 'en':
+            ret = this.t('sys.wordcloud.english');
+            break;
+          default:
+            ret = this.t('sys.wordcloud.unknown');
+        }
+        return ret;
       },
     },
   });

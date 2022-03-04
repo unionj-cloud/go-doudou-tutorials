@@ -37,6 +37,13 @@ export default {
     status: '状态',
     error: '错误信息',
     createAt: '创建时间',
+    waiting: '等待中',
+    doing: '进行中',
+    success: '成功',
+    fail: '失败',
+    unknown: '未知',
+    chinese: '中文',
+    english: '英文',
   },
   table: {
     refreshCurrentPage: '刷新当前页',

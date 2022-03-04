@@ -38,6 +38,13 @@ export default {
     status: 'Status',
     error: 'Error',
     createAt: 'Created At',
+    waiting: 'waiting',
+    doing: 'doing',
+    success: 'success',
+    fail: 'fail',
+    unknown: 'unknown',
+    chinese: 'Chinese',
+    english: 'English',
   },
   table: {
     refreshCurrentPage: 'Refresh',

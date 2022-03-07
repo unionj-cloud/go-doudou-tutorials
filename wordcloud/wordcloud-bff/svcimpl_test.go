@@ -9,10 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/vo"
 	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
 	"testing"
 )
 
@@ -33,18 +31,7 @@ func TestMain(m *testing.M) {
 func TestWordcloudBffImpl_TaskPage(t *testing.T) {
 	testToken := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGllbnRJZCI6IndvcmRjbG91ZC1iZmYiLCJ1c2VySWQiOjB9.Do7TxRRT_jyUmBjcNR2dKmkTFNwW5iEZFDBVYdJTVQE"
 	ctx := service.NewUserIdContext(service.NewTokenContext(context.Background(), testToken), 1)
-	page, err := svc.TaskPage(ctx, vo.PageQuery{
-		Page: vo.Page{
-			Orders: []vo.Order{
-				{
-					Col:  "createAt",
-					Sort: string(sortenum.Desc),
-				},
-			},
-			PageNo: 1,
-			Size:   5,
-		},
-	})
+	page, err := svc.GetTaskPage(ctx, 1, 5)
 	require.NoError(t, err)
 	data, _ := json.MarshalIndent(page, "", "  ")
 	fmt.Println(string(data))

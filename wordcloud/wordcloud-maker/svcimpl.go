@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"gopkg.in/resty.v1"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -19,7 +20,6 @@ import (
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
-	"github.com/go-resty/resty/v2"
 	"github.com/minio/minio-go/v7"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
@@ -27,18 +27,18 @@ import (
 
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
-	segsvc "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg"
+	segclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/client"
 	segvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/vo"
 )
 
 type WordcloudMakerImpl struct {
 	conf        *config.Config
-	segClient   segsvc.WordcloudSeg
+	segClient   segclient.IWordcloudSegClient
 	minioClient *minio.Client
 	browser     *rod.Browser
 }
 
-func NewWordcloudMaker(conf *config.Config, segClient segsvc.WordcloudSeg,
+func NewWordcloudMaker(conf *config.Config, segClient segclient.IWordcloudSegClient,
 	minioClient *minio.Client, browser *rod.Browser) WordcloudMaker {
 	return &WordcloudMakerImpl{
 		conf,
@@ -108,7 +108,7 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 	if err != nil {
 		return "", err
 	}
-	seg, err := receiver.segClient.Seg(ctx, segvo.SegPayload{
+	_, seg, err := receiver.segClient.Seg(ctx, nil, segvo.SegPayload{
 		Text: string(text),
 		Lang: payload.Lang,
 	})

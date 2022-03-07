@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Auth(userClient *userclient.UsersvcClientProxy) func(inner http.Handler) http.Handler {
+func Auth(userClient userclient.IUsersvcClient) func(inner http.Handler) http.Handler {
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			authHeader := r.Header.Get("Authorization")

@@ -48,3 +48,5 @@ create table tutorial.t_word_cloud_task
         foreign key (user_id) references tutorial.t_user (id)
             on delete cascade
 );
+
+INSERT INTO tutorial.t_user (id, username, password, name, phone, dept, create_at, update_at, delete_at, avatar) VALUES (1, 'jackchen', '$2a$14$PxVcfTu0LPTm4EO22u.Z7e6tvu9DqsIj8JkLDICGskuvp28m8Aw9C', '', '', '', '2022-03-07 09:05:12', '2022-03-07 09:05:12', null, '');

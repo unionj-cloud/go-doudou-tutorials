@@ -29,7 +29,7 @@ func main() {
 			logrus.Panicln(fmt.Sprintf("%+v", err))
 		}
 		defer registry.Shutdown()
-		provider := ddhttp.NewMemberlistServiceProvider("wordcloud-segsvc")
+		provider := ddhttp.NewSmoothWeightedRoundRobinProvider("wordcloud-segsvc")
 		segClient = segclient.NewWordcloudSegClient(ddhttp.WithProvider(provider))
 	} else {
 		segClient = segclient.NewWordcloudSegClient()

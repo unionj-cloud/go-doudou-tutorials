@@ -4,7 +4,7 @@ services:
   wordcloud-prometheus:
     container_name: wordcloud-prometheus
     hostname: wordcloud-prometheus
-    image: wubin1989/go-doudou-prometheus-sd:v1.0.0-beta1
+    image: wubin1989/go-doudou-prometheus-sd:v1.0.0
     environment:
       - GDD_SERVICE_NAME=wordcloud-prometheus
       - PROM_REFRESH_INTERVAL=15s
@@ -42,6 +42,11 @@ services:
       - "6061:6060"
     networks:
       - tutorial
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://admin:admin@localhost:6060/go-doudou/prometheus" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       wordcloud-prometheus:
         condition: service_healthy
@@ -144,16 +149,30 @@ services:
       - "6060:6060"
     networks:
       - tutorial
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://admin:admin@localhost:6060/go-doudou/prometheus" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
     depends_on:
       wordcloud-prometheus:
         condition: service_healthy
       minio:
         condition: service_healthy
 
-  #  wordcloud:
-  #    image: wordcloud-ui:latest
-  #    ports:
-  #      - "80:80"
+  wordcloud-ui:
+    container_name: wordcloud-ui
+    hostname: wordcloud-ui
+    image: wordcloud-ui:latest
+    ports:
+      - "3100:80"
+    networks:
+      - tutorial
+    depends_on:
+      wordcloud-bff:
+        condition: service_healthy
+      wordcloud-usersvc:
+        condition: service_healthy
 
   db:
     container_name: db

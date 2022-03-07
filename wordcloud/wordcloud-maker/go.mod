@@ -18,7 +18,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
 	github.com/smartystreets/assertions v1.2.1 // indirect
-	github.com/unionj-cloud/go-doudou v1.0.0-beta3
+	github.com/unionj-cloud/go-doudou v1.0.0
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220307064427-81371f8d0839
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	gopkg.in/resty.v1 v1.12.0

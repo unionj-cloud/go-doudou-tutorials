@@ -24,7 +24,7 @@ WORKDIR /var/www
 RUN rm -rf ./*
 RUN rm -rf /etc/nginx/conf.d/*.conf
 # Copy static assets from builder stage
-COPY --from=vueBuilder /app/dist spxx
+COPY --from=vueBuilder /app/dist wordcloud
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY sites-enabled /etc/nginx/conf.d
 # Containers run nginx with global directives and daemon off

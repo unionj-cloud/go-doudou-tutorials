@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.0-beta3
+	github.com/unionj-cloud/go-doudou v1.0.0
 )
 
 require (

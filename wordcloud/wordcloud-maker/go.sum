@@ -860,8 +860,9 @@ github.com/uber/jaeger-client-go v2.30.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v2.4.1+incompatible h1:td4jdvLcExb4cBISKIpHuGoVXh+dVKhn2Um6rjCsSsg=
 github.com/uber/jaeger-lib v2.4.1+incompatible/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
-github.com/unionj-cloud/go-doudou v1.0.0-beta3 h1:xiDvQRgoXmHRLFBPrKrGcI1U3SDpFxMFbP88DEZe9lM=
 github.com/unionj-cloud/go-doudou v1.0.0-beta3/go.mod h1:w3faBu8KVFtiUqWmFDdKxk+isKlde+98RlKuPyRwHk0=
+github.com/unionj-cloud/go-doudou v1.0.0 h1:GSrHAkb0L9aF6NOFa3iwcKYRXh0HzWMcwngjmq0TbQ0=
+github.com/unionj-cloud/go-doudou v1.0.0/go.mod h1:w3faBu8KVFtiUqWmFDdKxk+isKlde+98RlKuPyRwHk0=
 github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220307064427-81371f8d0839 h1:peD0kWbKkO9jbURdxyTf+vX3x2xAPqtcBE2vzCC0KFI=
 github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220307064427-81371f8d0839/go.mod h1:B2MoD8oUZKwhZ+oJdXAxASDmTJ2oobH2rdprNZnyQDs=
 github.com/unionj-cloud/thulacgo v0.1.6/go.mod h1:yFSSAAiL6oGmyucfXKkK8zxoyXihq7VWS2jbWVfIl7c=

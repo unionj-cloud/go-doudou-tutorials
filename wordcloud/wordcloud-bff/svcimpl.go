@@ -27,7 +27,7 @@ type WordcloudBffImpl struct {
 	minioClient *minio.Client
 	makerClient *makerclient.WordcloudMakerClientProxy
 	taskClient  *taskclient.WordcloudTaskClientProxy
-	userClient  *userclient.UsersvcClient
+	userClient  userclient.IUsersvcClient
 }
 
 type ctxKey int
@@ -144,7 +144,7 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 }
 
 func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
-	makerClient *makerclient.WordcloudMakerClientProxy, taskClient *taskclient.WordcloudTaskClientProxy, userClient *userclient.UsersvcClientProxy) WordcloudBff {
+	makerClient *makerclient.WordcloudMakerClientProxy, taskClient *taskclient.WordcloudTaskClientProxy, userClient userclient.IUsersvcClient) WordcloudBff {
 	return &WordcloudBffImpl{
 		conf,
 		minioClient,

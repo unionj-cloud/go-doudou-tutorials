@@ -20,5 +20,5 @@ require (
 	github.com/unionj-cloud/go-doudou v1.0.0-beta3
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220304053808-881544674799
 	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220304053808-881544674799
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220304055310-e7d86b148aee
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220307050648-08f0da371f8f
 )

@@ -27,7 +27,7 @@ type WordcloudBffImpl struct {
 	minioClient *minio.Client
 	makerClient *makerclient.WordcloudMakerClientProxy
 	taskClient  *taskclient.WordcloudTaskClientProxy
-	userClient  *userclient.UsersvcClientProxy
+	userClient  *userclient.UsersvcClient
 }
 
 type ctxKey int

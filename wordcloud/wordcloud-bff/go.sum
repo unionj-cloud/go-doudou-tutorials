@@ -876,8 +876,8 @@ github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-202
 github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0-20220304053347-db65a67cf7d3/go.mod h1:B2MoD8oUZKwhZ+oJdXAxASDmTJ2oobH2rdprNZnyQDs=
 github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220304053808-881544674799 h1:OsLr9pvPOUmX+eO5yJpCfBnJTOmubTuEYBazigb/1Bk=
 github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220304053808-881544674799/go.mod h1:vaSwxAaf8wOCGNYXY91kx58f020P3gKeJHCxQP7HPFw=
-github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220304053808-881544674799 h1:D+/pt1racxoIGEfQXRJaQyXLTJ+YoTuArIy36iOHuzU=
-github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220304053808-881544674799/go.mod h1:+TbWwV8QxkkloSucHKHAwwk8bDY1DTYO0+5wkQF40ac=
+github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220304055310-e7d86b148aee h1:LjlM49LoTDaGlFHo627PHzygreBSEifWrtgvDO+2QSE=
+github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220304055310-e7d86b148aee/go.mod h1:+TbWwV8QxkkloSucHKHAwwk8bDY1DTYO0+5wkQF40ac=
 github.com/unionj-cloud/thulacgo v0.1.6/go.mod h1:yFSSAAiL6oGmyucfXKkK8zxoyXihq7VWS2jbWVfIl7c=
 github.com/urfave/cli v0.0.0-20171014202726-7bc6a0acffa5/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=

@@ -25,7 +25,7 @@ CONTAINER ID   IMAGE                       COMMAND                  CREATED     
 
 2. 切换到statsvc路径下，执行服务启动命令
 ```shell
-go mod tidy && go-doudou svc run
+go mod tidy && go run cmd/main.go
 ```
 
 看到如下控制台输出，表示服务启动成功

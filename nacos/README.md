@@ -29,8 +29,7 @@ go mod tidy && go run cmd/main.go
 ```
 
 看到如下控制台输出，表示服务启动成功
-```shell
-➜  statsvc git:(master) ✗ go-doudou svc run                    
+```shell               
  _____                     _                    _
 |  __ \                   | |                  | |
 | |  \/  ___   ______   __| |  ___   _   _   __| |  ___   _   _

@@ -1,22 +1,20 @@
 # nacos
 
-EN [中文](./README_zh.md)
+[EN](./README.md) 中文
 
-This project is a demo project for demonstrating how to use Nacos for service discovery 
-in go-doudou RESTful service application. It also shows how to call each other between 
-go-doudou service and spring cloud service.
+本项目是go-doudou写的RESTful服务加入Nacos集群，与spring cloud写的RESTful服务相互调用的示例代码。
 
-## Prerequisite
+## 准备工作
 
-- Docker for Desktop
-- Modern Browser
-- CLI tool
-- IDE, recommend goland
-- Http request tool, recommend [httpie](https://github.com/httpie/httpie)
+- 需安装和配置好docker开发环境
+- 现代浏览器
+- 趁手的命令行工具
+- 趁手的IDE，推荐goland
+- 趁手的http请求工具，推荐[httpie](https://github.com/httpie/httpie)
 
-## Steps
+## 启动步骤
 
-1. Start Nacos server in standalone mode
+1. 启动standalone模式的nacos server
 ```shell
 docker-compose -f docker-compose.yml up -d
 ```
@@ -27,12 +25,12 @@ CONTAINER ID   IMAGE                       COMMAND                  CREATED     
 2e5400f6d085   nacos/nacos-server:v2.0.4   "bin/docker-startup.…"   18 minutes ago   Up 18 minutes (healthy)   0.0.0.0:8848->8848/tcp, :::8848->8848/tcp, 0.0.0.0:9848->9848/tcp, :::9848->9848/tcp   nacos-standalone
 ```
 
-2. Change to `statsvc` directory, run below command to start go-doudou service
+2. 切换到statsvc路径下，执行服务启动命令
 ```shell
 go mod tidy && go run cmd/main.go
 ```
 
-If you see below output log, the service has started successfully
+看到如下控制台输出，表示服务启动成功
 ```shell               
  _____                     _                    _
 |  __ \                   | |                  | |
@@ -57,17 +55,16 @@ INFO[2022-03-12 13:24:31] Started in 564.738µs
 INFO[2022-03-12 13:24:31] Http server is listening on :6060 
 ```
 
-Now, you can open browser and navigate to http://localhost:8848/nacos, login and click `/ServiceManagement/Service List`
-in sidebar menu, then you can see `statsvc` service has been registered to Nacos server.
+此时，打开浏览器，导航到http://localhost:8848/nacos， 登录后点击/服务管理/服务列表，可看到statsvc服务已经注册到nacos
 
-![nacosscreenshot_en.png](./nacosscreenshot_en.png)
+![nacosscreenshot.png](./nacosscreenshot.png)
 
-3. Change to `nacos-service-j` directory, run below command to start spring cloud service
+3. 切换到nacos-service-j路径下，执行如下命令
 ```shell
 mvn spring-boot:run
 ```
 
-If you see below output log, the service has started successfully
+看到控制台有如下输出，即表示启动成功
 ```shell
 2022-03-12 13:32:41.630  INFO 88684 --- [t.remote.worker] com.alibaba.nacos.common.remote.client   : [f1bf3cba-e469-43c7-a8b8-83457ee4c153] Notify connected event to listeners.
 2022-03-12 13:32:41.706  INFO 88684 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/nacos-service-j'
@@ -75,11 +72,11 @@ If you see below output log, the service has started successfully
 2022-03-12 13:32:41.727  INFO 88684 --- [           main] c.u.n.NacosServiceJApplication           : Started NacosServiceJApplication in 2.751 seconds (JVM running for 3.059)
 ```
 
-Now, if you refresh `/ServiceManagement/Service List` page, you can see `nacos-service-j` service has been registered to Nacos server.
+此时，刷新/服务管理/服务列表页面，可看到nacos-service-j服务已经注册到nacos
 
-![nacosscreenshot_en2.png](./nacosscreenshot_en2.png)
+![nacosscreenshot2.png](./nacosscreenshot2.png)
 
-4. Test `statsvc` service
+4. 测试statsvc服务
 ```shell
 ➜  nacos git:(master) ✗ http http://localhost:6060/api/echo\?s\=go-doudou
 HTTP/1.1 200 OK
@@ -96,7 +93,7 @@ Vary: Accept-Encoding
 
 ```
 
-5. Test `nacos-service-j` service
+5. 测试nacos-service-j服务
 ```shell 
 ➜  nacos git:(master) ✗ http http://localhost:8080/nacos-service-j/add\?x\=50\&y\=20                                            
 HTTP/1.1 200 

@@ -114,6 +114,7 @@ services:
       - GDD_ENV=test
       - BIZ_OSS_ENDPOINT=minio:9000
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - BIZ_OUTPUT=/repo/out
     deploy:
       replicas: 1
     networks:

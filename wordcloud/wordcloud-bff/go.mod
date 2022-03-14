@@ -18,7 +18,14 @@ require (
 	github.com/slok/goresilience v0.2.0
 	github.com/stretchr/testify v1.7.0
 	github.com/unionj-cloud/go-doudou v1.0.0
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0-20220307064427-81371f8d0839
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0-20220307064427-81371f8d0839
-	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0-20220307064427-81371f8d0839
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0
+)
+
+replace (
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker v0.0.0 => ../wordcloud-maker
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg v0.0.0 => ../wordcloud-seg
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task v0.0.0 => ../wordcloud-task
+	github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user v0.0.0 => ../wordcloud-user
 )

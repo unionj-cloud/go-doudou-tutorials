@@ -7,7 +7,7 @@ ENV TZ="Asia/Shanghai"
 # Set working directory
 WORKDIR /app
 # Copy all files from current directory to working dir in image
-COPY . .
+COPY ./wordcloud-ui .
 # install node modules and build assets
 RUN yarn install --registry=https://registry.npm.taobao.org && yarn build
 
@@ -25,7 +25,7 @@ RUN rm -rf ./*
 RUN rm -rf /etc/nginx/conf.d/*.conf
 # Copy static assets from builder stage
 COPY --from=vueBuilder /app/dist wordcloud
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY sites-enabled /etc/nginx/conf.d
+COPY /wordcloud-ui/nginx.conf /etc/nginx/nginx.conf
+COPY /wordcloud-ui/sites-enabled /etc/nginx/conf.d
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -12,10 +12,10 @@ ENV HOST_USER=$user
 
 WORKDIR /repo
 
-ADD . ./
+ADD ./wordcloud-seg ./
 
 RUN go mod tidy && \
-    go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.GddVer=$GDD_VER'" -o api cmd/main.go
+    go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)'" -o api cmd/main.go
 
 # alpine
 FROM alpine
@@ -31,8 +31,8 @@ ENV TZ="Asia/Shanghai"
 ENV GDD_PORT=6063
 ENV BIZ_MODEL_PATH="/repo/models"
 
-COPY /models.tar.gz ./models.tar.gz
-COPY .env ./.env
+COPY /wordcloud-seg/models.tar.gz ./models.tar.gz
+COPY /wordcloud-seg/.env ./.env
 
 RUN tar -xzf models.tar.gz && rm models.tar.gz
 

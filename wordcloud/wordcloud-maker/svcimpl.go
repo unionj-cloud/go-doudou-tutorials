@@ -15,8 +15,6 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/unionj-cloud/go-doudou/framework/logger"
 
-	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
-
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
@@ -139,7 +137,8 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 		return "", err
 	}
 	now := time.Now()
-	rpage := receiver.browser.MustPage(fmt.Sprintf("file://%s", pathutils.Abs(outhtml))).MustWaitLoad()
+	logger.Info("path of output html: " + outhtml)
+	rpage := receiver.browser.MustPage(fmt.Sprintf("file://%s", outhtml)).MustWaitLoad()
 	time.Sleep(1 * time.Second)
 	el, err := rpage.Timeout(10 * time.Second).Element("canvas")
 	if err != nil {

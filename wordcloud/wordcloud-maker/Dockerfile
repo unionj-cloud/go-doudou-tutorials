@@ -9,8 +9,10 @@ WORKDIR /repo
 
 ADD . ./
 
+WORKDIR /repo/wordcloud-maker
+
 RUN go mod tidy && \
-go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.GddVer=$GDD_VER'" -o api cmd/main.go
+go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)'" -o api cmd/main.go
 
 FROM ubuntu:16.04
 
@@ -42,7 +44,7 @@ ENV LC_ALL zh_CN.UTF-8
 RUN apt-get install -y fonts-droid-fallback ttf-wqy-zenhei ttf-wqy-microhei fonts-arphic-ukai fonts-arphic-uming
 
 # cn fonts
-COPY fonts/simhei.ttf /usr/share/fonts/simhei.ttf
+COPY /wordcloud-maker/fonts/simhei.ttf /usr/share/fonts/simhei.ttf
 
 RUN curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
@@ -52,8 +54,8 @@ ENV TZ="Asia/Shanghai"
 
 WORKDIR /repo
 
-COPY --from=builder /repo/api ./
+COPY --from=builder /repo/wordcloud-maker/api ./
 
-COPY .env ./.env
+COPY /wordcloud-maker/.env ./.env
 
 ENTRYPOINT ["/repo/api"]

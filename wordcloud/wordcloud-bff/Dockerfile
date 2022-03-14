@@ -14,7 +14,21 @@ WORKDIR /repo
 
 ADD . ./
 
+WORKDIR /repo/wordcloud-bff
+
 RUN go mod tidy && \
-    go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.GddVer=$GDD_VER'" -o api cmd/main.go
+    go build -v -ldflags="-X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildUser=$HOST_USER' -X 'github.com/unionj-cloud/go-doudou/framework/buildinfo.BuildTime=$(date)'" -o api cmd/main.go
+
+FROM alpine:3.14
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN apk add --no-cache bash tzdata curl
+
+ENV TZ="Asia/Shanghai"
+
+WORKDIR /repo
+
+COPY --from=builder /repo/wordcloud-bff/api ./
+
+COPY /wordcloud-bff/.env ./.env
 
 ENTRYPOINT ["/repo/api"]

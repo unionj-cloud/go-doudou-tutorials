@@ -11,6 +11,7 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/shopspring/decimal"
 	"github.com/sirupsen/logrus"
+	_ "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/toolkit/copier"
 	. "github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
 	"log"

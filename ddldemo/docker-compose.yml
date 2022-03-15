@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: db
+    hostname: db
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+    ports:
+      - 3306:3306
+    volumes:
+      - $PWD/my:/etc/mysql/conf.d
+      - $PWD/sqlscripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=1234 --execute \"SHOW DATABASES;\""
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - tutorial
+
+networks:
+  tutorial:
+    name: tutorial
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

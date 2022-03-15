@@ -10,5 +10,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.8.1
+	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d
+	github.com/stretchr/testify v1.7.0
 	github.com/unionj-cloud/go-doudou v1.0.2
 )

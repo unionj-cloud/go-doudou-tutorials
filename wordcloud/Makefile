@@ -8,7 +8,11 @@ docker:
 	docker build -t wordcloud_usersvc -f wordcloud-user/Dockerfile .
 
 up:
-	docker-compose -f docker-compose.yml up -d
+	docker-compose -f docker-compose.yml up -d --remove-orphans
 
 down:
-	docker-compose -f docker-compose.yml down
+	docker-compose -f docker-compose.yml down --remove-orphans
+
+update:
+	grep -rli 'github.com/unionj-cloud/go-doudou ' **/go.mod | xargs -I@ sed -E -i '' '/github.com\/unionj-cloud\/go-doudou /s/v[0-9]+(\.[0-9]+)*/$(version)/g' @
+	./shellscripts/update.sh

@@ -17,6 +17,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
 	github.com/stretchr/testify v1.7.0
-	github.com/unionj-cloud/go-doudou v1.0.0
+	github.com/unionj-cloud/go-doudou v1.0.2
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 )

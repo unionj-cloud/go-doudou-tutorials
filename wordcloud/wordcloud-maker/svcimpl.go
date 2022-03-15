@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"gopkg.in/resty.v1"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -11,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/go-resty/resty/v2"
 
 	"github.com/go-rod/rod"
 	"github.com/unionj-cloud/go-doudou/framework/logger"

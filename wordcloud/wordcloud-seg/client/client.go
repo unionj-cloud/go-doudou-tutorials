@@ -19,6 +19,11 @@ import (
 type WordcloudSegClient struct {
 	provider registry.IServiceProvider
 	client   *resty.Client
+	rootPath string
+}
+
+func (receiver *WordcloudSegClient) SetRootPath(rootPath string) {
+	receiver.rootPath = rootPath
 }
 
 func (receiver *WordcloudSegClient) SetProvider(provider registry.IServiceProvider) {
@@ -76,7 +81,7 @@ func NewWordcloudSegClient(opts ...ddhttp.DdClientOption) *WordcloudSegClient {
 	}
 
 	svcClient.client.OnBeforeRequest(func(_ *resty.Client, request *resty.Request) error {
-		request.URL = svcClient.provider.SelectServer() + request.URL
+		request.URL = svcClient.provider.SelectServer() + svcClient.rootPath + request.URL
 		return nil
 	})
 

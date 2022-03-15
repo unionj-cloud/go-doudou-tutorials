@@ -19,6 +19,11 @@ import (
 type WordcloudMakerClient struct {
 	provider registry.IServiceProvider
 	client   *resty.Client
+	rootPath string
+}
+
+func (receiver *WordcloudMakerClient) SetRootPath(rootPath string) {
+	receiver.rootPath = rootPath
 }
 
 func (receiver *WordcloudMakerClient) SetProvider(provider registry.IServiceProvider) {
@@ -76,7 +81,7 @@ func NewWordcloudMakerClient(opts ...ddhttp.DdClientOption) *WordcloudMakerClien
 	}
 
 	svcClient.client.OnBeforeRequest(func(_ *resty.Client, request *resty.Request) error {
-		request.URL = svcClient.provider.SelectServer() + request.URL
+		request.URL = svcClient.provider.SelectServer() + svcClient.rootPath + request.URL
 		return nil
 	})
 

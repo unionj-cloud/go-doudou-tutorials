@@ -1,12 +1,12 @@
 version: '3.9'
 
 services:
-  wordcloud-prometheus:
-    container_name: wordcloud-prometheus
-    hostname: wordcloud-prometheus
-    image: wubin1989/go-doudou-prometheus-sd:v1.0.0
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus
+    image: wubin1989/go-doudou-prometheus-sd:v1.0.2
     environment:
-      - GDD_SERVICE_NAME=wordcloud-prometheus
+      - GDD_SERVICE_NAME=prometheus
       - PROM_REFRESH_INTERVAL=15s
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
     volumes:
@@ -31,7 +31,7 @@ services:
       - DB_HOST=db
       - GDD_SERVICE_NAME=wordcloud-usersvc
       - GDD_MODE=micro
-      - GDD_MEM_SEED=wordcloud-prometheus
+      - GDD_MEM_SEED=prometheus
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - GDD_LOG_LEVEL=debug
@@ -48,7 +48,7 @@ services:
       timeout: 3s
       retries: 3
     depends_on:
-      wordcloud-prometheus:
+      prometheus:
         condition: service_healthy
       db:
         condition: service_healthy
@@ -62,7 +62,7 @@ services:
       - DB_HOST=db
       - GDD_SERVICE_NAME=wordcloud-tasksvc
       - GDD_MODE=micro
-      - GDD_MEM_SEED=wordcloud-prometheus
+      - GDD_MEM_SEED=prometheus
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - GDD_LOG_LEVEL=debug
@@ -74,7 +74,7 @@ services:
     networks:
       - tutorial
     depends_on:
-      wordcloud-prometheus:
+      prometheus:
         condition: service_healthy
       db:
         condition: service_healthy
@@ -85,7 +85,7 @@ services:
       - GDD_PORT=6060
       - GDD_SERVICE_NAME=wordcloud-segsvc
       - GDD_MODE=micro
-      - GDD_MEM_SEED=wordcloud-prometheus
+      - GDD_MEM_SEED=prometheus
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - GDD_LOG_LEVEL=debug
@@ -97,7 +97,7 @@ services:
     networks:
       - tutorial
     depends_on:
-      wordcloud-prometheus:
+      prometheus:
         condition: service_healthy
 
   wordcloud-makersvc:
@@ -106,7 +106,7 @@ services:
       - GDD_PORT=6060
       - GDD_SERVICE_NAME=wordcloud-makersvc
       - GDD_MODE=micro
-      - GDD_MEM_SEED=wordcloud-prometheus
+      - GDD_MEM_SEED=prometheus
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - GDD_LOG_LEVEL=debug
@@ -120,7 +120,7 @@ services:
     networks:
       - tutorial
     depends_on:
-      wordcloud-prometheus:
+      prometheus:
         condition: service_healthy
       minio:
         condition: service_healthy
@@ -133,7 +133,7 @@ services:
       - GDD_PORT=6060
       - GDD_SERVICE_NAME=wordcloud-bff
       - GDD_MODE=micro
-      - GDD_MEM_SEED=wordcloud-prometheus
+      - GDD_MEM_SEED=prometheus
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
       - GDD_LOG_LEVEL=debug
@@ -156,7 +156,7 @@ services:
       timeout: 3s
       retries: 3
     depends_on:
-      wordcloud-prometheus:
+      prometheus:
         condition: service_healthy
       minio:
         condition: service_healthy

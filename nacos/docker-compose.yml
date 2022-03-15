@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  nacos:
+    container_name: nacos-standalone
+    hostname: nacos-standalone
+    image: nacos/nacos-server:v2.0.4
+    environment:
+      - MODE=standalone
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8848/nacos" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      testing_net:
+        ipv4_address: 172.28.1.12
+
+networks:
+  testing_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

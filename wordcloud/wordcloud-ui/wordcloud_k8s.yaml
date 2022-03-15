@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordcloud-ui-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordcloud-ui
+  template:
+    metadata:
+      labels:
+        app: wordcloud-ui
+    spec:
+      containers:
+        - image: wubin1989/wordcloud-ui:v2021091701
+          imagePullPolicy: Always
+          name: wordcloud-ui
+          ports:
+            - containerPort: 80
+              name: http-port
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordcloud-ui-service
+spec:
+  type: ClusterIP
+  selector:
+    app: wordcloud-ui
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+

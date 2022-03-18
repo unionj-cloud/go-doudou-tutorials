@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"doudoudemo/dao"
-	"doudoudemo/domain"
+	"ddldemo/dao"
+	"ddldemo/domain"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/iancoleman/strcase"

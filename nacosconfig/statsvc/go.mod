@@ -18,8 +18,10 @@ require (
 )
 
 require (
+	github.com/apolloconfig/agollo/v4 v4.1.0
 	github.com/gorilla/handlers v1.5.1 // indirect
-	github.com/nacos-group/nacos-sdk-go v1.1.1
+	github.com/tevid/gohamcrest v1.1.1
+	github.com/wubin1989/nacos-sdk-go v1.1.2-0.20220322035024-78853a86edcd
 )
 
 replace github.com/unionj-cloud/go-doudou v1.0.2 => /Users/wubin1989/workspace/cloud/go-doudou

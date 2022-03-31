@@ -1,0 +1,531 @@
+{
+	"info": {
+		"_postman_id": "5b36a6f8-00fb-4fcd-9964-d83e92c49e62",
+		"name": "EnumDemo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/keyboard",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/keyboard?layout=UNKNOWN",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboard"
+					],
+					"query": [
+						{
+							"key": "layout",
+							"value": "UNKNOWN",
+							"description": "(Required) "
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/keyboard?layout=UNKNOWN",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboard"
+							],
+							"query": [
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{}"
+				}
+			]
+		},
+		{
+			"name": "/keyboard/2",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/keyboard/2?layout=QWERTY",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboard",
+						"2"
+					],
+					"query": [
+						{
+							"key": "layout",
+							"value": "QWERTY"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/keyboard/2?layout=UNKNOWN&a=84504934",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboard",
+								"2"
+							],
+							"query": [
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "a",
+									"value": "84504934"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{}"
+				}
+			]
+		},
+		{
+			"name": "/keyboards",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/keyboards?layout=QWERTY&layout=QWERTZ&layout=AZERTY",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboards"
+					],
+					"query": [
+						{
+							"key": "layout",
+							"value": "QWERTY",
+							"description": "(Required) "
+						},
+						{
+							"key": "layout",
+							"value": "QWERTZ",
+							"description": "(Required) "
+						},
+						{
+							"key": "layout",
+							"value": "AZERTY"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/keyboards?layout=UNKNOWN&layout=UNKNOWN&a=46412240&a=-50555513",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboards"
+							],
+							"query": [
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "a",
+									"value": "46412240"
+								},
+								{
+									"key": "a",
+									"value": "-50555513"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{}"
+				}
+			]
+		},
+		{
+			"name": "/keyboards/2",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/keyboards/2?layout=AZERTY&layout=QWERTY",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboards",
+						"2"
+					],
+					"query": [
+						{
+							"key": "layout",
+							"value": "AZERTY"
+						},
+						{
+							"key": "layout",
+							"value": "QWERTY"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/keyboards/2?layout=UNKNOWN&layout=UNKNOWN&a=46412240&a=-50555513",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboards",
+								"2"
+							],
+							"query": [
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "a",
+									"value": "46412240"
+								},
+								{
+									"key": "a",
+									"value": "-50555513"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{}"
+				}
+			]
+		},
+		{
+			"name": "/keyboards/5",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/keyboards/5?layout=QWERTY&layout=NOTEXISTS",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboards",
+						"5"
+					],
+					"query": [
+						{
+							"key": "layout",
+							"value": "QWERTY"
+						},
+						{
+							"key": "layout",
+							"value": "NOTEXISTS"
+						}
+					]
+				},
+				"description": "GetKeyboards3(ctx context.Context, layout []*vo.KeyboardLayout, a []*int) error\nGetKeyboards4(ctx context.Context, layout *[]*vo.KeyboardLayout, a *[]*int) error"
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/keyboards/5?layout=UNKNOWN&layout=UNKNOWN",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboards",
+								"5"
+							],
+							"query": [
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								},
+								{
+									"key": "layout",
+									"value": "UNKNOWN"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{}"
+				}
+			]
+		},
+		{
+			"name": "/page/users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"filter\": {\n    \"name\": \"consequat\",\n    \"dept\": 40724183\n  },\n  \"page\": {\n    \"orders\": [\n      {\n        \"col\": \"sit elit\",\n        \"sort\": \"qui\"\n      },\n      {\n        \"col\": \"cupidatat nulla esse aliqua labore\",\n        \"sort\": \"consectetur in Lorem quis\"\n      }\n    ],\n    \"pageNo\": -37983864,\n    \"size\": 34553953\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/page/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"page",
+						"users"
+					]
+				},
+				"description": "You can define your service methods as your need. Below is an example."
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"filter\": {\n    \"name\": \"Ut ut fugiat\",\n    \"dept\": 64670422\n  },\n  \"page\": {\n    \"orders\": [\n      {\n        \"col\": \"est aute dolore\",\n        \"sort\": \"culpa labore aliquip dol\"\n      },\n      {\n        \"col\": \"amet cupidatat enim sint\",\n        \"sort\": \"nulla aute anim aliquip\"\n      }\n    ],\n    \"pageNo\": -83122323,\n    \"size\": 59881658\n  }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/page/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"page",
+								"users"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"code\": 46259977,\n  \"data\": {\n    \"items\": {},\n    \"pageNo\": -46447405,\n    \"pageSize\": 94650064,\n    \"total\": 55085524,\n    \"hasNext\": true\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "/keyboard",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"layout\": \"UNKNOWN\",\n  \"backlit\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/keyboard",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"keyboard"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "response",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"layout\": \"UNKNOWN\",\n  \"backlit\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/keyboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"keyboard"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"data\": \"id\"\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:6060",
+			"type": "string"
+		}
+	]
+}

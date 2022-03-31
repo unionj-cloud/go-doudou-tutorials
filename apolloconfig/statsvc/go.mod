@@ -14,12 +14,10 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.2
+	github.com/unionj-cloud/go-doudou v1.0.3
 )
 
 require (
-	github.com/apolloconfig/agollo/v4 v4.1.0
+	github.com/apolloconfig/agollo/v4 v4.1.1-0.20220323095621-60ed86180f24
 	github.com/gorilla/handlers v1.5.1 // indirect
 )
-
-replace github.com/unionj-cloud/go-doudou v1.0.2 => /Users/wubin1989/workspace/cloud/go-doudou

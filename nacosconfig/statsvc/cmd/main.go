@@ -22,7 +22,7 @@ func main() {
 
 	if configmgr.NacosClient != nil {
 		configmgr.NacosClient.AddChangeListener(configmgr.NacosConfigListenerParam{
-			DataId: "statsvc-dev.yml",
+			DataId: "statsvc-dev",
 			OnChange: func(event *configmgr.NacosChangeEvent) {
 				fmt.Println("group:" + event.Group + ", dataId:" + event.DataId + fmt.Sprintf(", changes: %+v\n", event.Changes))
 			},

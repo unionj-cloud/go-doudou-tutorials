@@ -10,8 +10,11 @@ type EnumDemo interface {
 	GetKeyboard2(ctx context.Context, layout *vo.KeyboardLayout) (data string, err error)
 	GetKeyboards(ctx context.Context, layout []vo.KeyboardLayout) (data []string, err error)
 	GetKeyboards2(ctx context.Context, layout *[]vo.KeyboardLayout) (data []string, err error)
-	//GetKeyboards3(ctx context.Context, layout []*vo.KeyboardLayout) error
-	//GetKeyboards4(ctx context.Context, layout *[]*vo.KeyboardLayout) error
 	GetKeyboards5(ctx context.Context, layout ...vo.KeyboardLayout) (data []string, err error)
 	Keyboard(ctx context.Context, keyboard vo.Keyboard) (data string, err error)
+
+	// Not support fully, don't define parameters like []*vo.KeyboardLayout
+	//GetKeyboards3(ctx context.Context, layout []*vo.KeyboardLayout) error
+	// Not support fully, don't define parameters like *[]*vo.KeyboardLayout
+	//GetKeyboards4(ctx context.Context, layout *[]*vo.KeyboardLayout) error
 }

@@ -9,6 +9,7 @@ services:
       - GDD_SERVICE_NAME=prometheus
       - PROM_REFRESH_INTERVAL=15s
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - GDD_MEM_SUSPICION_MULT=12
     volumes:
       - ./prometheus/:/etc/prometheus/
     ports:
@@ -19,6 +20,38 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
+    networks:
+      - tutorial
+
+  alertmanager:
+    container_name: alertmanager
+    hostname: alertmanager
+    image: prom/alertmanager:v0.24.0
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    restart: always
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+      - '--log.level=debug'
+    networks:
+      - tutorial
+
+  dingtalkalert:
+    container_name: dingtalkalert
+    hostname: dingtalkalert
+    image: timonwong/prometheus-webhook-dingtalk:latest
+    ports:
+      - 8060:8060
+    volumes:
+      - ./dingtalkalert/:/etc/prometheus-webhook-dingtalk/
+    restart: always
+    command:
+      - '--config.file=/etc/prometheus-webhook-dingtalk/config.yml'
+      - '--log.level=debug'
+      - '--web.enable-ui'
     networks:
       - tutorial
 
@@ -38,6 +71,7 @@ services:
       - GDD_MEM_LOG_DISABLE=true
       - GDD_ENV=test
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - GDD_MEM_SUSPICION_MULT=12
     ports:
       - "6061:6060"
     networks:
@@ -69,6 +103,7 @@ services:
       - GDD_MEM_LOG_DISABLE=true
       - GDD_ENV=test
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - GDD_MEM_SUSPICION_MULT=12
     ports:
       - "6062:6060"
     networks:
@@ -92,6 +127,7 @@ services:
       - GDD_MEM_LOG_DISABLE=true
       - GDD_ENV=test
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+      - GDD_MEM_SUSPICION_MULT=12
     deploy:
       replicas: 1
     networks:
@@ -115,6 +151,7 @@ services:
       - BIZ_OSS_ENDPOINT=minio:9000
       - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
       - BIZ_OUTPUT=/repo/out
+      - GDD_MEM_SUSPICION_MULT=12
     deploy:
       replicas: 1
     networks:
@@ -146,6 +183,7 @@ services:
       - CONCURRENCY_RATELIMIT_BURST=200
       - CONCURRENCY_BULKHEAD_WORKERS=30
       - CONCURRENCY_BULKHEAD_MAXWAITTIME=10s
+      - GDD_MEM_SUSPICION_MULT=12
     ports:
       - "6060:6060"
     networks:

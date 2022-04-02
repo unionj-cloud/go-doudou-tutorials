@@ -3,3 +3,5 @@
 **/*.local
 **/node_modules
 **/dist
+dingtalkalert/config.yml
+alertmanager/config.yml

@@ -1,2 +1,4 @@
 **/.idea
 **/out
+wordcloud/dingtalkalert/config.yml
+wordcloud/alertmanager/config.yml

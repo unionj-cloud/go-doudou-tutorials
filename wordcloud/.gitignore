@@ -1,1 +1,5 @@
 **/*.local
+dingtalkalert/config.yml
+alertmanager/config.yml
+/alertmanager/
+/dingtalkalert/

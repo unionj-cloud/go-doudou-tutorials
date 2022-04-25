@@ -11,5 +11,7 @@ require (
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.1
-	github.com/unionj-cloud/go-doudou v1.0.3
+	github.com/unionj-cloud/go-doudou v1.0.6-0.20220422093745-add5bf21812f
 )
+
+replace github.com/unionj-cloud/go-doudou v1.0.6-0.20220422093745-add5bf21812f => /Users/wubin1989/workspace/cloud/go-doudou

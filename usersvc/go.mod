@@ -17,8 +17,6 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.0-beta1
+	github.com/unionj-cloud/go-doudou v1.0.8-0.20220427021416-eb765641ff4f
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 )
-
-//replace github.com/unionj-cloud/go-doudou v0.9.8 => /Users/wubin1989/workspace/cloud/go-doudou

@@ -1,0 +1,508 @@
+{
+	"info": {
+		"_postman_id": "b7d3193b-8ac3-4105-8b15-fca31dd98944",
+		"name": "Usersvc",
+		"description": "Usersvc 用户管理服务\n调用用户详情、用户分页和上传头像接口需要带上Bearer Token请求头\n用户注册、用户登录和下载头像接口可以公开访问，无须鉴权\nUsersvc is user management service\nYou should set Bearer Token header when you request protected endpoints such as user detail, user pagination and upload avatar.\nYou can add doc for whole service here",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/page/users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"page\": {\n        \"orders\": [\n            {\n                \"col\": \"create_at\",\n                \"sort\": \"desc\"\n            }\n        ],\n        \"pageNo\": 1,\n        \"size\": 0\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/page/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"page",
+						"users"
+					]
+				},
+				"description": "PageUsers 用户分页接口\n展示如何定义POST请求且Content-Type为application/json的接口\nPageUsers is user pagination api\ndemo how to define post request api which accepts application/json content-type"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"filter\": {\n        \"name\": \"laboris do\",\n        \"dept\": \"voluptat\"\n    },\n    \"page\": {\n        \"orders\": [\n            {\n                \"col\": \"sint\",\n                \"sort\": \"deserunt\"\n            },\n            {\n                \"col\": \"qui aliquip consequat non\",\n                \"sort\": \"dolore\"\n            }\n        ],\n        \"pageNo\": -53433064,\n        \"size\": -48817980\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/page/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"page",
+								"users"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"data\": {\n  \"items\": {},\n  \"pageNo\": -44498531,\n  \"pageSize\": -61590614,\n  \"total\": -61059346,\n  \"hasNext\": false\n }\n}"
+				}
+			]
+		},
+		{
+			"name": "/public/download/avatar",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/public/download/avatar?userId=1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"public",
+						"download",
+						"avatar"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1",
+							"description": "(Required) 用户ID\nuser id"
+						}
+					]
+				},
+				"description": "GetPublicDownloadAvatar 下载头像接口\n展示如何定义文件下载接口\n函数签名的出参里必须有且只有一个*os.File类型的参数\nGetPublicDownloadAvatar is avatar download api\ndemo how to define file download api\nNOTE: there must be one and at most one *os.File output parameter"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/public/download/avatar?userId=19411718",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"public",
+								"download",
+								"avatar"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "19411718"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "text",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/octet-stream"
+						}
+					],
+					"cookie": [],
+					"body": "velit minim mollit proident"
+				}
+			]
+		},
+		{
+			"name": "/public/log/in",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "jack1988",
+							"description": "(Required) 用户名\nusername"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"description": "(Required) 密码\npassword"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/public/log/in",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"public",
+						"log",
+						"in"
+					]
+				},
+				"description": "PublicLogIn 用户登录接口\n展示如何鉴权并返回token\nPublicLogIn is user login api\ndemo how to do authentication and issue token"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "laborum sint",
+									"description": "(Required) 用户名\nusername"
+								},
+								{
+									"key": "password",
+									"value": "do et dolore Duis",
+									"description": "(Required) 密码\npassword"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/public/log/in",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"public",
+								"log",
+								"in"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"data\": \"dolore voluptate Excepteur\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/public/sign/up",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "jack1988",
+							"description": "(Required) 用户名\nusername"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"description": "(Required) 密码\npassword"
+						},
+						{
+							"key": "code",
+							"value": "xsfe",
+							"description": "(Required) 图形验证码\nimage code",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/public/sign/up",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"public",
+						"sign",
+						"up"
+					]
+				},
+				"description": "PublicSignUp 用户注册接口\n展示如何定义POST请求且Content-Type是application/x-www-form-urlencoded的接口\nPublicSignUp is user signup api\ndemo how to define post request api which accepts application/x-www-form-urlencoded content-type"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "elit",
+									"description": "(Required) 用户名\nusername"
+								},
+								{
+									"key": "password",
+									"value": "proident commodo",
+									"description": "(Required) 密码\npassword"
+								},
+								{
+									"key": "code",
+									"value": "cupidatat est",
+									"description": "(Required) 图形验证码\nimage code"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/public/sign/up",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"public",
+								"sign",
+								"up"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"data\": \"amet Ut\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/upload/avatar",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "multipart/form-data"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "id",
+							"value": "1",
+							"description": "(Required) ",
+							"type": "text"
+						},
+						{
+							"key": "avatar",
+							"description": "用户头像\nuser avatar",
+							"type": "file",
+							"src": "/Users/wubin1989/Documents/图片 1.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{baseUrl}}/upload/avatar",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"upload",
+						"avatar"
+					]
+				},
+				"description": "UploadAvatar 上传头像接口\n展示如何定义文件上传接口\n函数签名的入参里必须要有至少一个[]*v3.FileModel或者*v3.FileModel类型的参数\nUploadAvatar is avatar upload api\ndemo how to define file upload api\nNOTE: there must be at least one []*v3.FileModel or *v3.FileModel input parameter"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "-24913434",
+									"description": "(Required) ",
+									"type": "text"
+								},
+								{
+									"key": "avatar",
+									"description": "用户头像\nuser avatar",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/upload/avatar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"upload",
+								"avatar"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"data\": \"e\"\n}"
+				}
+			]
+		},
+		{
+			"name": "/user",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/user?userId=1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "1",
+							"description": "(Required) 用户ID\nuser id"
+						}
+					]
+				},
+				"description": "GetUser 用户详情接口\n展示如何定义带查询字符串参数的GET请求接口\nGetUser is user detail api\ndemo how to define get http request with query string parameters"
+			},
+			"response": [
+				{
+					"name": "Untitled Example",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/user?userId=19411718",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "19411718"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n \"data\": {\n  \"id\": -49193102,\n  \"username\": \"conse\",\n  \"name\": \"tempor quis aliqua\",\n  \"phone\": \"ea aliqua irure elit in\",\n  \"dept\": \"dolor\"\n }\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTEwNjk5ODAsInVzZXJJZCI6MX0.sAQPtTiuG0RZpNkQct7V65lmwp44zQhAotJ1mfGeZRE",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:6060",
+			"type": "string"
+		}
+	]
+}

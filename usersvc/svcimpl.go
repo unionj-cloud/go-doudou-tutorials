@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/wrapper"
 	"io"
 	"os"
 	"path/filepath"
@@ -26,13 +27,12 @@ import (
 	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
 	"github.com/unionj-cloud/go-doudou/toolkit/stringutils"
 
-	"github.com/jmoiron/sqlx"
 	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
 )
 
 type UsersvcImpl struct {
 	conf *config.Config
-	db   *sqlx.DB
+	db   wrapper.DB
 }
 
 func (receiver *UsersvcImpl) PageUsers(ctx context.Context, pageQuery vo.PageQuery) (data vo.PageRet, err error) {
@@ -180,7 +180,7 @@ func (receiver *UsersvcImpl) GetPublicDownloadAvatar(ctx context.Context, userId
 	return os.Open(avatar)
 }
 
-func NewUsersvc(conf *config.Config, db *sqlx.DB) Usersvc {
+func NewUsersvc(conf *config.Config, db wrapper.DB) Usersvc {
 	return &UsersvcImpl{
 		conf,
 		db,

@@ -6,9 +6,9 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
 	"github.com/unionj-cloud/go-doudou/framework/registry"
 	"github.com/unionj-cloud/go-doudou/framework/tracing"
+	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/wrapper"
 	"os"
 	service "usersvc"
 	"usersvc/config"
@@ -19,9 +19,6 @@ import (
 
 func main() {
 	conf := config.LoadFromEnv()
-
-	logger.Init()
-
 	conn, err := db.NewDb(conf.DbConf)
 	if err != nil {
 		panic(err)
@@ -49,8 +46,7 @@ func main() {
 	defer closer.Close()
 	opentracing.SetGlobalTracer(tracer)
 
-	svc := service.NewUsersvc(conf, conn)
-
+	svc := service.NewUsersvc(conf, wrapper.NewGddDB(conn))
 	handler := httpsrv.NewUsersvcHandler(svc)
 	srv := ddhttp.NewDefaultHttpSrv()
 	g := glob.MustCompile(fmt.Sprintf("{%s}", conf.BizConf.JwtIgnoreUrl))

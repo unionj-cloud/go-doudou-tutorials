@@ -57,6 +57,7 @@ func main() {
 
 	rec := metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)
 
+	// 给User、Maker、Task服务的客户端增加熔断器、超时、重试等弹性与容错机制和Prometheus指标采集
 	userClientProxy := userclient.NewUsersvcClientProxy(userClient, rec)
 	makerClientProxy := makerclient.NewWordcloudMakerClientProxy(makerClient, rec)
 	taskClientProxy := taskclient.NewWordcloudTaskClientProxy(taskClient, rec)

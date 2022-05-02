@@ -13,10 +13,10 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.2
+	github.com/unionj-cloud/go-doudou v1.0.8
 )
 
 require (
 	github.com/gorilla/handlers v1.5.1 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 )

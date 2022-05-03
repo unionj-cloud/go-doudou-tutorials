@@ -13,7 +13,7 @@ docker-compose -f docker-compose.yml up -d
 sleep 15s
 
 # 设置时区
-#export TZ="Asia/Shanghai"
+export TZ="Asia/Shanghai"
 
 # 通过pm2启动服务进程
 pm2 restart ecosystem.config.js --only usersvc --env $1

@@ -16,4 +16,4 @@ sleep 15s
 export TZ="Asia/Shanghai"
 
 # 通过pm2启动服务进程
-pm2 reload ecosystem.config.js --only usersvc --env $1
+pm2 restart ecosystem.config.js --only usersvc --env $1

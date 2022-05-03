@@ -29,7 +29,7 @@ module.exports = {
       ref: 'origin/master',
       repo: "git@github.com:unionj-cloud/go-doudou-tutorials.git",
       path: "/root/deploy/go-doudou-tutorials",
-      "post-deploy": "cd usersvc && sh deploy.sh test",
+      "post-deploy": "sh ./usersvc/deploy.sh test",
     }
   }
 };

@@ -14,7 +14,7 @@ module.exports = {
   "apps": [
     {
       "name": "usersvc",
-      "script": "export TZ=\"Asia/Shanghai\" && ./api",
+      "script": "./api",
       "cwd": "/root/deploy/go-doudou-tutorials/usersvc",
       "exec_interpreter": "",
       "exec_mode": "fork",

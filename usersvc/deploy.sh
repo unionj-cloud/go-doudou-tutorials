@@ -12,5 +12,8 @@ docker-compose -f docker-compose.yml up -d
 # 等待mysql实例启动完毕，可以连接
 sleep 15s
 
+# 设置时区
+export TZ="Asia/Shanghai"
+
 # 通过pm2启动服务进程
 pm2 reload ecosystem.config.js --only usersvc --env $1

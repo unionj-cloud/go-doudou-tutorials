@@ -6,12 +6,6 @@ export GOPROXY=https://goproxy.cn,direct
 # 编译程序，生成可执行文件
 go build -v -o api cmd/main.go
 
-# 启动mysql实例
-docker-compose -f docker-compose.yml up -d
-
-# 等待mysql实例启动完毕，可以连接
-sleep 15s
-
 # 设置时区
 export TZ="Asia/Shanghai"
 

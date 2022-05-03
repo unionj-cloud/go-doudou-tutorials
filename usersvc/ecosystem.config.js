@@ -29,6 +29,7 @@ module.exports = {
       ref: 'origin/master',
       repo: "git@github.com:unionj-cloud/go-doudou-tutorials.git",
       path: "/root/deploy/go-doudou-tutorials",
+      "post-setup": "cd usersvc && docker-compose -f docker-compose.yml up -d",
       "post-deploy": "cd usersvc && sh deploy.sh test",
     }
   }

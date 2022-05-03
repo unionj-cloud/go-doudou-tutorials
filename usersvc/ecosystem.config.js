@@ -17,7 +17,7 @@ module.exports = {
       "script": "./api",
       "cwd": "/root/deploy/go-doudou-tutorials/current/usersvc",
       "exec_interpreter": "",
-      "exec_mode": "fork",
+      "exec_mode": "cluster",
       "instances": 3,
       ...ENV
     },

@@ -15,7 +15,7 @@ module.exports = {
     {
       "name": "usersvc",
       "script": "./api",
-      "cwd": "/root/deploy/go-doudou-tutorials/usersvc",
+      "cwd": "/root/deploy/go-doudou-tutorials/current/usersvc",
       "exec_interpreter": "",
       "exec_mode": "fork",
       ...ENV

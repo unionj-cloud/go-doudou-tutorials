@@ -6,13 +6,13 @@ import (
 	"ddldemo/domain"
 	"fmt"
 	"github.com/go-redis/cache/v8"
-	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/iancoleman/strcase"
 	"github.com/jmoiron/sqlx"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/shopspring/decimal"
 	"github.com/sirupsen/logrus"
+	ddcache "github.com/unionj-cloud/go-doudou/framework/cache"
 	_ "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/toolkit/copier"
 	. "github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
@@ -58,15 +58,16 @@ func main() {
 	defer db.Close()
 	db.MapperFunc(strcase.ToSnake)
 
-	ring := redis.NewRing(&redis.RingOptions{
-		Addrs: map[string]string{
-			"server1": ":6379",
-		},
-	})
+	//ring := redis.NewRing(&redis.RingOptions{
+	//	Addrs: map[string]string{
+	//		"server1": ":6379",
+	//	},
+	//})
 
 	mycache := cache.New(&cache.Options{
-		Redis: ring,
+		//Redis: ring,
 		//LocalCache:   cache.NewTinyLFU(1000, time.Minute),
+		LocalCache:   ddcache.NewLruCache(128, time.Minute),
 		StatsEnabled: true,
 	})
 

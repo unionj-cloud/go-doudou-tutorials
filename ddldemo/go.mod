@@ -16,4 +16,4 @@ require (
 	github.com/unionj-cloud/go-doudou v1.0.9
 )
 
-//replace github.com/unionj-cloud/go-doudou v1.0.9 => /Users/wubin1989/workspace/cloud/go-doudou
+replace github.com/unionj-cloud/go-doudou v1.0.9 => /Users/wubin1989/workspace/cloud/go-doudou

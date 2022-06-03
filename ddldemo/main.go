@@ -132,7 +132,7 @@ func main() {
 	logrus.Printf("returned user %s's id is %d\n", ret.Items[0].Name, ret.Items[0].Id)
 	logrus.Printf("returned user %s's average score is %s", ret.Items[0].Name, ret.Items[0].AvgScore.String())
 
-	fmt.Println(mycache.Stats())
+	fmt.Printf("%+v\n", mycache.Stats())
 	_, err = u.DeleteMany(context.TODO(), C().Col("age").Gt(27))
 	if err != nil {
 		panic(err)

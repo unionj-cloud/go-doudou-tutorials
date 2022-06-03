@@ -4,7 +4,6 @@ go 1.15
 
 require (
 	github.com/go-redis/cache/v8 v8.4.3
-	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3
 	github.com/jmoiron/sqlx v1.3.1
@@ -13,7 +12,7 @@ require (
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.1
-	github.com/unionj-cloud/go-doudou v1.0.9
+	github.com/unionj-cloud/go-doudou v1.1.3
 )
 
 replace github.com/unionj-cloud/go-doudou v1.0.9 => /Users/wubin1989/workspace/cloud/go-doudou

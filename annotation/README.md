@@ -1,6 +1,6 @@
 # enumdemo
 
-博客文章 [如何在go-doudou应用中使用枚举类型](https://go-doudou.unionj.cloud/blog/enum.html) 的配套代码。
+博客文章 [如何在go-doudou应用中使用注解](https://go-doudou.unionj.cloud/blog/annotation.html) 的配套代码。
 
 - 安装go-doudou
 

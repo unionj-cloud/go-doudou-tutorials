@@ -18,31 +18,31 @@ type EnumDemoHandler interface {
 func Routes(handler EnumDemoHandler) []ddmodel.Route {
 	return []ddmodel.Route{
 		{
-			"Keyboard",
+			"GetKeyboard",
 			"GET",
 			"/keyboard",
 			handler.GetKeyboard,
 		},
 		{
-			"Keyboard2",
+			"GetKeyboard2",
 			"GET",
 			"/keyboard/2",
 			handler.GetKeyboard2,
 		},
 		{
-			"Keyboards",
+			"GetKeyboards",
 			"GET",
 			"/keyboards",
 			handler.GetKeyboards,
 		},
 		{
-			"Keyboards2",
+			"GetKeyboards2",
 			"GET",
 			"/keyboards/2",
 			handler.GetKeyboards2,
 		},
 		{
-			"Keyboards5",
+			"GetKeyboards5",
 			"GET",
 			"/keyboards/5",
 			handler.GetKeyboards5,
@@ -55,3 +55,5 @@ func Routes(handler EnumDemoHandler) []ddmodel.Route {
 		},
 	}
 }
+
+var RouteAnnotationStore = ddmodel.AnnotationStore{}

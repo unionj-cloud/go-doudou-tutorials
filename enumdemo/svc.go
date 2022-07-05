@@ -5,6 +5,8 @@ import (
 	"context"
 )
 
+//go:generate go-doudou svc http --handler --doc
+
 type EnumDemo interface {
 	GetKeyboard(ctx context.Context, layout vo.KeyboardLayout) (data string, err error)
 	GetKeyboard2(ctx context.Context, layout *vo.KeyboardLayout) (data string, err error)

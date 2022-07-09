@@ -29,6 +29,10 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboard(_writer http.ResponseWriter, _r
 	}
 	if _, exists := _req.Form["layout"]; exists {
 		layout.StringSetter(_req.FormValue("layout"))
+		if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
 	} else {
 		http.Error(_writer, "missing parameter layout", http.StatusBadRequest)
 		return
@@ -71,6 +75,10 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboard2(_writer http.ResponseWriter, _
 	if _, exists := _req.Form["layout"]; exists {
 		layout = new(vo.KeyboardLayout)
 		layout.StringSetter(_req.FormValue("layout"))
+		if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
 	}
 	data, err = receiver.enumDemo.GetKeyboard2(
 		ctx,
@@ -113,12 +121,20 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboards(_writer http.ResponseWriter, _
 			_layout.StringSetter(item)
 			layout = append(layout, _layout)
 		}
+		if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
 	} else {
 		if _, exists := _req.Form["layout[]"]; exists {
 			for _, item := range _req.Form["layout[]"] {
 				var _layout vo.KeyboardLayout
 				_layout.StringSetter(item)
 				layout = append(layout, _layout)
+			}
+			if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+				http.Error(_writer, _err.Error(), http.StatusBadRequest)
+				return
 			}
 		} else {
 			http.Error(_writer, "missing parameter layout", http.StatusBadRequest)
@@ -167,6 +183,10 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboards2(_writer http.ResponseWriter, 
 			_layout.StringSetter(item)
 			*layout = append(*layout, _layout)
 		}
+		if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
 	} else {
 		if _, exists := _req.Form["layout[]"]; exists {
 			layout = new([]vo.KeyboardLayout)
@@ -174,6 +194,10 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboards2(_writer http.ResponseWriter, 
 				var _layout vo.KeyboardLayout
 				_layout.StringSetter(item)
 				*layout = append(*layout, _layout)
+			}
+			if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+				http.Error(_writer, _err.Error(), http.StatusBadRequest)
+				return
 			}
 		}
 	}
@@ -218,12 +242,20 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboards5(_writer http.ResponseWriter, 
 			_layout.StringSetter(item)
 			*layout = append(*layout, _layout)
 		}
+		if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
 	} else {
 		if _, exists := _req.Form["layout[]"]; exists {
 			for _, item := range _req.Form["layout[]"] {
 				var _layout vo.KeyboardLayout
 				_layout.StringSetter(item)
 				*layout = append(*layout, _layout)
+			}
+			if _err := ddhttp.ValidateVar(layout, "", "layout"); _err != nil {
+				http.Error(_writer, _err.Error(), http.StatusBadRequest)
+				return
 			}
 		}
 	}
@@ -250,13 +282,6 @@ func (receiver *EnumDemoHandlerImpl) GetKeyboards5(_writer http.ResponseWriter, 
 		return
 	}
 }
-
-func NewEnumDemoHandler(enumDemo service.EnumDemo) EnumDemoHandler {
-	return &EnumDemoHandlerImpl{
-		enumDemo,
-	}
-}
-
 func (receiver *EnumDemoHandlerImpl) Keyboard(_writer http.ResponseWriter, _req *http.Request) {
 	var (
 		ctx      context.Context
@@ -272,6 +297,11 @@ func (receiver *EnumDemoHandlerImpl) Keyboard(_writer http.ResponseWriter, _req 
 		if _err := json.NewDecoder(_req.Body).Decode(&keyboard); _err != nil {
 			http.Error(_writer, _err.Error(), http.StatusBadRequest)
 			return
+		} else {
+			if _err := ddhttp.ValidateStruct(keyboard); _err != nil {
+				http.Error(_writer, _err.Error(), http.StatusBadRequest)
+				return
+			}
 		}
 	}
 	data, err = receiver.enumDemo.Keyboard(
@@ -295,5 +325,11 @@ func (receiver *EnumDemoHandlerImpl) Keyboard(_writer http.ResponseWriter, _req 
 	}); _err != nil {
 		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
 		return
+	}
+}
+
+func NewEnumDemoHandler(enumDemo service.EnumDemo) EnumDemoHandler {
+	return &EnumDemoHandlerImpl{
+		enumDemo,
 	}
 }

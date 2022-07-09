@@ -14,5 +14,5 @@ require (
 	github.com/prometheus/client_golang v1.12.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.5
+	github.com/unionj-cloud/go-doudou v1.1.9
 )

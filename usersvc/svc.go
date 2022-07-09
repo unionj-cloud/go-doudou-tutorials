@@ -7,6 +7,8 @@ import (
 	"usersvc/vo"
 )
 
+//go:generate go-doudou svc http --handler --doc
+
 // Usersvc 用户管理服务
 // 调用用户详情、用户分页和上传头像接口需要带上Bearer Token请求头
 // 用户注册、用户登录和下载头像接口可以公开访问，无须鉴权

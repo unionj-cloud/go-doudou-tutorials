@@ -24,7 +24,7 @@ func Routes(handler UsersvcHandler) []ddmodel.Route {
 			handler.PageUsers,
 		},
 		{
-			"User",
+			"GetUser",
 			"GET",
 			"/user",
 			handler.GetUser,
@@ -48,10 +48,12 @@ func Routes(handler UsersvcHandler) []ddmodel.Route {
 			handler.UploadAvatar,
 		},
 		{
-			"PublicDownloadAvatar",
+			"GetPublicDownloadAvatar",
 			"GET",
 			"/public/download/avatar",
 			handler.GetPublicDownloadAvatar,
 		},
 	}
 }
+
+var RouteAnnotationStore = ddmodel.AnnotationStore{}

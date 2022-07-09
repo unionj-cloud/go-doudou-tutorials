@@ -3,11 +3,8 @@ syntax = "proto3";
 package helloworld_openapi3;
 option go_package = "github.com/unionj-cloud/helloworld/transport/rpc";
 
-import "google/api/annotations.proto";
-
-import "google/protobuf/descriptor.proto";
-
 import "google/protobuf/empty.proto";
+import "google/protobuf/any.proto";
 
 message GreetingReq {
   string greeting = 1;
@@ -58,12 +55,17 @@ message PageRet {
   int32 total = 5;
 }
 
+/**
+这当然也是注释
+ */
 message UserVo {
   string dept = 1;
 
   int32 id = 2;
 
-  string name = 3;
+  // 这是一个注释
+  // 这也是一个注释
+  string name = 3; // 这是一个注释
 
   string phone = 4;
 }
@@ -74,8 +76,6 @@ message POSTGreetingRequest {
 }
 
 service Helloworld_openapi3 {
-  rpc POSTGreeting ( POSTGreetingRequest ) returns ( GreetingResp ) {
-    option (google.api.http) = { post:"/greeting" body:"application_x_www_form_urlencoded"  };
-  }
+  rpc POSTGreeting (POSTGreetingRequest) returns (GreetingResp);
 }
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/wrapper"
 	"io"
 	"os"
 	"path/filepath"
@@ -15,6 +14,8 @@ import (
 	"usersvc/internal/lib"
 	"usersvc/internal/middleware"
 	"usersvc/vo"
+
+	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/wrapper"
 
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
 

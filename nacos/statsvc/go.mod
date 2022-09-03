@@ -3,7 +3,7 @@ module statsvc
 go 1.16
 
 require (
-	github.com/go-resty/resty/v2 v2.6.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3
 	github.com/jmoiron/sqlx v1.3.1
@@ -14,7 +14,5 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.0.2
+	github.com/unionj-cloud/go-doudou v1.2.7-0.20220903120018-e81870a3844b
 )
-
-require github.com/gorilla/handlers v1.5.1 // indirect

@@ -9,7 +9,7 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou v1.1.9
+	github.com/unionj-cloud/go-doudou v1.2.7-0.20220903120018-e81870a3844b
 )
 
 require (

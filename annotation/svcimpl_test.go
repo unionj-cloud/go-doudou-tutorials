@@ -6,29 +6,32 @@ import (
 )
 
 func BenchmarkHttpRouter(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		request, err := http.NewRequest("GET", "http://localhost:6060/guest", nil)
-		if err != nil {
-			panic(err)
+	b.Run("httpRouter", func(b *testing.B) {
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			request, err := http.NewRequest("GET", "http://localhost:6060/guest", nil)
+			if err != nil {
+				panic(err)
+			}
+			_, err = http.DefaultClient.Do(request)
+			if err != nil {
+				panic(err)
+			}
 		}
-		_, err = http.DefaultClient.Do(request)
-		if err != nil {
-			panic(err)
+	})
+	b.Run("gorillaMux", func(b *testing.B) {
+		b.ReportAllocs()
+		for i := 0; i < b.N; i++ {
+			request, err := http.NewRequest("GET", "http://localhost:6061/guest", nil)
+			if err != nil {
+				panic(err)
+			}
+			_, err = http.DefaultClient.Do(request)
+			if err != nil {
+				panic(err)
+			}
 		}
-	}
-}
-
-func BenchmarkGorillaMux(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		request, err := http.NewRequest("GET", "http://localhost:6061/guest", nil)
-		if err != nil {
-			panic(err)
-		}
-		_, err = http.DefaultClient.Do(request)
-		if err != nil {
-			panic(err)
-		}
-	}
+	})
 }
 
 //func Test1(t *testing.T) {

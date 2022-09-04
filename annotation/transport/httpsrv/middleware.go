@@ -2,7 +2,7 @@ package httpsrv
 
 import (
 	"annotation/vo"
-	"github.com/gorilla/mux"
+	"github.com/unionj-cloud/go-doudou/framework/http/httprouter"
 	"github.com/unionj-cloud/go-doudou/toolkit/sliceutils"
 	"net/http"
 )
@@ -10,12 +10,14 @@ import (
 func Auth(userStore vo.UserStore) func(inner http.Handler) http.Handler {
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			currentRoute := mux.CurrentRoute(r)
-			if currentRoute == nil {
-				inner.ServeHTTP(w, r)
-				return
-			}
-			routeName := currentRoute.GetName()
+			//currentRoute := mux.CurrentRoute(r)
+			//if currentRoute == nil {
+			//	inner.ServeHTTP(w, r)
+			//	return
+			//}
+			//routeName := currentRoute.GetName()
+			paramsFromCtx := httprouter.ParamsFromContext(r.Context())
+			routeName := paramsFromCtx.MatchedRouteName()
 			if !RouteAnnotationStore.HasAnnotation(routeName, "@role") {
 				inner.ServeHTTP(w, r)
 				return

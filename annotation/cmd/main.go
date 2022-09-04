@@ -12,7 +12,8 @@ func main() {
 	conf := config.LoadFromEnv()
 	svc := service.NewAnnotation(conf)
 	handler := httpsrv.NewAnnotationHandler(svc)
-	srv := ddhttp.NewDefaultHttpSrv()
+	srv := ddhttp.NewHttpRouterSrv()
+	//srv := ddhttp.NewDefaultHttpSrv()
 	srv.AddMiddleware(httpsrv.Auth(vo.UserStore{
 		vo.Auth{
 			User: "guest",

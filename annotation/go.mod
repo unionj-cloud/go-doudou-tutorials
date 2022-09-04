@@ -5,13 +5,12 @@ go 1.18
 require (
 	github.com/brianvoe/gofakeit/v6 v6.10.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/gorilla/mux v1.8.0
 	github.com/iancoleman/strcase v0.1.3
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou v1.2.7-0.20220904100708-02d37b4c5d84
+	github.com/unionj-cloud/go-doudou v1.2.7
 )
 
 require (
@@ -38,6 +37,7 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/handlers v1.5.1 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hako/durafmt v0.0.0-20210608085754-5c1018a4e16b // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -100,5 +100,3 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
-replace github.com/unionj-cloud/go-doudou v1.2.7-0.20220904100708-02d37b4c5d84 => /Users/wubin1989/workspace/cloud/go-doudou

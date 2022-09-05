@@ -923,8 +923,8 @@ github.com/uber/jaeger-client-go v2.30.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMW
 github.com/uber/jaeger-lib v2.4.1+incompatible h1:td4jdvLcExb4cBISKIpHuGoVXh+dVKhn2Um6rjCsSsg=
 github.com/uber/jaeger-lib v2.4.1+incompatible/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
-github.com/unionj-cloud/go-doudou v1.2.8-0.20220904155537-dbcc552fa1b1 h1:mT1r32alcW/dOe1rvnPmwCeuDXGmjah/VFILmiLCRjA=
-github.com/unionj-cloud/go-doudou v1.2.8-0.20220904155537-dbcc552fa1b1/go.mod h1:exB4QxDMcfv0Ez/1O63e4m3DCxTDHIb4AGEBKyS0ovc=
+github.com/unionj-cloud/go-doudou v1.2.8-0.20220905013351-48bd274df85c h1:eft1xYw5rSe5rW/T52WbmQm2BSQLKolhp+QSSkorPa4=
+github.com/unionj-cloud/go-doudou v1.2.8-0.20220905013351-48bd274df85c/go.mod h1:exB4QxDMcfv0Ez/1O63e4m3DCxTDHIb4AGEBKyS0ovc=
 github.com/urfave/cli v0.0.0-20171014202726-7bc6a0acffa5/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.20.0/go.mod h1:70zkFmudgCuE/ngEzBv17Jvp/497gISqfk5gWijbERA=
 github.com/urfave/cli v1.22.1/go.mod h1:Gos4lmkARVdJ6EkW0WaNv/tZAAMe9V7XWyB60NtXRu0=

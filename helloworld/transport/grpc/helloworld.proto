@@ -20,26 +20,26 @@ enum KeyboardLayout {
 
 message ByeRequest {
   // 入参
-  string greeting = 1 [json_name=""];
+  string greeting = 1 [json_name="greeting"];
 }
 
 message ByeResponse {
   // 出参
-  string data = 1 [json_name=""];
+  string data = 1 [json_name="data"];
   // 错误信息
-  string err = 2 [json_name=""];
+  string err = 2 [json_name="err"];
 }
 
 message GreetingRequest {
   // 入参
-  string greeting = 1 [json_name=""];
+  string greeting = 1 [json_name="greeting"];
 }
 
 message GreetingResponse {
   // 出参
-  string data = 1 [json_name=""];
+  string data = 1 [json_name="data"];
   // 错误信息
-  string err = 2 [json_name=""];
+  string err = 2 [json_name="err"];
 }
 
 message Keyboard {

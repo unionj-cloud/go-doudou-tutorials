@@ -15,6 +15,7 @@ message GreetingResp {
 }
 
 message Order {
+  // 这是注释
   string col = 1;
 
   string sort = 2;

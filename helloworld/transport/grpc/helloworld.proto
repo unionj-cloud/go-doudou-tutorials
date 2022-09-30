@@ -18,6 +18,30 @@ enum KeyboardLayout {
   QWERTY = 3;
 }
 
+message ByeRequest {
+  // 入参
+  string greeting = 1 [json_name=""];
+}
+
+message ByeResponse {
+  // 出参
+  string data = 1 [json_name=""];
+  // 错误信息
+  string err = 2 [json_name=""];
+}
+
+message GreetingRequest {
+  // 入参
+  string greeting = 1 [json_name=""];
+}
+
+message GreetingResponse {
+  // 出参
+  string data = 1 [json_name=""];
+  // 错误信息
+  string err = 2 [json_name=""];
+}
+
 message Keyboard {
   KeyboardLayout layout = 1 [json_name="layout"];
   bool backlit = 2 [json_name="backlit"];
@@ -63,4 +87,11 @@ message UserVo {
   string name = 2 [json_name="name"];
   string phone = 3 [json_name="phone"];
   string dept = 4 [json_name="dept"];
+}
+
+service Helloworld {
+  // Bye 再见接口
+  rpc Bye(ByeRequest) returns (ByeResponse);
+  // Greeting 问候接口
+  rpc Greeting(GreetingRequest) returns (GreetingResponse);
 }

@@ -4,10 +4,17 @@ import (
 	"abc2/config"
 	"abc2/vo"
 	"context"
+	"github.com/unionj-cloud/helloworld/client"
+	"time"
+
+	"github.com/unionj-cloud/go-doudou/framework/logger"
+	pb "github.com/unionj-cloud/helloworld/transport/grpc"
 )
 
 type EnumDemoImpl struct {
-	conf *config.Config
+	conf       *config.Config
+	grpcClient pb.HelloworldRpcClient
+	restClient *client.HelloworldClient
 }
 
 func (receiver *EnumDemoImpl) GetKeyboard(ctx context.Context, layout vo.KeyboardLayout) (data string, err error) {
@@ -1029,12 +1036,30 @@ func (receiver *EnumDemoImpl) GetKeyboards5(ctx context.Context, layout ...vo.Ke
 	return data, nil
 }
 
-func NewEnumDemo(conf *config.Config) EnumDemo {
+func NewEnumDemo(conf *config.Config, grpcClient pb.HelloworldRpcClient, restClient *client.HelloworldClient) EnumDemo {
 	return &EnumDemoImpl{
-		conf,
+		conf:       conf,
+		grpcClient: grpcClient,
+		restClient: restClient,
 	}
 }
 
 func (receiver *EnumDemoImpl) Keyboard(ctx context.Context, keyboard vo.Keyboard) (data string, err error) {
 	return keyboard.Layout.StringGetter(), nil
+}
+
+func (receiver *EnumDemoImpl) Greeting(ctx context.Context, greeting string) (data string, err error) {
+	// Contact the server and print out its response.
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	r, err := receiver.grpcClient.GreetingRpc(ctx, &pb.GreetingRpcRequest{Greeting: greeting})
+	if err != nil {
+		logger.Fatalf("could not greet: %v", err)
+	}
+	return r.Data, nil
+}
+
+func (receiver *EnumDemoImpl) Greeting1(ctx context.Context, greeting string) (data string, err error) {
+	_, data, err = receiver.restClient.Greeting(ctx, nil, greeting)
+	return
 }

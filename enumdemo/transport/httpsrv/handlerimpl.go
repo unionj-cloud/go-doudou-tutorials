@@ -333,3 +333,95 @@ func NewEnumDemoHandler(enumDemo service.EnumDemo) EnumDemoHandler {
 		enumDemo,
 	}
 }
+
+func (receiver *EnumDemoHandlerImpl) Greeting(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx      context.Context
+		greeting string
+		data     string
+		err      error
+	)
+	ctx = _req.Context()
+	if _err := _req.ParseForm(); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["greeting"]; exists {
+		greeting = _req.FormValue("greeting")
+		if _err := ddhttp.ValidateVar(greeting, "", "greeting"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
+	} else {
+		http.Error(_writer, "missing parameter greeting", http.StatusBadRequest)
+		return
+	}
+	data, err = receiver.enumDemo.Greeting(
+		ctx,
+		greeting,
+	)
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+		} else if _err, ok := err.(*ddhttp.BizError); ok {
+			http.Error(_writer, _err.Error(), _err.StatusCode)
+		} else {
+			http.Error(_writer, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+		Data string `json:"data"`
+	}{
+		Data: data,
+	}); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (receiver *EnumDemoHandlerImpl) Greeting1(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx      context.Context
+		greeting string
+		data     string
+		err      error
+	)
+	ctx = _req.Context()
+	if _err := _req.ParseForm(); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["greeting"]; exists {
+		greeting = _req.FormValue("greeting")
+		if _err := ddhttp.ValidateVar(greeting, "", "greeting"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
+	} else {
+		http.Error(_writer, "missing parameter greeting", http.StatusBadRequest)
+		return
+	}
+	data, err = receiver.enumDemo.Greeting1(
+		ctx,
+		greeting,
+	)
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+		} else if _err, ok := err.(*ddhttp.BizError); ok {
+			http.Error(_writer, _err.Error(), _err.StatusCode)
+		} else {
+			http.Error(_writer, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+		Data string `json:"data"`
+	}{
+		Data: data,
+	}); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
+		return
+	}
+}

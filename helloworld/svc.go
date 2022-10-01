@@ -1,6 +1,10 @@
 package service
 
-import "context"
+import (
+	"context"
+)
+
+//go:generate go-doudou svc http --handler --doc -c
 
 // Helloworld 单体服务
 type Helloworld interface {

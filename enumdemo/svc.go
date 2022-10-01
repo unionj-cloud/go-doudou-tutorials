@@ -19,4 +19,21 @@ type EnumDemo interface {
 	//GetKeyboards3(ctx context.Context, layout []*vo.KeyboardLayout) error
 	// don't define parameters like *[]*vo.KeyboardLayout
 	//GetKeyboards4(ctx context.Context, layout *[]*vo.KeyboardLayout) error
+
+	// Greeting 问候接口
+	Greeting(ctx context.Context,
+		// 入参
+		greeting string) (
+		// 出参
+		data string,
+		// 错误信息
+		err error)
+	// Greeting 问候接口
+	Greeting1(ctx context.Context,
+		// 入参
+		greeting string) (
+		// 出参
+		data string,
+		// 错误信息
+		err error)
 }

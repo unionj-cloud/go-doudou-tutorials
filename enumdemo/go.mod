@@ -10,5 +10,9 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou v1.2.7-0.20220903120018-e81870a3844b
+	github.com/unionj-cloud/go-doudou v1.2.11
+	github.com/unionj-cloud/helloworld v0.0.0
+	google.golang.org/grpc v1.38.0
 )
+
+replace github.com/unionj-cloud/helloworld v0.0.0 => ../helloworld

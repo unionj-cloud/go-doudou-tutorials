@@ -17,6 +17,7 @@ import (
 	"github.com/pkg/errors"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/framework/registry"
+	"github.com/unionj-cloud/helloworld/vo"
 )
 
 type HelloworldClient struct {
@@ -101,6 +102,105 @@ func (receiver *HelloworldClient) Bye(ctx context.Context, _headers map[string]s
 		return
 	}
 	return _resp, _result.Data, nil
+}
+func (receiver *HelloworldClient) BiStream(ctx context.Context, _headers map[string]string, stream vo.Order) (_resp *resty.Response, stream1 vo.Page, err error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_req.SetBody(stream)
+	_path := "/bi/stream"
+	if _req.Body != nil {
+		_req.SetQueryParamsFromValues(_urlValues)
+	} else {
+		_req.SetFormDataFromValues(_urlValues)
+	}
+	_resp, _err = _req.Post(_path)
+	if _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		err = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+		Stream1 vo.Page `json:"stream1"`
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, _result.Stream1, nil
+}
+func (receiver *HelloworldClient) ClientStream(ctx context.Context, _headers map[string]string, stream vo.Order) (_resp *resty.Response, data vo.Page, err error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_req.SetBody(stream)
+	_path := "/client/stream"
+	if _req.Body != nil {
+		_req.SetQueryParamsFromValues(_urlValues)
+	} else {
+		_req.SetFormDataFromValues(_urlValues)
+	}
+	_resp, _err = _req.Post(_path)
+	if _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		err = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+		Data vo.Page `json:"data"`
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, _result.Data, nil
+}
+func (receiver *HelloworldClient) ServerStream(ctx context.Context, _headers map[string]string, payload vo.Order) (_resp *resty.Response, stream vo.Page, err error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_req.SetBody(payload)
+	_path := "/server/stream"
+	if _req.Body != nil {
+		_req.SetQueryParamsFromValues(_urlValues)
+	} else {
+		_req.SetFormDataFromValues(_urlValues)
+	}
+	_resp, _err = _req.Post(_path)
+	if _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		err = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+		Stream vo.Page `json:"stream"`
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, _result.Stream, nil
 }
 
 func NewHelloworldClient(opts ...ddhttp.DdClientOption) *HelloworldClient {

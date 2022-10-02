@@ -3,6 +3,7 @@ module github.com/unionj-cloud/helloworld
 go 1.16
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.19.0
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/iancoleman/strcase v0.1.3

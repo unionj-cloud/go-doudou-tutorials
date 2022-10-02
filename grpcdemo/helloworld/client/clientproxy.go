@@ -18,6 +18,8 @@ import (
 	"github.com/slok/goresilience/metrics"
 	"github.com/slok/goresilience/retry"
 	"github.com/slok/goresilience/timeout"
+
+	"github.com/unionj-cloud/helloworld/vo"
 )
 
 type HelloworldClientProxy struct {
@@ -113,4 +115,65 @@ func NewHelloworldClientProxy(client *HelloworldClient, opts ...ProxyOption) *He
 	}
 
 	return cp
+}
+
+func (receiver *HelloworldClientProxy) BiStream(ctx context.Context, _headers map[string]string, stream vo.Order) (_resp *resty.Response, stream1 vo.Page, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, stream1, err = receiver.client.BiStream(
+			ctx,
+			_headers,
+			stream,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call BiStream fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call BiStream fail")
+	}
+	return
+}
+func (receiver *HelloworldClientProxy) ClientStream(ctx context.Context, _headers map[string]string, stream vo.Order) (_resp *resty.Response, data vo.Page, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, data, err = receiver.client.ClientStream(
+			ctx,
+			_headers,
+			stream,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call ClientStream fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call ClientStream fail")
+	}
+	return
+}
+func (receiver *HelloworldClientProxy) ServerStream(ctx context.Context, _headers map[string]string, payload vo.Order) (_resp *resty.Response, stream vo.Page, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, stream, err = receiver.client.ServerStream(
+			ctx,
+			_headers,
+			payload,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call ServerStream fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error(_err)
+		}
+		err = errors.Wrap(_err, "call ServerStream fail")
+	}
+	return
 }

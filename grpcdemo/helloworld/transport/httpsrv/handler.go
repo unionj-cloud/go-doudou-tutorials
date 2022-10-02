@@ -13,6 +13,9 @@ import (
 type HelloworldHandler interface {
 	Greeting(w http.ResponseWriter, r *http.Request)
 	Bye(w http.ResponseWriter, r *http.Request)
+	BiStream(w http.ResponseWriter, r *http.Request)
+	ClientStream(w http.ResponseWriter, r *http.Request)
+	ServerStream(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler HelloworldHandler) []ddmodel.Route {
@@ -28,6 +31,24 @@ func Routes(handler HelloworldHandler) []ddmodel.Route {
 			"POST",
 			"/bye",
 			handler.Bye,
+		},
+		{
+			"BiStream",
+			"POST",
+			"/bi/stream",
+			handler.BiStream,
+		},
+		{
+			"ClientStream",
+			"POST",
+			"/client/stream",
+			handler.ClientStream,
+		},
+		{
+			"ServerStream",
+			"POST",
+			"/server/stream",
+			handler.ServerStream,
 		},
 	}
 }

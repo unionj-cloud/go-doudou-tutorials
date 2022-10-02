@@ -13,7 +13,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou v1.2.11
+	github.com/unionj-cloud/go-doudou v1.2.12-0.20221002173907-155e9fb9ebdd
 	github.com/unionj-cloud/helloworld v0.0.0
 	google.golang.org/grpc v1.38.0
 )

@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	ddgrpc "github.com/unionj-cloud/go-doudou/framework/grpc"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/framework/logger"
 	service "github.com/unionj-cloud/helloworld"
@@ -13,7 +14,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"io/ioutil"
-	"net"
 )
 
 const (
@@ -53,31 +53,19 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 func main() {
 	conf := config.LoadFromEnv()
 	svc := service.NewHelloworld(conf)
-	handler := httpsrv.NewHelloworldHandler(svc)
-	srv := ddhttp.NewHttpRouterSrv()
-	srv.AddRoute(httpsrv.Routes(handler)...)
 
 	go func() {
 		tlsCredentials, err := loadTLSCredentials()
 		if err != nil {
 			logger.Fatal("cannot load TLS credentials: ", err)
 		}
-
-		lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 6061))
-		if err != nil {
-			logger.Fatalf("failed to listen: %v", err)
-		}
-		s := grpc.NewServer(
-			grpc.Creds(tlsCredentials),
-			//grpc.UnaryInterceptor(interceptor.Unary()),
-			//grpc.StreamInterceptor(interceptor.Stream()),
-		)
-		pb.RegisterHelloworldRpcServer(s, svc)
-		logger.Printf("grpc server listening at %v", lis.Addr())
-		if err := s.Serve(lis); err != nil {
-			logger.Fatalf("failed to serve: %v", err)
-		}
+		grpcServer := ddgrpc.NewGrpcServer(grpc.Creds(tlsCredentials))
+		pb.RegisterHelloworldRpcServer(grpcServer, svc)
+		grpcServer.Run()
 	}()
 
+	handler := httpsrv.NewHelloworldHandler(svc)
+	srv := ddhttp.NewHttpRouterSrv()
+	srv.AddRoute(httpsrv.Routes(handler)...)
 	srv.Run()
 }

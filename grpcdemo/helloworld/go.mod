@@ -15,9 +15,9 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.2.11
+	github.com/unionj-cloud/go-doudou v1.2.12-0.20221002173907-155e9fb9ebdd
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
 )
 
-replace github.com/unionj-cloud/go-doudou v1.2.11 => /Users/wubin1989/workspace/cloud/go-doudou
+//replace github.com/unionj-cloud/go-doudou v1.2.12-0.20221002173907-155e9fb9ebdd => /Users/wubin1989/workspace/cloud/go-doudou

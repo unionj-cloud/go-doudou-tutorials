@@ -4,9 +4,17 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
+	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	ddgrpc "github.com/unionj-cloud/go-doudou/framework/grpc"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
+	logger "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
 	service "github.com/unionj-cloud/helloworld"
 	"github.com/unionj-cloud/helloworld/config"
 	pb "github.com/unionj-cloud/helloworld/transport/grpc"
@@ -57,10 +65,27 @@ func main() {
 	go func() {
 		tlsCredentials, err := loadTLSCredentials()
 		if err != nil {
-			logger.Fatal("cannot load TLS credentials: ", err)
+			logger.Fatal().Err(err).Msg("cannot load TLS credentials")
 		}
-		grpcServer := ddgrpc.NewGrpcServer(grpc.Creds(tlsCredentials))
-		pb.RegisterHelloworldRpcServer(grpcServer, svc)
+		grpcServer := ddgrpc.NewGrpcServer(grpc.Creds(tlsCredentials),
+			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+				grpc_ctxtags.StreamServerInterceptor(),
+				grpc_opentracing.StreamServerInterceptor(),
+				grpc_prometheus.StreamServerInterceptor,
+				tags.StreamServerInterceptor(tags.WithFieldExtractor(tags.CodeGenRequestFieldExtractor)),
+				logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(logger.Logger)),
+				grpc_recovery.StreamServerInterceptor(),
+			)),
+			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+				grpc_ctxtags.UnaryServerInterceptor(),
+				grpc_opentracing.UnaryServerInterceptor(),
+				grpc_prometheus.UnaryServerInterceptor,
+				tags.UnaryServerInterceptor(tags.WithFieldExtractor(tags.CodeGenRequestFieldExtractor)),
+				logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(logger.Logger)),
+				grpc_recovery.UnaryServerInterceptor(),
+			)),
+		)
+		pb.RegisterHelloworldServiceServer(grpcServer, svc)
 		grpcServer.Run()
 	}()
 

@@ -12,12 +12,14 @@ import (
 	"github.com/unionj-cloud/helloworld/vo"
 )
 
-var _ pb.HelloworldRpcServer = (*HelloworldImpl)(nil)
 var _ Helloworld = (*HelloworldImpl)(nil)
 
+var _ pb.HelloworldServiceServer = (*HelloworldImpl)(nil)
+
 type HelloworldImpl struct {
+	pb.UnimplementedHelloworldServiceServer
+
 	conf *config.Config
-	pb.UnimplementedHelloworldRpcServer
 }
 
 func (receiver *HelloworldImpl) ByeRpc(ctx context.Context, request *pb.ByeRpcRequest) (*pb.ByeRpcResponse, error) {
@@ -76,15 +78,15 @@ func (receiver *HelloworldImpl) ServerStream(ctx context.Context, payload vo.Ord
 	return _result.Stream, nil
 }
 
-func (receiver *HelloworldImpl) BiStreamRpc(server pb.HelloworldRpc_BiStreamRpcServer) error {
+func (receiver *HelloworldImpl) BiStreamRpc(server pb.HelloworldService_BiStreamRpcServer) error {
 	//TODO implement me
 	panic("implement me")
 }
-func (receiver *HelloworldImpl) ClientStreamRpc(server pb.HelloworldRpc_ClientStreamRpcServer) error {
+func (receiver *HelloworldImpl) ClientStreamRpc(server pb.HelloworldService_ClientStreamRpcServer) error {
 	//TODO implement me
 	panic("implement me")
 }
-func (receiver *HelloworldImpl) ServerStreamRpc(request *pb.Order, server pb.HelloworldRpc_ServerStreamRpcServer) error {
+func (receiver *HelloworldImpl) ServerStreamRpc(request *pb.Order, server pb.HelloworldService_ServerStreamRpcServer) error {
 	//TODO implement me
 	panic("implement me")
 }

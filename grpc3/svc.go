@@ -6,13 +6,13 @@ package service
 
 import (
 	"context"
-	"grpc1/vo"
+	"grpc3/vo"
 )
 
 //go:generate go-doudou svc http --handler -c --doc
 //go:generate go-doudou svc grpc
 
-type Grpc1 interface {
+type Grpc3 interface {
 	// You can define your service methods as your need. Below is an example.
 	// You can also add annotations here like @role(admin) to add meta data to routes for 
 	// implementing your own middlewares

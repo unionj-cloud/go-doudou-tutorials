@@ -5,7 +5,7 @@
 package db
 
 import (
-	"grpc1/config"
+	"grpc3/config"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/iancoleman/strcase"

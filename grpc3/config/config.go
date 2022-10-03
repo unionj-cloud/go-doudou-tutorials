@@ -6,7 +6,7 @@ package config
 
 import (
 	"github.com/kelseyhightower/envconfig"
-	"github.com/sirupsen/logrus"
+    "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
 )
 
 type Config struct {
@@ -27,7 +27,7 @@ func LoadFromEnv() *Config {
 	var dbconf DbConfig
 	err := envconfig.Process("db", &dbconf)
 	if err != nil {
-		logrus.Panicln("Error processing env", err)
+		zlogger.Panic().Err(err).Msg("Error processing env")
 	}
 	return &Config{
 		dbconf,

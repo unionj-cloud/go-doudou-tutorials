@@ -11,7 +11,7 @@ import (
 	"github.com/klauspost/compress/gzhttp"
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
+	logger "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
 	"github.com/unionj-cloud/helloworld/client"
 	pb "github.com/unionj-cloud/helloworld/transport/grpc"
 	"google.golang.org/grpc"
@@ -80,20 +80,20 @@ func main() {
 
 	tlsCredentials, err := loadTLSCredentials()
 	if err != nil {
-		logger.Fatal("cannot load TLS credentials: ", err)
+		logger.Fatal().Err(err).Msg("cannot load TLS credentials")
 	}
 
 	//transportOption := grpc.WithTransportCredentials(insecure.NewCredentials())
 	transportOption := grpc.WithTransportCredentials(tlsCredentials)
 
 	// Set up a connection to the server.
-	grpcConn, err := grpc.Dial("localhost:6061", transportOption)
+	grpcConn, err := grpc.Dial("localhost:50051", transportOption)
 	if err != nil {
-		logger.Fatalf("did not connect: %v", err)
+		logger.Fatal().Err(err).Msg("did not connect")
 	}
 	defer grpcConn.Close()
 
-	svc := service.NewEnumDemo(conf, pb.NewHelloworldRpcClient(grpcConn), client.NewHelloworldClient(ddhttp.WithClient(newClient())))
+	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn), client.NewHelloworldClient(ddhttp.WithClient(newClient())))
 	handler := httpsrv.NewEnumDemoHandler(svc)
 	srv := ddhttp.NewHttpRouterSrv()
 	srv.AddRoute(httpsrv.Routes(handler)...)

@@ -14,69 +14,69 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// HelloworldRpcClient is the client API for HelloworldRpc service.
+// HelloworldServiceClient is the client API for HelloworldService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type HelloworldRpcClient interface {
+type HelloworldServiceClient interface {
 	// Greeting 问候接口
 	GreetingRpc(ctx context.Context, in *GreetingRpcRequest, opts ...grpc.CallOption) (*GreetingRpcResponse, error)
 	// Bye 再见接口
 	ByeRpc(ctx context.Context, in *ByeRpcRequest, opts ...grpc.CallOption) (*ByeRpcResponse, error)
-	BiStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldRpc_BiStreamRpcClient, error)
-	ClientStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldRpc_ClientStreamRpcClient, error)
-	ServerStreamRpc(ctx context.Context, in *Order, opts ...grpc.CallOption) (HelloworldRpc_ServerStreamRpcClient, error)
+	BiStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldService_BiStreamRpcClient, error)
+	ClientStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldService_ClientStreamRpcClient, error)
+	ServerStreamRpc(ctx context.Context, in *Order, opts ...grpc.CallOption) (HelloworldService_ServerStreamRpcClient, error)
 }
 
-type helloworldRpcClient struct {
+type helloworldServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewHelloworldRpcClient(cc grpc.ClientConnInterface) HelloworldRpcClient {
-	return &helloworldRpcClient{cc}
+func NewHelloworldServiceClient(cc grpc.ClientConnInterface) HelloworldServiceClient {
+	return &helloworldServiceClient{cc}
 }
 
-func (c *helloworldRpcClient) GreetingRpc(ctx context.Context, in *GreetingRpcRequest, opts ...grpc.CallOption) (*GreetingRpcResponse, error) {
+func (c *helloworldServiceClient) GreetingRpc(ctx context.Context, in *GreetingRpcRequest, opts ...grpc.CallOption) (*GreetingRpcResponse, error) {
 	out := new(GreetingRpcResponse)
-	err := c.cc.Invoke(ctx, "/helloworld.HelloworldRpc/GreetingRpc", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/helloworld.HelloworldService/GreetingRpc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *helloworldRpcClient) ByeRpc(ctx context.Context, in *ByeRpcRequest, opts ...grpc.CallOption) (*ByeRpcResponse, error) {
+func (c *helloworldServiceClient) ByeRpc(ctx context.Context, in *ByeRpcRequest, opts ...grpc.CallOption) (*ByeRpcResponse, error) {
 	out := new(ByeRpcResponse)
-	err := c.cc.Invoke(ctx, "/helloworld.HelloworldRpc/ByeRpc", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/helloworld.HelloworldService/ByeRpc", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *helloworldRpcClient) BiStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldRpc_BiStreamRpcClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HelloworldRpc_ServiceDesc.Streams[0], "/helloworld.HelloworldRpc/BiStreamRpc", opts...)
+func (c *helloworldServiceClient) BiStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldService_BiStreamRpcClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloworldService_ServiceDesc.Streams[0], "/helloworld.HelloworldService/BiStreamRpc", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &helloworldRpcBiStreamRpcClient{stream}
+	x := &helloworldServiceBiStreamRpcClient{stream}
 	return x, nil
 }
 
-type HelloworldRpc_BiStreamRpcClient interface {
+type HelloworldService_BiStreamRpcClient interface {
 	Send(*Order) error
 	Recv() (*Page, error)
 	grpc.ClientStream
 }
 
-type helloworldRpcBiStreamRpcClient struct {
+type helloworldServiceBiStreamRpcClient struct {
 	grpc.ClientStream
 }
 
-func (x *helloworldRpcBiStreamRpcClient) Send(m *Order) error {
+func (x *helloworldServiceBiStreamRpcClient) Send(m *Order) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *helloworldRpcBiStreamRpcClient) Recv() (*Page, error) {
+func (x *helloworldServiceBiStreamRpcClient) Recv() (*Page, error) {
 	m := new(Page)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -84,30 +84,30 @@ func (x *helloworldRpcBiStreamRpcClient) Recv() (*Page, error) {
 	return m, nil
 }
 
-func (c *helloworldRpcClient) ClientStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldRpc_ClientStreamRpcClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HelloworldRpc_ServiceDesc.Streams[1], "/helloworld.HelloworldRpc/ClientStreamRpc", opts...)
+func (c *helloworldServiceClient) ClientStreamRpc(ctx context.Context, opts ...grpc.CallOption) (HelloworldService_ClientStreamRpcClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloworldService_ServiceDesc.Streams[1], "/helloworld.HelloworldService/ClientStreamRpc", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &helloworldRpcClientStreamRpcClient{stream}
+	x := &helloworldServiceClientStreamRpcClient{stream}
 	return x, nil
 }
 
-type HelloworldRpc_ClientStreamRpcClient interface {
+type HelloworldService_ClientStreamRpcClient interface {
 	Send(*Order) error
 	CloseAndRecv() (*Page, error)
 	grpc.ClientStream
 }
 
-type helloworldRpcClientStreamRpcClient struct {
+type helloworldServiceClientStreamRpcClient struct {
 	grpc.ClientStream
 }
 
-func (x *helloworldRpcClientStreamRpcClient) Send(m *Order) error {
+func (x *helloworldServiceClientStreamRpcClient) Send(m *Order) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *helloworldRpcClientStreamRpcClient) CloseAndRecv() (*Page, error) {
+func (x *helloworldServiceClientStreamRpcClient) CloseAndRecv() (*Page, error) {
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
@@ -118,12 +118,12 @@ func (x *helloworldRpcClientStreamRpcClient) CloseAndRecv() (*Page, error) {
 	return m, nil
 }
 
-func (c *helloworldRpcClient) ServerStreamRpc(ctx context.Context, in *Order, opts ...grpc.CallOption) (HelloworldRpc_ServerStreamRpcClient, error) {
-	stream, err := c.cc.NewStream(ctx, &HelloworldRpc_ServiceDesc.Streams[2], "/helloworld.HelloworldRpc/ServerStreamRpc", opts...)
+func (c *helloworldServiceClient) ServerStreamRpc(ctx context.Context, in *Order, opts ...grpc.CallOption) (HelloworldService_ServerStreamRpcClient, error) {
+	stream, err := c.cc.NewStream(ctx, &HelloworldService_ServiceDesc.Streams[2], "/helloworld.HelloworldService/ServerStreamRpc", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &helloworldRpcServerStreamRpcClient{stream}
+	x := &helloworldServiceServerStreamRpcClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -133,16 +133,16 @@ func (c *helloworldRpcClient) ServerStreamRpc(ctx context.Context, in *Order, op
 	return x, nil
 }
 
-type HelloworldRpc_ServerStreamRpcClient interface {
+type HelloworldService_ServerStreamRpcClient interface {
 	Recv() (*Page, error)
 	grpc.ClientStream
 }
 
-type helloworldRpcServerStreamRpcClient struct {
+type helloworldServiceServerStreamRpcClient struct {
 	grpc.ClientStream
 }
 
-func (x *helloworldRpcServerStreamRpcClient) Recv() (*Page, error) {
+func (x *helloworldServiceServerStreamRpcClient) Recv() (*Page, error) {
 	m := new(Page)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -150,107 +150,107 @@ func (x *helloworldRpcServerStreamRpcClient) Recv() (*Page, error) {
 	return m, nil
 }
 
-// HelloworldRpcServer is the server API for HelloworldRpc service.
-// All implementations must embed UnimplementedHelloworldRpcServer
+// HelloworldServiceServer is the server API for HelloworldService service.
+// All implementations must embed UnimplementedHelloworldServiceServer
 // for forward compatibility
-type HelloworldRpcServer interface {
+type HelloworldServiceServer interface {
 	// Greeting 问候接口
 	GreetingRpc(context.Context, *GreetingRpcRequest) (*GreetingRpcResponse, error)
 	// Bye 再见接口
 	ByeRpc(context.Context, *ByeRpcRequest) (*ByeRpcResponse, error)
-	BiStreamRpc(HelloworldRpc_BiStreamRpcServer) error
-	ClientStreamRpc(HelloworldRpc_ClientStreamRpcServer) error
-	ServerStreamRpc(*Order, HelloworldRpc_ServerStreamRpcServer) error
-	mustEmbedUnimplementedHelloworldRpcServer()
+	BiStreamRpc(HelloworldService_BiStreamRpcServer) error
+	ClientStreamRpc(HelloworldService_ClientStreamRpcServer) error
+	ServerStreamRpc(*Order, HelloworldService_ServerStreamRpcServer) error
+	mustEmbedUnimplementedHelloworldServiceServer()
 }
 
-// UnimplementedHelloworldRpcServer must be embedded to have forward compatible implementations.
-type UnimplementedHelloworldRpcServer struct {
+// UnimplementedHelloworldServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedHelloworldServiceServer struct {
 }
 
-func (UnimplementedHelloworldRpcServer) GreetingRpc(context.Context, *GreetingRpcRequest) (*GreetingRpcResponse, error) {
+func (UnimplementedHelloworldServiceServer) GreetingRpc(context.Context, *GreetingRpcRequest) (*GreetingRpcResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GreetingRpc not implemented")
 }
-func (UnimplementedHelloworldRpcServer) ByeRpc(context.Context, *ByeRpcRequest) (*ByeRpcResponse, error) {
+func (UnimplementedHelloworldServiceServer) ByeRpc(context.Context, *ByeRpcRequest) (*ByeRpcResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ByeRpc not implemented")
 }
-func (UnimplementedHelloworldRpcServer) BiStreamRpc(HelloworldRpc_BiStreamRpcServer) error {
+func (UnimplementedHelloworldServiceServer) BiStreamRpc(HelloworldService_BiStreamRpcServer) error {
 	return status.Errorf(codes.Unimplemented, "method BiStreamRpc not implemented")
 }
-func (UnimplementedHelloworldRpcServer) ClientStreamRpc(HelloworldRpc_ClientStreamRpcServer) error {
+func (UnimplementedHelloworldServiceServer) ClientStreamRpc(HelloworldService_ClientStreamRpcServer) error {
 	return status.Errorf(codes.Unimplemented, "method ClientStreamRpc not implemented")
 }
-func (UnimplementedHelloworldRpcServer) ServerStreamRpc(*Order, HelloworldRpc_ServerStreamRpcServer) error {
+func (UnimplementedHelloworldServiceServer) ServerStreamRpc(*Order, HelloworldService_ServerStreamRpcServer) error {
 	return status.Errorf(codes.Unimplemented, "method ServerStreamRpc not implemented")
 }
-func (UnimplementedHelloworldRpcServer) mustEmbedUnimplementedHelloworldRpcServer() {}
+func (UnimplementedHelloworldServiceServer) mustEmbedUnimplementedHelloworldServiceServer() {}
 
-// UnsafeHelloworldRpcServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to HelloworldRpcServer will
+// UnsafeHelloworldServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to HelloworldServiceServer will
 // result in compilation errors.
-type UnsafeHelloworldRpcServer interface {
-	mustEmbedUnimplementedHelloworldRpcServer()
+type UnsafeHelloworldServiceServer interface {
+	mustEmbedUnimplementedHelloworldServiceServer()
 }
 
-func RegisterHelloworldRpcServer(s grpc.ServiceRegistrar, srv HelloworldRpcServer) {
-	s.RegisterService(&HelloworldRpc_ServiceDesc, srv)
+func RegisterHelloworldServiceServer(s grpc.ServiceRegistrar, srv HelloworldServiceServer) {
+	s.RegisterService(&HelloworldService_ServiceDesc, srv)
 }
 
-func _HelloworldRpc_GreetingRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _HelloworldService_GreetingRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GreetingRpcRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HelloworldRpcServer).GreetingRpc(ctx, in)
+		return srv.(HelloworldServiceServer).GreetingRpc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.HelloworldRpc/GreetingRpc",
+		FullMethod: "/helloworld.HelloworldService/GreetingRpc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldRpcServer).GreetingRpc(ctx, req.(*GreetingRpcRequest))
+		return srv.(HelloworldServiceServer).GreetingRpc(ctx, req.(*GreetingRpcRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HelloworldRpc_ByeRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _HelloworldService_ByeRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ByeRpcRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HelloworldRpcServer).ByeRpc(ctx, in)
+		return srv.(HelloworldServiceServer).ByeRpc(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/helloworld.HelloworldRpc/ByeRpc",
+		FullMethod: "/helloworld.HelloworldService/ByeRpc",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HelloworldRpcServer).ByeRpc(ctx, req.(*ByeRpcRequest))
+		return srv.(HelloworldServiceServer).ByeRpc(ctx, req.(*ByeRpcRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HelloworldRpc_BiStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(HelloworldRpcServer).BiStreamRpc(&helloworldRpcBiStreamRpcServer{stream})
+func _HelloworldService_BiStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HelloworldServiceServer).BiStreamRpc(&helloworldServiceBiStreamRpcServer{stream})
 }
 
-type HelloworldRpc_BiStreamRpcServer interface {
+type HelloworldService_BiStreamRpcServer interface {
 	Send(*Page) error
 	Recv() (*Order, error)
 	grpc.ServerStream
 }
 
-type helloworldRpcBiStreamRpcServer struct {
+type helloworldServiceBiStreamRpcServer struct {
 	grpc.ServerStream
 }
 
-func (x *helloworldRpcBiStreamRpcServer) Send(m *Page) error {
+func (x *helloworldServiceBiStreamRpcServer) Send(m *Page) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *helloworldRpcBiStreamRpcServer) Recv() (*Order, error) {
+func (x *helloworldServiceBiStreamRpcServer) Recv() (*Order, error) {
 	m := new(Order)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -258,25 +258,25 @@ func (x *helloworldRpcBiStreamRpcServer) Recv() (*Order, error) {
 	return m, nil
 }
 
-func _HelloworldRpc_ClientStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(HelloworldRpcServer).ClientStreamRpc(&helloworldRpcClientStreamRpcServer{stream})
+func _HelloworldService_ClientStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(HelloworldServiceServer).ClientStreamRpc(&helloworldServiceClientStreamRpcServer{stream})
 }
 
-type HelloworldRpc_ClientStreamRpcServer interface {
+type HelloworldService_ClientStreamRpcServer interface {
 	SendAndClose(*Page) error
 	Recv() (*Order, error)
 	grpc.ServerStream
 }
 
-type helloworldRpcClientStreamRpcServer struct {
+type helloworldServiceClientStreamRpcServer struct {
 	grpc.ServerStream
 }
 
-func (x *helloworldRpcClientStreamRpcServer) SendAndClose(m *Page) error {
+func (x *helloworldServiceClientStreamRpcServer) SendAndClose(m *Page) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *helloworldRpcClientStreamRpcServer) Recv() (*Order, error) {
+func (x *helloworldServiceClientStreamRpcServer) Recv() (*Order, error) {
 	m := new(Order)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
@@ -284,58 +284,58 @@ func (x *helloworldRpcClientStreamRpcServer) Recv() (*Order, error) {
 	return m, nil
 }
 
-func _HelloworldRpc_ServerStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
+func _HelloworldService_ServerStreamRpc_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Order)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(HelloworldRpcServer).ServerStreamRpc(m, &helloworldRpcServerStreamRpcServer{stream})
+	return srv.(HelloworldServiceServer).ServerStreamRpc(m, &helloworldServiceServerStreamRpcServer{stream})
 }
 
-type HelloworldRpc_ServerStreamRpcServer interface {
+type HelloworldService_ServerStreamRpcServer interface {
 	Send(*Page) error
 	grpc.ServerStream
 }
 
-type helloworldRpcServerStreamRpcServer struct {
+type helloworldServiceServerStreamRpcServer struct {
 	grpc.ServerStream
 }
 
-func (x *helloworldRpcServerStreamRpcServer) Send(m *Page) error {
+func (x *helloworldServiceServerStreamRpcServer) Send(m *Page) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-// HelloworldRpc_ServiceDesc is the grpc.ServiceDesc for HelloworldRpc service.
+// HelloworldService_ServiceDesc is the grpc.ServiceDesc for HelloworldService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var HelloworldRpc_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "helloworld.HelloworldRpc",
-	HandlerType: (*HelloworldRpcServer)(nil),
+var HelloworldService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "helloworld.HelloworldService",
+	HandlerType: (*HelloworldServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GreetingRpc",
-			Handler:    _HelloworldRpc_GreetingRpc_Handler,
+			Handler:    _HelloworldService_GreetingRpc_Handler,
 		},
 		{
 			MethodName: "ByeRpc",
-			Handler:    _HelloworldRpc_ByeRpc_Handler,
+			Handler:    _HelloworldService_ByeRpc_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "BiStreamRpc",
-			Handler:       _HelloworldRpc_BiStreamRpc_Handler,
+			Handler:       _HelloworldService_BiStreamRpc_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
 		{
 			StreamName:    "ClientStreamRpc",
-			Handler:       _HelloworldRpc_ClientStreamRpc_Handler,
+			Handler:       _HelloworldService_ClientStreamRpc_Handler,
 			ClientStreams: true,
 		},
 		{
 			StreamName:    "ServerStreamRpc",
-			Handler:       _HelloworldRpc_ServerStreamRpc_Handler,
+			Handler:       _HelloworldService_ServerStreamRpc_Handler,
 			ServerStreams: true,
 		},
 	},

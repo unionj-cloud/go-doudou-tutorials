@@ -7,13 +7,12 @@ import (
 	"github.com/unionj-cloud/helloworld/client"
 	"time"
 
-	"github.com/unionj-cloud/go-doudou/framework/logger"
 	pb "github.com/unionj-cloud/helloworld/transport/grpc"
 )
 
 type EnumDemoImpl struct {
 	conf       *config.Config
-	grpcClient pb.HelloworldRpcClient
+	grpcClient pb.HelloworldServiceClient
 	restClient *client.HelloworldClient
 }
 
@@ -1036,7 +1035,7 @@ func (receiver *EnumDemoImpl) GetKeyboards5(ctx context.Context, layout ...vo.Ke
 	return data, nil
 }
 
-func NewEnumDemo(conf *config.Config, grpcClient pb.HelloworldRpcClient, restClient *client.HelloworldClient) EnumDemo {
+func NewEnumDemo(conf *config.Config, grpcClient pb.HelloworldServiceClient, restClient *client.HelloworldClient) EnumDemo {
 	return &EnumDemoImpl{
 		conf:       conf,
 		grpcClient: grpcClient,
@@ -1054,7 +1053,7 @@ func (receiver *EnumDemoImpl) Greeting(ctx context.Context, greeting string) (da
 	defer cancel()
 	r, err := receiver.grpcClient.GreetingRpc(ctx, &pb.GreetingRpcRequest{Greeting: greeting})
 	if err != nil {
-		logger.Fatalf("could not greet: %v", err)
+		panic(err)
 	}
 	return r.Data, nil
 }

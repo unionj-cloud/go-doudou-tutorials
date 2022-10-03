@@ -12,7 +12,7 @@ require (
 	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou v1.3.0
+	github.com/unionj-cloud/go-doudou v1.3.2
 	github.com/unionj-cloud/helloworld v0.0.0
 	google.golang.org/grpc v1.38.0
 )

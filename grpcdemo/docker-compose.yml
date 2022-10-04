@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  grpcdemo-client:
+    container_name: grpcdemo-client
+    hostname: grpcdemo-client
+    image: grpcdemo-client:latest
+    environment:
+      - HELLOWORLD=http://grpcdemo-server:6060
+      - DEP_SERVER_ADDR=grpcdemo-server:50051
+    ports:
+      - "6060:6060"
+    volumes:
+      - $PWD/cert:/repo/cert
+    networks:
+      - tutorial
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://admin:admin@localhost:6060/go-doudou/prometheus" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    depends_on:
+      grpcdemo-server:
+        condition: service_healthy
+
+  grpcdemo-server:
+    container_name: grpcdemo-server
+    hostname: grpcdemo-server
+    image: grpcdemo-server:latest
+    volumes:
+      - $PWD/cert:/repo/cert
+    networks:
+      - tutorial
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://admin:admin@localhost:6060/go-doudou/prometheus" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  tutorial:
+    name: tutorial
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

@@ -1,1 +1,1 @@
-subjectAltName=DNS:*.unionj.cloud,DNS:*.unionj1.cloud,DNS:localhost,IP:0.0.0.0
+subjectAltName=DNS:*.unionj.cloud,DNS:*.unionj1.cloud,DNS:localhost,DNS:grpcdemo-server,IP:0.0.0.0

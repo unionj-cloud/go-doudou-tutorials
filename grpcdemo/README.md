@@ -7,7 +7,7 @@ This is a demo project for showing how to use `go-doudou` to develop grpc servic
 Server is providing both http server listening on port 8080 for RESTful service and grpc server listening on port 50051
 for grpc service in single process when started. There is no any real world business logic.
 
-## About client
+## About Client
 
 We won't directly take test on server, instead we will test client to see how client talks to server.  
 
@@ -39,7 +39,7 @@ If you want to run them on docker (you should install docker-compose at first if
 3. Run all services: `make up`
 4. Shutdown all services: `make down`
 
-## How to test
+## How to Test
 
 You can use any http client tool or load testing tool like postman or wrk. 
 Recommend to use [hey](https://github.com/rakyll/hey).
@@ -263,7 +263,7 @@ The command `go generate ./...` will run two go-doudou commands under the hood:
 - `go-doudou svc http --handler --doc -c`: generate code for RESTful service
 - `go-doudou svc grpc`: generate code for grpc service
 
-Both of two are very safe, you can feel free to run them repeatedly once you made changes in `svc.go` file.
+Both of two are very safe, you can feel free to run them repeatedly once you made changes to `svc.go` file.
 
 ## Conclusion
 

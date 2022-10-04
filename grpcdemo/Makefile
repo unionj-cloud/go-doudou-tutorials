@@ -1,6 +1,3 @@
-gen:
-	go-doudou svc grpc; protoc --proto_path=. --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative transport/grpc/helloworld.proto
-
 server-tls:
 	cd server; export GDD_PORT=8080 && go run cmd/main.go; cd ..
 

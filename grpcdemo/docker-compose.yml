@@ -35,7 +35,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://admin:admin@localhost:6060/go-doudou/prometheus" ]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 3
 
 networks:
   tutorial:

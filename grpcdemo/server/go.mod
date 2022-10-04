@@ -19,7 +19,7 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/zerolog v1.28.0
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou v1.3.2
+	github.com/unionj-cloud/go-doudou v1.3.3
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
 )

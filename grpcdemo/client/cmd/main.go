@@ -12,10 +12,12 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/transport/httpsrv"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/client"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
+	ddclient "github.com/unionj-cloud/go-doudou/framework/client"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	logger "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
+	"github.com/unionj-cloud/go-doudou/framework/registry/nacos"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -76,24 +78,25 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 }
 
 func main() {
+	defer nacos.CloseNamingClient()
 	conf := config.LoadFromEnv()
 
-	tlsCredentials, err := loadTLSCredentials()
-	if err != nil {
-		logger.Fatal().Err(err).Msg("cannot load TLS credentials")
-	}
+	//tlsCredentials, err := loadTLSCredentials()
+	//if err != nil {
+	//	logger.Fatal().Err(err).Msg("cannot load TLS credentials")
+	//}
 
-	//transportOption := grpc.WithTransportCredentials(insecure.NewCredentials())
-	transportOption := grpc.WithTransportCredentials(tlsCredentials)
+	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
+	//tlsOption := grpc.WithTransportCredentials(tlsCredentials)
 
 	// Set up a connection to the server.
-	grpcConn, err := grpc.Dial(conf.DepConf.ServerAddr, transportOption)
-	if err != nil {
-		logger.Fatal().Err(err).Msg("did not connect")
-	}
+	grpcConn := nacos.NewWRRGrpcClientConn(nacos.NacosConfig{
+		ServiceName: "grpcdemo-server_grpc",
+	}, tlsOption)
 	defer grpcConn.Close()
 
-	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn), client.NewHelloworldClient(ddhttp.WithClient(newClient())))
+	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
+		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(nacos.NewNacosWRRServiceProvider("grpcdemo-server"))))
 	handler := httpsrv.NewEnumDemoHandler(svc)
 	srv := ddhttp.NewHttpRouterSrv()
 	srv.AddRoute(httpsrv.Routes(handler)...)

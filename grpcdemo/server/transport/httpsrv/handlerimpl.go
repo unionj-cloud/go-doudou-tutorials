@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	ddmodel "github.com/unionj-cloud/go-doudou/framework/http/model"
+
 	"github.com/pkg/errors"
 	service "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
@@ -41,7 +43,7 @@ func (receiver *HelloworldHandlerImpl) Greeting(_writer http.ResponseWriter, _re
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			http.Error(_writer, err.Error(), http.StatusBadRequest)
-		} else if _err, ok := err.(*ddhttp.BizError); ok {
+		} else if _err, ok := err.(*ddmodel.BizError); ok {
 			http.Error(_writer, _err.Error(), _err.StatusCode)
 		} else {
 			http.Error(_writer, err.Error(), http.StatusInternalServerError)
@@ -89,7 +91,7 @@ func (receiver *HelloworldHandlerImpl) Bye(_writer http.ResponseWriter, _req *ht
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			http.Error(_writer, err.Error(), http.StatusBadRequest)
-		} else if _err, ok := err.(*ddhttp.BizError); ok {
+		} else if _err, ok := err.(*ddmodel.BizError); ok {
 			http.Error(_writer, _err.Error(), _err.StatusCode)
 		} else {
 			http.Error(_writer, err.Error(), http.StatusInternalServerError)
@@ -135,7 +137,7 @@ func (receiver *HelloworldHandlerImpl) BiStream(_writer http.ResponseWriter, _re
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			http.Error(_writer, err.Error(), http.StatusBadRequest)
-		} else if _err, ok := err.(*ddhttp.BizError); ok {
+		} else if _err, ok := err.(*ddmodel.BizError); ok {
 			http.Error(_writer, _err.Error(), _err.StatusCode)
 		} else {
 			http.Error(_writer, err.Error(), http.StatusInternalServerError)
@@ -180,7 +182,7 @@ func (receiver *HelloworldHandlerImpl) ClientStream(_writer http.ResponseWriter,
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			http.Error(_writer, err.Error(), http.StatusBadRequest)
-		} else if _err, ok := err.(*ddhttp.BizError); ok {
+		} else if _err, ok := err.(*ddmodel.BizError); ok {
 			http.Error(_writer, _err.Error(), _err.StatusCode)
 		} else {
 			http.Error(_writer, err.Error(), http.StatusInternalServerError)
@@ -225,7 +227,7 @@ func (receiver *HelloworldHandlerImpl) ServerStream(_writer http.ResponseWriter,
 	if err != nil {
 		if errors.Is(err, context.Canceled) {
 			http.Error(_writer, err.Error(), http.StatusBadRequest)
-		} else if _err, ok := err.(*ddhttp.BizError); ok {
+		} else if _err, ok := err.(*ddmodel.BizError); ok {
 			http.Error(_writer, _err.Error(), _err.StatusCode)
 		} else {
 			http.Error(_writer, err.Error(), http.StatusInternalServerError)

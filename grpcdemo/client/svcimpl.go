@@ -2,13 +2,16 @@ package service
 
 import (
 	"context"
+	"time"
+
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/vo"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/client"
-	"time"
 
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
 )
+
+var _ EnumDemo = (*EnumDemoImpl)(nil)
 
 type EnumDemoImpl struct {
 	conf       *config.Config

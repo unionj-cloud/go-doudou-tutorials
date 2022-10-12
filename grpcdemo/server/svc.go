@@ -5,27 +5,27 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/vo"
 )
 
-//go:generate go-doudou svc http --handler --doc -c
+//go:generate go-doudou svc http --doc -c
 //go:generate go-doudou svc grpc
 
 // Helloworld 单体服务
 type Helloworld interface {
 	// Greeting 问候接口
 	Greeting(ctx context.Context,
-	// 入参
+		// 入参
 		greeting string) (
-	// 出参
+		// 出参
 		data string,
-	// 错误信息
+		// 错误信息
 		err error)
 
 	// Bye 再见接口
 	Bye(ctx context.Context,
-	// 入参
+		// 入参
 		greeting string) (
-	// 出参
+		// 出参
 		data string,
-	// 错误信息
+		// 错误信息
 		err error)
 
 	BiStream(ctx context.Context, stream vo.Order) (stream1 vo.Page, err error)

@@ -5,7 +5,7 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/vo"
 )
 
-//go:generate go-doudou svc http --handler --doc
+//go:generate go-doudou svc http --doc
 
 type EnumDemo interface {
 	GetKeyboard(ctx context.Context, layout vo.KeyboardLayout) (data string, err error)
@@ -22,18 +22,18 @@ type EnumDemo interface {
 
 	// Greeting 问候接口
 	Greeting(ctx context.Context,
-	// 入参
+		// 入参
 		greeting string) (
-	// 出参
+		// 出参
 		data string,
-	// 错误信息
+		// 错误信息
 		err error)
 	// Greeting 问候接口
 	Greeting1(ctx context.Context,
-	// 入参
+		// 入参
 		greeting string) (
-	// 出参
+		// 出参
 		data string,
-	// 错误信息
+		// 错误信息
 		err error)
 }

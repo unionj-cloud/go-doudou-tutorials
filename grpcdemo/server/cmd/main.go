@@ -18,6 +18,7 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/httpsrv"
 	ddgrpc "github.com/unionj-cloud/go-doudou/framework/grpc"
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
+	"github.com/unionj-cloud/go-doudou/framework/registry/nacos"
 	logger "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -59,15 +60,17 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 }
 
 func main() {
+	defer nacos.CloseNamingClient()
 	conf := config.LoadFromEnv()
 	svc := service.NewHelloworld(conf)
 
 	go func() {
-		tlsCredentials, err := loadTLSCredentials()
-		if err != nil {
-			logger.Fatal().Err(err).Msg("cannot load TLS credentials")
-		}
-		grpcServer := ddgrpc.NewGrpcServer(grpc.Creds(tlsCredentials),
+		//tlsCredentials, err := loadTLSCredentials()
+		//if err != nil {
+		//	logger.Fatal().Err(err).Msg("cannot load TLS credentials")
+		//}
+		grpcServer := ddgrpc.NewGrpcServer(
+			//grpc.Creds(tlsCredentials),
 			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 				grpc_ctxtags.StreamServerInterceptor(),
 				grpc_opentracing.StreamServerInterceptor(),

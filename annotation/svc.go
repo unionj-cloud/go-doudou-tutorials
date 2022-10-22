@@ -2,7 +2,8 @@ package service
 
 import "context"
 
-//go:generate go-doudou svc http --doc
+//go:generate go-doudou svc http
+//go:generate go-doudou svc grpc
 
 type Annotation interface {
 	// 此接口可公开访问，无需校验登录和权限

@@ -12,9 +12,9 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/transport/httpsrv"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/client"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
-	ddclient "github.com/unionj-cloud/go-doudou/framework/client"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/registry/nacos"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	ddclient "github.com/unionj-cloud/go-doudou/v2/framework/restclient"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -98,7 +98,7 @@ func main() {
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
 		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(nacos.NewNacosWRRServiceProvider("grpcdemo-server"))))
 	handler := httpsrv.NewEnumDemoHandler(svc)
-	srv := ddhttp.NewHttpRouterSrv()
+	srv := rest.NewRestServer()
 	srv.AddRoute(httpsrv.Routes(handler)...)
 	srv.Run()
 }

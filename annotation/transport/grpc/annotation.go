@@ -4,9 +4,11 @@
  */
 package grpc
 
-import "github.com/unionj-cloud/go-doudou/v2/framework/rest"
+import (
+	"github.com/unionj-cloud/go-doudou/v2/framework"
+)
 
-var MethodAnnotationStore = rest.AnnotationStore{
+var MethodAnnotationStore = framework.AnnotationStore{
 	"GetUserRpc": {
 		{
 			Name: "@role",

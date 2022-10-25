@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/kelseyhightower/envconfig"
-	"github.com/unionj-cloud/go-doudou/toolkit/zlogger"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 )
 
 type Config struct {

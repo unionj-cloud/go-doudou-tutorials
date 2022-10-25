@@ -7,6 +7,7 @@ package httpsrv
 import (
 	"net/http"
 
+	"github.com/unionj-cloud/go-doudou/v2/framework"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 )
 
@@ -39,7 +40,7 @@ func Routes(handler AnnotationHandler) []rest.Route {
 	}
 }
 
-var RouteAnnotationStore = rest.AnnotationStore{
+var RouteAnnotationStore = framework.AnnotationStore{
 	"GetUser": {
 		{
 			Name: "@role",

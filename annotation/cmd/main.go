@@ -10,6 +10,7 @@ import (
 	pb "annotation/transport/grpc"
 	"annotation/transport/httpsrv"
 	"annotation/vo"
+	"context"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -17,14 +18,47 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/opentracing/opentracing-go"
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx/interceptors/grpcx_auth"
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx/interceptors/grpcx_ratelimit"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/memrate"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/tracing"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/peer"
+	"strings"
+	"time"
 )
+
+var _ grpcx_ratelimit.KeyGetter = (*RateLimitKeyGetter)(nil)
+
+type RateLimitKeyGetter struct {
+}
+
+func (r *RateLimitKeyGetter) GetKey(ctx context.Context, _ string) string {
+	var peerAddr string
+	if value, ok := grpc_ctxtags.Extract(ctx).Values()["peer.address"]; ok {
+		peerAddr = value.(string)
+	}
+	if stringutils.IsEmpty(peerAddr) {
+		if value, ok := peer.FromContext(ctx); ok {
+			peerAddr = value.Addr.String()
+		}
+	}
+	return peerAddr[:strings.LastIndex(peerAddr, ":")]
+}
 
 func main() {
 	conf := config.LoadFromEnv()
+
+	tracer, closer := tracing.Init()
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+
 	svc := service.NewAnnotation(conf)
 	handler := httpsrv.NewAnnotationHandler(svc)
 	srv := rest.NewRestServer()
@@ -45,15 +79,22 @@ func main() {
 	}
 
 	go func() {
-		auth := pb.NewAuthInterceptor(userStore)
+		mstore := memrate.NewMemoryStore(func(_ context.Context, store *memrate.MemoryStore, key string) ratelimit.Limiter {
+			return memrate.NewLimiter(10, 30, memrate.WithTimer(10*time.Second, func() {
+				store.DeleteKey(key)
+			}))
+		})
+		rl := grpcx_ratelimit.NewRateLimitInterceptor(grpcx_ratelimit.WithMemoryStore(mstore))
+		keyGetter := &RateLimitKeyGetter{}
+		authorizer := pb.NewAuthInterceptor(userStore)
 		grpcServer := grpcx.NewGrpcServer(
 			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 				grpc_ctxtags.StreamServerInterceptor(),
 				grpc_opentracing.StreamServerInterceptor(),
 				grpc_prometheus.StreamServerInterceptor,
 				logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
-				//ratelimit.StreamServerInterceptor(limiter),
-				auth.Stream(),
+				rl.StreamServerInterceptor(keyGetter),
+				grpcx_auth.StreamServerInterceptor(authorizer),
 				grpc_recovery.StreamServerInterceptor(),
 			)),
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
@@ -61,8 +102,8 @@ func main() {
 				grpc_opentracing.UnaryServerInterceptor(),
 				grpc_prometheus.UnaryServerInterceptor,
 				logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
-				//ratelimit2.UnaryServerInterceptor(limiter),
-				auth.Unary(),
+				rl.UnaryServerInterceptor(keyGetter),
+				grpcx_auth.UnaryServerInterceptor(authorizer),
 				grpc_recovery.UnaryServerInterceptor(),
 			)),
 		)

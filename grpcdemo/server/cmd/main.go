@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -10,19 +11,25 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	service "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/config"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/httpsrv"
-	ddgrpc "github.com/unionj-cloud/go-doudou/framework/grpc"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/registry/nacos"
-	logger "github.com/unionj-cloud/go-doudou/toolkit/zlogger"
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx/interceptors/grpcx_ratelimit"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/memrate"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/peer"
 	"io/ioutil"
+	"strings"
+	"time"
 )
 
 const (
@@ -59,6 +66,24 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 	return credentials.NewTLS(config), nil
 }
 
+var _ grpcx_ratelimit.KeyGetter = (*RateLimitKeyGetter)(nil)
+
+type RateLimitKeyGetter struct {
+}
+
+func (r *RateLimitKeyGetter) GetKey(ctx context.Context, _ string) string {
+	var peerAddr string
+	if value, ok := grpc_ctxtags.Extract(ctx).Values()["peer.address"]; ok {
+		peerAddr = value.(string)
+	}
+	if stringutils.IsEmpty(peerAddr) {
+		if value, ok := peer.FromContext(ctx); ok {
+			peerAddr = value.Addr.String()
+		}
+	}
+	return peerAddr[:strings.LastIndex(peerAddr, ":")]
+}
+
 func main() {
 	defer nacos.CloseNamingClient()
 	conf := config.LoadFromEnv()
@@ -69,22 +94,28 @@ func main() {
 		//if err != nil {
 		//	logger.Fatal().Err(err).Msg("cannot load TLS credentials")
 		//}
-		grpcServer := ddgrpc.NewGrpcServer(
-			//grpc.Creds(tlsCredentials),
+		mstore := memrate.NewMemoryStore(func(_ context.Context, store *memrate.MemoryStore, key string) ratelimit.Limiter {
+			return memrate.NewLimiter(10, 30, memrate.WithTimer(10*time.Second, func() {
+				store.DeleteKey(key)
+			}))
+		})
+		rl := grpcx_ratelimit.NewRateLimitInterceptor(grpcx_ratelimit.WithMemoryStore(mstore))
+		keyGetter := &RateLimitKeyGetter{}
+		grpcServer := grpcx.NewGrpcServer(
 			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 				grpc_ctxtags.StreamServerInterceptor(),
 				grpc_opentracing.StreamServerInterceptor(),
 				grpc_prometheus.StreamServerInterceptor,
-				tags.StreamServerInterceptor(tags.WithFieldExtractor(tags.CodeGenRequestFieldExtractor)),
-				logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(logger.Logger)),
+				logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+				rl.StreamServerInterceptor(keyGetter),
 				grpc_recovery.StreamServerInterceptor(),
 			)),
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 				grpc_ctxtags.UnaryServerInterceptor(),
 				grpc_opentracing.UnaryServerInterceptor(),
 				grpc_prometheus.UnaryServerInterceptor,
-				tags.UnaryServerInterceptor(tags.WithFieldExtractor(tags.CodeGenRequestFieldExtractor)),
-				logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(logger.Logger)),
+				logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+				rl.UnaryServerInterceptor(keyGetter),
 				grpc_recovery.UnaryServerInterceptor(),
 			)),
 		)
@@ -93,7 +124,7 @@ func main() {
 	}()
 
 	handler := httpsrv.NewHelloworldHandler(svc)
-	srv := ddhttp.NewHttpRouterSrv()
+	srv := rest.NewRestServer()
 	srv.AddRoute(httpsrv.Routes(handler)...)
 	srv.Run()
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/vo"
 )
 
-//go:generate go-doudou svc http --doc
+//go:generate go-doudou svc http
 
 type EnumDemo interface {
 	GetKeyboard(ctx context.Context, layout vo.KeyboardLayout) (data string, err error)

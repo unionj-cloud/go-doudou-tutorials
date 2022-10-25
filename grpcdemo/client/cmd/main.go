@@ -12,6 +12,7 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/transport/httpsrv"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/client"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	ddclient "github.com/unionj-cloud/go-doudou/v2/framework/restclient"
@@ -79,6 +80,7 @@ func loadTLSCredentials() (credentials.TransportCredentials, error) {
 
 func main() {
 	defer nacos.CloseNamingClient()
+	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
 
 	//tlsCredentials, err := loadTLSCredentials()
@@ -90,13 +92,18 @@ func main() {
 	//tlsOption := grpc.WithTransportCredentials(tlsCredentials)
 
 	// Set up a connection to the server.
-	grpcConn := nacos.NewWRRGrpcClientConn(nacos.NacosConfig{
-		ServiceName: "grpcdemo-server_grpc",
-	}, tlsOption)
+	//grpcConn := nacos.NewWRRGrpcClientConn(nacos.NacosConfig{
+	//	ServiceName: "grpcdemo-server_grpc",
+	//}, tlsOption)
+	//defer grpcConn.Close()
+
+	grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
 	defer grpcConn.Close()
 
+	//restProvider := nacos.NewNacosWRRServiceProvider("grpcdemo-server")
+	restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
-		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(nacos.NewNacosWRRServiceProvider("grpcdemo-server"))))
+		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(restProvider)))
 	handler := httpsrv.NewEnumDemoHandler(svc)
 	srv := rest.NewRestServer()
 	srv.AddRoute(httpsrv.Routes(handler)...)

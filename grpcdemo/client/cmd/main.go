@@ -97,11 +97,13 @@ func main() {
 	//}, tlsOption)
 	//defer grpcConn.Close()
 
-	grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
+	//grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
+	grpcConn := etcd.NewWRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
 	defer grpcConn.Close()
 
 	//restProvider := nacos.NewNacosWRRServiceProvider("grpcdemo-server")
-	restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
+	//restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
+	restProvider := etcd.NewSWRRServiceProvider("grpcdemo-server_rest")
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
 		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(restProvider)))
 	handler := httpsrv.NewEnumDemoHandler(svc)

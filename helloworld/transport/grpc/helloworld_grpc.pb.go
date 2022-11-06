@@ -18,9 +18,6 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type HelloworldServiceClient interface {
-	// You can define your service methods as your need. Below is an example.
-	// You can also add annotations here like @role(admin) to add meta data to routes for
-	// implementing your own middlewares
 	GreetingRpc(ctx context.Context, in *GreetingRpcRequest, opts ...grpc.CallOption) (*GreetingRpcResponse, error)
 }
 
@@ -45,9 +42,6 @@ func (c *helloworldServiceClient) GreetingRpc(ctx context.Context, in *GreetingR
 // All implementations must embed UnimplementedHelloworldServiceServer
 // for forward compatibility
 type HelloworldServiceServer interface {
-	// You can define your service methods as your need. Below is an example.
-	// You can also add annotations here like @role(admin) to add meta data to routes for
-	// implementing your own middlewares
 	GreetingRpc(context.Context, *GreetingRpcRequest) (*GreetingRpcResponse, error)
 	mustEmbedUnimplementedHelloworldServiceServer()
 }

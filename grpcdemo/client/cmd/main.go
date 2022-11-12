@@ -98,7 +98,7 @@ func main() {
 	//defer grpcConn.Close()
 
 	//grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
-	grpcConn := etcd.NewWRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
+	grpcConn := etcd.NewSWRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
 	defer grpcConn.Close()
 
 	//restProvider := nacos.NewNacosWRRServiceProvider("grpcdemo-server")

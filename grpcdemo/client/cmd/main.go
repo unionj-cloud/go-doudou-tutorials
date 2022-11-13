@@ -5,8 +5,12 @@ import (
 	"crypto/x509"
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/klauspost/compress/gzhttp"
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
+	"github.com/opentracing/opentracing-go"
 	service "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/client/transport/httpsrv"
@@ -16,7 +20,9 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	ddclient "github.com/unionj-cloud/go-doudou/v2/framework/restclient"
+	"github.com/unionj-cloud/go-doudou/v2/framework/tracing"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"io/ioutil"
@@ -83,6 +89,10 @@ func main() {
 	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
 
+	tracer, closer := tracing.Init()
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+
 	//tlsCredentials, err := loadTLSCredentials()
 	//if err != nil {
 	//	logger.Fatal().Err(err).Msg("cannot load TLS credentials")
@@ -91,19 +101,34 @@ func main() {
 	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
 	//tlsOption := grpc.WithTransportCredentials(tlsCredentials)
 
-	// Set up a connection to the server.
-	//grpcConn := nacos.NewWRRGrpcClientConn(nacos.NacosConfig{
-	//	ServiceName: "grpcdemo-server_grpc",
-	//}, tlsOption)
-	//defer grpcConn.Close()
+	opts := []grpc_retry.CallOption{
+		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(100 * time.Millisecond)),
+		grpc_retry.WithCodes(codes.NotFound, codes.Aborted),
+	}
 
-	//grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
-	grpcConn := etcd.NewSWRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
+	dialOptions := []grpc.DialOption{
+		tlsOption,
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+			grpc_opentracing.StreamClientInterceptor(),
+			grpc_retry.StreamClientInterceptor(opts...),
+		)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+			grpc_opentracing.UnaryClientInterceptor(),
+			grpc_retry.UnaryClientInterceptor(opts...),
+		)),
+	}
+
+	// Set up a connection to the server.
+	grpcConn := nacos.NewWRRGrpcClientConn(nacos.NacosConfig{
+		ServiceName: "grpcdemo-server_grpc",
+	}, dialOptions...)
+	//grpcConn := etcd.NewRRGrpcClientConn("grpcdemo-server_grpc", dialOptions...)
+	//grpcConn := etcd.NewSWRRGrpcClientConn("grpcdemo-server_grpc", dialOptions...)
 	defer grpcConn.Close()
 
-	//restProvider := nacos.NewNacosWRRServiceProvider("grpcdemo-server")
+	restProvider := nacos.NewWRRServiceProvider("grpcdemo-server_rest")
 	//restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
-	restProvider := etcd.NewSWRRServiceProvider("grpcdemo-server_rest")
+	//restProvider := etcd.NewSWRRServiceProvider("grpcdemo-server_rest")
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
 		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(restProvider)))
 	handler := httpsrv.NewEnumDemoHandler(svc)

@@ -13,6 +13,7 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/opentracing/opentracing-go"
 	service "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/config"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
@@ -25,6 +26,7 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/tracing"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	"google.golang.org/grpc"
@@ -91,6 +93,11 @@ func main() {
 	defer nacos.CloseNamingClient()
 	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
+
+	tracer, closer := tracing.Init()
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+	
 	svc := service.NewHelloworld(conf)
 
 	go func() {

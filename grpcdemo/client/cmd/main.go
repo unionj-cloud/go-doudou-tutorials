@@ -15,7 +15,7 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	ddclient "github.com/unionj-cloud/go-doudou/v2/framework/restclient"
+	"github.com/unionj-cloud/go-doudou/v2/framework/restclient"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
@@ -101,11 +101,11 @@ func main() {
 	grpcConn := etcd.NewWRRGrpcClientConn("grpcdemo-server_grpc", tlsOption)
 	defer grpcConn.Close()
 
-	//restProvider := nacos.NewNacosWRRServiceProvider("grpcdemo-server")
+	//restProvider := nacos.NewWRRServiceProvider("grpcdemo-server")
 	//restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
 	restProvider := etcd.NewSWRRServiceProvider("grpcdemo-server_rest")
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
-		client.NewHelloworldClient(ddclient.WithClient(newClient()), ddclient.WithProvider(restProvider)))
+		client.NewHelloworldClient(restclient.WithClient(newClient()), restclient.WithProvider(restProvider)))
 	handler := httpsrv.NewEnumDemoHandler(svc)
 	srv := rest.NewRestServer()
 	srv.AddRoute(httpsrv.Routes(handler)...)

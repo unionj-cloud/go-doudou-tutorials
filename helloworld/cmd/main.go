@@ -5,47 +5,36 @@
 package main
 
 import (
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
-	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
-	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	service "github.com/unionj-cloud/helloworld"
 	"github.com/unionj-cloud/helloworld/config"
-	pb "github.com/unionj-cloud/helloworld/transport/grpc"
 	"github.com/unionj-cloud/helloworld/transport/httpsrv"
-	"google.golang.org/grpc"
 )
 
 func main() {
 	conf := config.LoadFromEnv()
 	svc := service.NewHelloworld(conf)
 
-	go func() {
-		grpcServer := grpcx.NewGrpcServer(
-			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
-				grpc_ctxtags.StreamServerInterceptor(),
-				grpc_opentracing.StreamServerInterceptor(),
-				grpc_prometheus.StreamServerInterceptor,
-				logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
-				grpc_recovery.StreamServerInterceptor(),
-			)),
-			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-				grpc_ctxtags.UnaryServerInterceptor(),
-				grpc_opentracing.UnaryServerInterceptor(),
-				grpc_prometheus.UnaryServerInterceptor,
-				logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
-				grpc_recovery.UnaryServerInterceptor(),
-			)),
-		)
-		pb.RegisterHelloworldServiceServer(grpcServer, svc)
-		grpcServer.Run()
-	}()
+	//go func() {
+	//	grpcServer := grpcx.NewGrpcServer(
+	//		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+	//			grpc_ctxtags.StreamServerInterceptor(),
+	//			grpc_opentracing.StreamServerInterceptor(),
+	//			grpc_prometheus.StreamServerInterceptor,
+	//			logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+	//			grpc_recovery.StreamServerInterceptor(),
+	//		)),
+	//		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+	//			grpc_ctxtags.UnaryServerInterceptor(),
+	//			grpc_opentracing.UnaryServerInterceptor(),
+	//			grpc_prometheus.UnaryServerInterceptor,
+	//			logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+	//			grpc_recovery.UnaryServerInterceptor(),
+	//		)),
+	//	)
+	//	pb.RegisterHelloworldServiceServer(grpcServer, svc)
+	//	grpcServer.Run()
+	//}()
 
 	handler := httpsrv.NewHelloworldHandler(svc)
 	srv := rest.NewRestServer()

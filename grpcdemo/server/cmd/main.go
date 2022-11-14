@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
+	"github.com/go-redis/redis/v8"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -12,6 +13,7 @@ import (
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
+	"github.com/opentracing/opentracing-go"
 	service "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server"
 	"github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/config"
 	pb "github.com/unionj-cloud/go-doudou-tutorials/grpcdemo/server/transport/grpc"
@@ -20,9 +22,11 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx/interceptors/grpcx_ratelimit"
 	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit"
 	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/memrate"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/redisrate"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/nacos"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/tracing"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	"google.golang.org/grpc"
@@ -89,6 +93,11 @@ func main() {
 	defer nacos.CloseNamingClient()
 	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
+
+	tracer, closer := tracing.Init()
+	defer closer.Close()
+	opentracing.SetGlobalTracer(tracer)
+	
 	svc := service.NewHelloworld(conf)
 
 	go func() {
@@ -96,12 +105,22 @@ func main() {
 		//if err != nil {
 		//	logger.Fatal().Err(err).Msg("cannot load TLS credentials")
 		//}
+		// memory based rate limiter
 		mstore := memrate.NewMemoryStore(func(_ context.Context, store *memrate.MemoryStore, key string) ratelimit.Limiter {
 			return memrate.NewLimiter(10, 30, memrate.WithTimer(10*time.Second, func() {
 				store.DeleteKey(key)
 			}))
 		})
-		rl := grpcx_ratelimit.NewRateLimitInterceptor(grpcx_ratelimit.WithMemoryStore(mstore))
+		_ = mstore
+
+		// redis based rate limiter
+		rdb := redis.NewClient(&redis.Options{
+			Addr: "localhost:6379",
+		})
+		fn := redisrate.LimitFn(func(ctx context.Context) ratelimit.Limit {
+			return ratelimit.PerSecondBurst(10, 30)
+		})
+		rl := grpcx_ratelimit.NewRateLimitInterceptor(grpcx_ratelimit.WithRedisStore(rdb, fn))
 		keyGetter := &RateLimitKeyGetter{}
 		grpcServer := grpcx.NewGrpcServer(
 			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(

@@ -15,7 +15,7 @@ require (
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/unionj-cloud/go-doudou/v2 v2.0.0
+	github.com/unionj-cloud/go-doudou/v2 v2.0.1
 	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -105,4 +105,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-replace github.com/unionj-cloud/go-doudou/v2 v2.0.0 => /Users/wubin1989/workspace/cloud/go-doudou
+//replace github.com/unionj-cloud/go-doudou/v2 v2.0.0 => /Users/wubin1989/workspace/cloud/go-doudou

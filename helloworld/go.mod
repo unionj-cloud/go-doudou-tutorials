@@ -5,10 +5,6 @@ go 1.18
 require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2 v2.0.0-rc.2
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/iancoleman/strcase v0.1.3
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -18,14 +14,13 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rs/zerolog v1.28.0
 	github.com/slok/goresilience v0.2.0
-	github.com/unionj-cloud/go-doudou/v2 v2.0.0
+	github.com/unionj-cloud/go-doudou/v2 v2.0.1
 	google.golang.org/grpc v1.50.0
 	google.golang.org/protobuf v1.28.1
 )
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704 // indirect
-	github.com/antlr/antlr4 v0.0.0-20200124162019-2d7f727a00b7 // indirect
 	github.com/apolloconfig/agollo/v4 v4.1.1-0.20220323095621-60ed86180f24 // indirect
 	github.com/arl/statsviz v0.4.1 // indirect
 	github.com/ascarter/requestid v0.0.0-20170313220838-5b76ab3d4aee // indirect
@@ -50,7 +45,6 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/hyperjumptech/jiffy v1.0.0 // indirect
 	github.com/jeremywohl/flatten v1.0.1 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
 	github.com/joho/godotenv v1.3.0 // indirect

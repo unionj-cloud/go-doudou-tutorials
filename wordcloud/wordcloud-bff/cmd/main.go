@@ -8,7 +8,6 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/opentracing/opentracing-go"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/sirupsen/logrus"
 	"github.com/slok/goresilience/metrics"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
@@ -19,31 +18,29 @@ import (
 	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
 	"github.com/unionj-cloud/go-doudou/framework/ratelimit"
 	"github.com/unionj-cloud/go-doudou/framework/ratelimit/redisrate"
-	"github.com/unionj-cloud/go-doudou/framework/registry"
 	"github.com/unionj-cloud/go-doudou/framework/tracing"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/restclient"
 	"os"
 )
 
 func main() {
+	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
 
 	var userClient *userclient.UsersvcClient
 	var makerClient *makerclient.WordcloudMakerClient
 	var taskClient *taskclient.WordcloudTaskClient
 
-	if os.Getenv("GDD_MODE") == "micro" {
-		err := registry.NewNode()
-		if err != nil {
-			logrus.Panicln(fmt.Sprintf("%+v", err))
-		}
-		defer registry.Shutdown()
-		userProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-usersvc")
-		userClient = userclient.NewUsersvcClient(ddhttp.WithProvider(userProvider))
+	if os.Getenv("GDD_SERVICE_DISCOVERY_MODE") != "" {
+		userProvider := etcd.NewSWRRServiceProvider("wordcloud-usersvc_rest")
+		userClient = userclient.NewUsersvcClient(restclient.WithProvider(userProvider))
 
-		makerProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-makersvc")
+		makerProvider := etcd.NewSWRRServiceProvider("wordcloud-makersvc_rest")
 		makerClient = makerclient.NewWordcloudMakerClient(ddhttp.WithProvider(makerProvider))
 
-		taskProvider := ddhttp.NewMemberlistServiceProvider("wordcloud-tasksvc")
+		taskProvider := etcd.NewSWRRServiceProvider("wordcloud-tasksvc_rest")
 		taskClient = taskclient.NewWordcloudTaskClient(ddhttp.WithProvider(taskProvider))
 	} else {
 		userClient = userclient.NewUsersvcClient()
@@ -78,7 +75,7 @@ func main() {
 
 	svc := service.NewWordcloudBff(conf, minioClient, makerClientProxy, taskClientProxy, userClientProxy)
 	handler := httpsrv.NewWordcloudBffHandler(svc)
-	srv := ddhttp.NewDefaultHttpSrv()
+	srv := rest.NewRestServer()
 	srv.AddMiddleware(httpsrv.Auth(userClientProxy))
 
 	rdb := redis.NewClient(&redis.Options{

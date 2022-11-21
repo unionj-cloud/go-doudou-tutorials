@@ -18,9 +18,11 @@ import (
 	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
 	taskvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
-	"github.com/unionj-cloud/go-doudou/toolkit/copier"
-	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
+	v3 "github.com/unionj-cloud/go-doudou/v2/toolkit/openapi/v3"
 )
+
+var _ WordcloudBff = (*WordcloudBffImpl)(nil)
 
 type WordcloudBffImpl struct {
 	conf        *config.Config

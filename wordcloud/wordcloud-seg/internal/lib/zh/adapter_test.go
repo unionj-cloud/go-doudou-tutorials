@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/zh"
-	"github.com/unionj-cloud/go-doudou/toolkit/pathutils"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/pathutils"
 	thulac "github.com/unionj-cloud/thulacgo"
 	"path/filepath"
 	"testing"

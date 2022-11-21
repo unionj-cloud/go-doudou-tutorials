@@ -5,6 +5,8 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
 )
 
+//go:generate go-doudou svc grpc
+
 type WordcloudMaker interface {
 	// Make 生成词云图接口
 	// make word cloud image

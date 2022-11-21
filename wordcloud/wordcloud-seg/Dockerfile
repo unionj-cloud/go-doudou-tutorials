@@ -1,4 +1,4 @@
-FROM golang:1.16.6-alpine AS builder
+FROM golang:1.18.8-alpine AS builder
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 RUN apk add --no-cache build-base gcc abuild binutils binutils-doc gcc-doc bash tzdata

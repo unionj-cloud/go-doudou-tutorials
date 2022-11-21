@@ -31,3 +31,8 @@ func NewGrpc3(conf *config.Config) *Grpc3Impl {
 		conf: conf,
 	}
 }
+
+func (receiver *Grpc3Impl) SegRpc(ctx context.Context, request *pb.SegPayload) (*pb.SegResult, error) {
+	//TODO implement me
+	panic("implement me")
+}

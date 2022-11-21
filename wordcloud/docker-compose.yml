@@ -1,59 +1,59 @@
 version: '3.9'
 
 services:
-  prometheus:
-    container_name: prometheus
-    hostname: prometheus
-    image: wubin1989/go-doudou-prometheus-sd:v1.0.2
-    environment:
-      - GDD_SERVICE_NAME=prometheus
-      - PROM_REFRESH_INTERVAL=15s
-      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
-      - GDD_MEM_SUSPICION_MULT=12
-    volumes:
-      - ./prometheus/:/etc/prometheus/
-    ports:
-      - "9090:9090"
-    restart: always
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    networks:
-      - tutorial
+#  prometheus:
+#    container_name: prometheus
+#    hostname: prometheus
+#    image: wubin1989/go-doudou-prometheus-sd:v1.0.2
+#    environment:
+#      - GDD_SERVICE_NAME=prometheus
+#      - PROM_REFRESH_INTERVAL=15s
+#      - GDD_MEM_CIDRS_ALLOWED=172.28.0.0/16
+#      - GDD_MEM_SUSPICION_MULT=12
+#    volumes:
+#      - ./prometheus/:/etc/prometheus/
+#    ports:
+#      - "9090:9090"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 3
+#    networks:
+#      - tutorial
 
-  alertmanager:
-    container_name: alertmanager
-    hostname: alertmanager
-    image: prom/alertmanager:v0.24.0
-    ports:
-      - 9093:9093
-    volumes:
-      - ./alertmanager/:/etc/alertmanager/
-    restart: always
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-      - '--log.level=debug'
-    networks:
-      - tutorial
+#  alertmanager:
+#    container_name: alertmanager
+#    hostname: alertmanager
+#    image: prom/alertmanager:v0.24.0
+#    ports:
+#      - 9093:9093
+#    volumes:
+#      - ./alertmanager/:/etc/alertmanager/
+#    restart: always
+#    command:
+#      - '--config.file=/etc/alertmanager/config.yml'
+#      - '--storage.path=/alertmanager'
+#      - '--log.level=debug'
+#    networks:
+#      - tutorial
 
-  dingtalkalert:
-    container_name: dingtalkalert
-    hostname: dingtalkalert
-    image: timonwong/prometheus-webhook-dingtalk:latest
-    ports:
-      - 8060:8060
-    volumes:
-      - ./dingtalkalert/:/etc/prometheus-webhook-dingtalk/
-    restart: always
-    command:
-      - '--config.file=/etc/prometheus-webhook-dingtalk/config.yml'
-      - '--log.level=debug'
-      - '--web.enable-ui'
-    networks:
-      - tutorial
+#  dingtalkalert:
+#    container_name: dingtalkalert
+#    hostname: dingtalkalert
+#    image: timonwong/prometheus-webhook-dingtalk:latest
+#    ports:
+#      - 8060:8060
+#    volumes:
+#      - ./dingtalkalert/:/etc/prometheus-webhook-dingtalk/
+#    restart: always
+#    command:
+#      - '--config.file=/etc/prometheus-webhook-dingtalk/config.yml'
+#      - '--log.level=debug'
+#      - '--web.enable-ui'
+#    networks:
+#      - tutorial
 
   wordcloud-usersvc:
     container_name: wordcloud-usersvc
@@ -213,35 +213,35 @@ services:
       wordcloud-usersvc:
         condition: service_healthy
 
-  db:
-    container_name: db
-    hostname: db
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 1234
-    ports:
-      - 3306:3306
-    volumes:
-      - $PWD/my:/etc/mysql/conf.d
-      - $PWD/sqlscripts:/docker-entrypoint-initdb.d
-    healthcheck:
-      test: "/usr/bin/mysql --user=root --password=1234 --execute \"SHOW DATABASES;\""
-      interval: 10s
-      timeout: 3s
-      retries: 3
-    networks:
-      - tutorial
+#  db:
+#    container_name: db
+#    hostname: db
+#    image: mysql:5.7
+#    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: 1234
+#    ports:
+#      - 3306:3306
+#    volumes:
+#      - $PWD/my:/etc/mysql/conf.d
+#      - $PWD/sqlscripts:/docker-entrypoint-initdb.d
+#    healthcheck:
+#      test: "/usr/bin/mysql --user=root --password=1234 --execute \"SHOW DATABASES;\""
+#      interval: 10s
+#      timeout: 3s
+#      retries: 3
+#    networks:
+#      - tutorial
 
-  redis:
-    container_name: redis
-    hostname: redis
-    image: redis:6.2-alpine
-    ports:
-      - 6379:6379
-    command: redis-server --save 60 1 --loglevel warning
-    networks:
-      - tutorial
+#  redis:
+#    container_name: redis
+#    hostname: redis
+#    image: redis:6.2-alpine
+#    ports:
+#      - 6379:6379
+#    command: redis-server --save 60 1 --loglevel warning
+#    networks:
+#      - tutorial
 
   jaeger:
     container_name: jaeger

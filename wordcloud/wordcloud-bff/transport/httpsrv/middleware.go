@@ -3,7 +3,7 @@ package httpsrv
 import (
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
-	"github.com/unionj-cloud/go-doudou/framework/ratelimit/redisrate"
+	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/redisrate"
 	"net/http"
 	"strconv"
 	"strings"

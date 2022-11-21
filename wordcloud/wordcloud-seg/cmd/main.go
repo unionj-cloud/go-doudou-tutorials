@@ -1,40 +1,38 @@
 package main
 
 import (
-	"fmt"
-	"github.com/opentracing/opentracing-go"
-	"github.com/sirupsen/logrus"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/zh"
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/transport/httpsrv"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/registry"
-	"github.com/unionj-cloud/go-doudou/framework/tracing"
-	"os"
+	pb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/transport/grpc"
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"google.golang.org/grpc"
 )
 
 func main() {
+	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
-
-	if os.Getenv("GDD_MODE") == "micro" {
-		err := registry.NewNode()
-		if err != nil {
-			logrus.Panicln(fmt.Sprintf("%+v", err))
-		}
-		defer registry.Shutdown()
-	}
-
-	tracer, closer := tracing.Init()
-	defer closer.Close()
-	opentracing.SetGlobalTracer(tracer)
 
 	golac := zh.NewGoThulac(conf.BizConf.ModelPath, "", false, false, false, "_")
 	defer golac.Free()
 
 	svc := service.NewWordcloudSeg(conf, golac)
-	handler := httpsrv.NewWordcloudSegHandler(svc)
-	srv := ddhttp.NewDefaultHttpSrv()
-	srv.AddRoute(httpsrv.Routes(handler)...)
-	srv.Run()
+	grpcServer := grpcx.NewGrpcServer(
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			logging.StreamServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			logging.UnaryServerInterceptor(grpczerolog.InterceptorLogger(zlogger.Logger)),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
+	)
+	pb.RegisterWordcloudSegServiceServer(grpcServer, svc)
+	grpcServer.Run()
 }

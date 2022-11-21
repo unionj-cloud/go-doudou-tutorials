@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/vo"
-	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
+	v3 "github.com/unionj-cloud/go-doudou/v2/toolkit/openapi/v3"
 )
+
+//go:generate go-doudou svc http
 
 type WordcloudBff interface {
 	// 上传文本文件生成词云图接口

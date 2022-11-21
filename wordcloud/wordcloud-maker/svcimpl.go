@@ -3,6 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/google/uuid"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -11,39 +15,40 @@ import (
 	"strings"
 	"time"
 
+	segpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/transport/grpc"
+
 	"github.com/go-resty/resty/v2"
 
 	"github.com/go-rod/rod"
-	"github.com/unionj-cloud/go-doudou/framework/logger"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
 	"github.com/go-echarts/go-echarts/v2/opts"
 	"github.com/minio/minio-go/v7"
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/config"
+	pb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/transport/grpc"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
-	segclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/client"
-	segvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/vo"
 )
 
+var _ pb.WordcloudMakerServiceServer = (*WordcloudMakerImpl)(nil)
+
 type WordcloudMakerImpl struct {
+	pb.UnimplementedWordcloudMakerServiceServer
+
 	conf        *config.Config
-	segClient   segclient.IWordcloudSegClient
+	segClient   segpb.WordcloudSegServiceClient
 	minioClient *minio.Client
 	browser     *rod.Browser
 }
 
-func NewWordcloudMaker(conf *config.Config, segClient segclient.IWordcloudSegClient,
-	minioClient *minio.Client, browser *rod.Browser) WordcloudMaker {
+func NewWordcloudMaker(conf *config.Config, segClient segpb.WordcloudSegServiceClient,
+	minioClient *minio.Client, browser *rod.Browser) *WordcloudMakerImpl {
 	return &WordcloudMakerImpl{
-		conf,
-		segClient,
-		minioClient,
-		browser,
+		conf:        conf,
+		segClient:   segClient,
+		minioClient: minioClient,
+		browser:     browser,
 	}
 }
 
@@ -74,11 +79,11 @@ func getPublicOssUrl(endpoint, bucketName, objectName string) string {
 func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePayload) (data string, err error) {
 	srcUrl, err := url.Parse(payload.SrcUrl)
 	if err != nil {
-		return "", ddhttp.NewBizError(errors.Wrap(err, "srcUrl should be valid url"), ddhttp.WithStatusCode(400))
+		return "", rest.NewBizError(errors.Wrap(err, "srcUrl should be valid url"), rest.WithStatusCode(400))
 	}
 	filename := srcUrl.Path[strings.LastIndex(srcUrl.Path, "/")+1:]
-	span := opentracing.SpanFromContext(ctx)
-	outputDir := filepath.Join(receiver.conf.BizConf.Output, fmt.Sprint(span))
+	imageId := uuid.NewString()
+	outputDir := filepath.Join(receiver.conf.BizConf.Output, imageId)
 	client := resty.New()
 	client.SetOutputDirectory(outputDir)
 	resp, err := client.R().
@@ -86,7 +91,7 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 		SetOutput(filename).
 		Get(payload.SrcUrl)
 	if err != nil || !resp.IsSuccess() {
-		return "", ddhttp.NewBizError(errors.Wrap(err, "source file download fail"), ddhttp.WithStatusCode(400))
+		return "", rest.NewBizError(errors.Wrap(err, "source file download fail"), rest.WithStatusCode(400))
 	}
 	file := filepath.Join(outputDir, filename)
 	defer os.RemoveAll(outputDir)
@@ -101,22 +106,43 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 	}
 	limit := 1 << (10 * 2)
 	if fi.Size() > int64(limit) {
-		return "", ddhttp.NewBizError(errors.New("file size is larger than 1M"), ddhttp.WithStatusCode(400))
+		return "", rest.NewBizError(errors.New("file size is larger than 1M"), rest.WithStatusCode(400))
 	}
 	text, err := ioutil.ReadAll(f)
 	if err != nil {
 		return "", err
 	}
-	_, seg, err := receiver.segClient.Seg(ctx, nil, segvo.SegPayload{
+	in := &segpb.SegPayload{
 		Text: string(text),
 		Lang: payload.Lang,
-	})
+	}
+	segResult, err := receiver.segClient.SegRpc(ctx, in)
 	if err != nil {
 		return "", err
 	}
 	wcData := make(map[string]interface{})
+	var wf [][]interface{}
+	for _, item := range segResult.WordFreq {
+		element := make([]interface{}, 3)
 
-	wf := seg.WordFreq
+		wordAny := item.NestedAny[0]
+		var wordWrapper wrapperspb.StringValue
+		_ = wordAny.UnmarshalTo(&wordWrapper)
+		element[0] = wordWrapper.Value
+
+		posAny := item.NestedAny[1]
+		var posWrapper wrapperspb.StringValue
+		_ = posAny.UnmarshalTo(&posWrapper)
+		element[1] = posWrapper.Value
+
+		freqAny := item.NestedAny[2]
+		var freqWrapper wrapperspb.DoubleValue
+		_ = freqAny.UnmarshalTo(&freqWrapper)
+		element[2] = freqWrapper.Value
+
+		wf = append(wf, element)
+	}
+
 	if payload.Top > 0 {
 		wf = wf[:payload.Top]
 	}
@@ -138,7 +164,7 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 		return "", err
 	}
 	now := time.Now()
-	logger.Info("path of output html: " + outhtml)
+	zlogger.Info().Msg("path of output html: " + outhtml)
 	rpage := receiver.browser.MustPage(fmt.Sprintf("file://%s", outhtml)).MustWaitLoad()
 	time.Sleep(1 * time.Second)
 	el, err := rpage.Timeout(10 * time.Second).Element("canvas")
@@ -147,14 +173,29 @@ func (receiver *WordcloudMakerImpl) Make(ctx context.Context, payload vo.MakePay
 	}
 	outimg := filepath.Join(outputDir, "wordcloud.png")
 	el.MustScreenshot(outimg)
-	logger.Info(time.Since(now))
+	zlogger.Info().Msg(time.Since(now).String())
 
 	bucketName := receiver.conf.BizConf.OssBucket
-	objectName := fmt.Sprintf("%s_wordcloud.png", fmt.Sprint(span))
+	objectName := fmt.Sprintf("%s_wordcloud.png", imageId)
 	_, err = receiver.minioClient.FPutObject(ctx, bucketName, objectName, outimg, minio.PutObjectOptions{})
 	if err != nil {
 		return "", err
 	}
 
 	return getPublicOssUrl(receiver.conf.BizConf.OssEndpoint, bucketName, objectName), nil
+}
+
+func (receiver *WordcloudMakerImpl) MakeRpc(ctx context.Context, request *pb.MakePayload) (*pb.MakeRpcResponse, error) {
+	payload := vo.MakePayload{
+		SrcUrl: request.SrcUrl,
+		Lang:   request.Lang,
+		Top:    int(request.Top),
+	}
+	ret, err := receiver.Make(ctx, payload)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.MakeRpcResponse{
+		Data: ret,
+	}, nil
 }

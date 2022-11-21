@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"github.com/unionj-cloud/go-doudou/toolkit/stringutils"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/ztrue/tracerr"
 	"golang.org/x/sync/errgroup"
 	"io"

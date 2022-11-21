@@ -3,7 +3,7 @@ package zh
 import (
 	"context"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/internal/lib/nlp"
-	"github.com/unionj-cloud/go-doudou/toolkit/sliceutils"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sliceutils"
 	thulac "github.com/unionj-cloud/thulacgo"
 	"sort"
 	"strings"

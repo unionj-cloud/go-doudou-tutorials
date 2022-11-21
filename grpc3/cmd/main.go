@@ -5,6 +5,7 @@
 package main
 
 import (
+	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
 	service "grpc3"
 	"grpc3/config"
 	pb "grpc3/transport/grpc"
@@ -17,15 +18,14 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	ddgrpc "github.com/unionj-cloud/go-doudou/framework/grpc"
-	"github.com/unionj-cloud/go-doudou/toolkit/zlogger"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	"google.golang.org/grpc"
 )
 
 func main() {
 	conf := config.LoadFromEnv()
 	svc := service.NewGrpc3(conf)
-	grpcServer := ddgrpc.NewGrpcServer(
+	grpcServer := grpcx.NewGrpcServer(
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_opentracing.StreamServerInterceptor(),

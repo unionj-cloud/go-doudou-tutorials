@@ -5,6 +5,8 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
 )
 
+//go:generate go-doudou svc grpc
+
 type WordcloudTask interface {
 	// TaskSave save word cloud task 保存词云图任务
 	TaskSave(ctx context.Context, payload vo.TaskPayload) (

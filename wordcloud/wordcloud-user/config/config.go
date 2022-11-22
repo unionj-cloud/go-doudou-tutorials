@@ -11,9 +11,8 @@ type Config struct {
 }
 
 type BizConf struct {
-	Output       string
-	JwtSecret    string `split_words:"true"`
-	JwtIgnoreUrl string `split_words:"true"`
+	Output    string
+	JwtSecret string `split_words:"true"`
 }
 
 type DbConfig struct {

@@ -9,30 +9,30 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/wrapper"
+
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/dao"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/domain"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/internal/lib"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/vo"
 
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-
-	"github.com/dgrijalva/jwt-go"
-	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/unionj-cloud/go-doudou/toolkit/copier"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
-	"github.com/unionj-cloud/go-doudou/toolkit/stringutils"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/query"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/sortenum"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 
-	"github.com/jmoiron/sqlx"
-	v3 "github.com/unionj-cloud/go-doudou/toolkit/openapi/v3"
+	v3 "github.com/unionj-cloud/go-doudou/v2/toolkit/openapi/v3"
 )
+
+var _ Usersvc = (*UsersvcImpl)(nil)
 
 type UsersvcImpl struct {
 	conf *config.Config
-	db   *sqlx.DB
+	db   wrapper.GddDB
 }
 
 type ctxKey int
@@ -60,8 +60,7 @@ func TokenFromContext(ctx context.Context) (string, bool) {
 
 func (receiver *UsersvcImpl) PageUsers(ctx context.Context, pageQuery vo.PageQuery) (data vo.PageRet, err error) {
 	userDao := dao.NewUserDao(receiver.db)
-	var q query.Q
-	q = query.C().Col("delete_at").IsNull()
+	var q query.Where
 	if stringutils.IsNotEmpty(pageQuery.Filter.Name) {
 		q = q.And(query.C().Col("name").Like(fmt.Sprintf(`%s%%`, pageQuery.Filter.Name)))
 	}
@@ -81,45 +80,27 @@ func (receiver *UsersvcImpl) PageUsers(ctx context.Context, pageQuery vo.PageQue
 		pageQuery.Page.PageNo = 1
 	}
 	page = page.Limit((pageQuery.Page.PageNo-1)*pageQuery.Page.Size, pageQuery.Page.Size)
-	var ret query.PageRet
-	ret, err = userDao.PageMany(ctx, page, q)
+	var dest dao.UserPageRet
+	err = userDao.PageMany(ctx, &dest, page, q)
 	if err != nil {
 		panic(err)
 	}
-	var items []vo.UserVo
-	for _, item := range ret.Items.([]domain.User) {
-		var userVo vo.UserVo
-		_ = copier.DeepCopy(item, &userVo)
-		items = append(items, userVo)
-	}
-	data = vo.PageRet{
-		Items:    items,
-		PageNo:   ret.PageNo,
-		PageSize: ret.PageSize,
-		Total:    ret.Total,
-		HasNext:  ret.HasNext,
-	}
+	copier.DeepCopy(dest, &data)
 	return data, nil
 }
 func (receiver *UsersvcImpl) GetUser(ctx context.Context, userId int) (data vo.UserVo, err error) {
 	userDao := dao.NewUserDao(receiver.db)
-	var get interface{}
-	get, err = userDao.Get(ctx, userId)
+	var user domain.User
+	err = userDao.Get(ctx, &user, userId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return vo.UserVo{}, ddhttp.NewBizError(lib.ErrUserNotFound, ddhttp.WithStatusCode(406))
+			return vo.UserVo{}, rest.NewBizError(lib.ErrUserNotFound, rest.WithStatusCode(406))
 		} else {
 			panic(err)
 		}
 	}
-	user := get.(domain.User)
-	return vo.UserVo{
-		Id:       user.Id,
-		Username: user.Username,
-		Name:     user.Name,
-		Phone:    user.Phone,
-		Dept:     user.Dept,
-	}, nil
+	copier.DeepCopy(user, &data)
+	return
 }
 func (receiver *UsersvcImpl) PublicSignUp(ctx context.Context, username string, password string, code *string) (data int, err error) {
 	hashPassword, _ := lib.HashPassword(password)
@@ -130,7 +111,7 @@ func (receiver *UsersvcImpl) PublicSignUp(ctx context.Context, username string, 
 		panic(err)
 	}
 	if exists {
-		return 0, ddhttp.NewBizError(lib.ErrUsernameExists, ddhttp.WithStatusCode(406))
+		return 0, rest.NewBizError(lib.ErrUsernameExists, rest.WithStatusCode(406))
 	}
 	user := domain.User{
 		Username: username,
@@ -144,13 +125,13 @@ func (receiver *UsersvcImpl) PublicSignUp(ctx context.Context, username string, 
 }
 func (receiver *UsersvcImpl) PublicLogIn(ctx context.Context, username string, password string) (data string, err error) {
 	userDao := dao.NewUserDao(receiver.db)
-	many, err := userDao.SelectMany(ctx, query.C().Col("username").Eq(username).And(query.C().Col("delete_at").IsNull()))
+	var users []domain.User
+	err = userDao.SelectMany(ctx, &users, query.C().Col("username").Eq(username).ToWhere())
 	if err != nil {
 		panic(err)
 	}
-	users := many.([]domain.User)
 	if len(users) == 0 || !lib.CheckPasswordHash(password, users[0].Password) {
-		return "", ddhttp.NewBizError(lib.ErrUsernameOrPasswordIncorrect, ddhttp.WithStatusCode(401))
+		return "", rest.NewBizError(lib.ErrUsernameOrPasswordIncorrect, rest.WithStatusCode(401))
 	}
 	return lib.JwtToken(receiver.conf.BizConf.JwtSecret, jwt.MapClaims{
 		"userId": users[0].Id,
@@ -160,10 +141,8 @@ func (receiver *UsersvcImpl) PublicLogIn(ctx context.Context, username string, p
 	})
 }
 
-func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileModel, id int) (data string, err error) {
+func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileModel) (data string, err error) {
 	defer avatar.Close()
-	span := opentracing.SpanFromContext(ctx)
-	logrus.Debugln(span)
 	_ = os.MkdirAll(receiver.conf.BizConf.Output, os.ModePerm)
 	out := filepath.Join(receiver.conf.BizConf.Output, avatar.Filename)
 	var f *os.File
@@ -178,7 +157,7 @@ func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileMod
 	}
 	userId, _ := UserIdFromContext(ctx)
 	userDao := dao.NewUserDao(receiver.db)
-	_, err = userDao.UpdateNoneZero(ctx, domain.User{
+	_, err = userDao.UpdateNoneZero(ctx, &domain.User{
 		Id:     userId,
 		Avatar: out,
 	})
@@ -189,40 +168,37 @@ func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileMod
 }
 func (receiver *UsersvcImpl) GetPublicDownloadAvatar(ctx context.Context, userId int) (data *os.File, err error) {
 	userDao := dao.NewUserDao(receiver.db)
-	var get interface{}
-	get, err = userDao.Get(ctx, userId)
+	var user domain.User
+	err = userDao.Get(ctx, &user, userId)
 	if err != nil {
 		panic(err)
 	}
-	avatar := get.(domain.User).Avatar
+	avatar := user.Avatar
 	if stringutils.IsEmpty(avatar) {
 		return nil, errAvatarNotFound
 	}
 	return os.Open(avatar)
 }
 
-func NewUsersvc(conf *config.Config, db *sqlx.DB) Usersvc {
+func NewUsersvc(conf *config.Config, db wrapper.GddDB) *UsersvcImpl {
 	return &UsersvcImpl{
-		conf,
-		db,
+		conf: conf,
+		db:   db,
 	}
 }
 
 func (receiver *UsersvcImpl) GetMe(ctx context.Context) (data vo.UserVo, err error) {
 	userId, _ := UserIdFromContext(ctx)
 	userDao := dao.NewUserDao(receiver.db)
-	var get interface{}
-	get, err = userDao.Get(ctx, userId)
+	var user domain.User
+	err = userDao.Get(ctx, &user, userId)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return vo.UserVo{}, ddhttp.NewBizError(lib.ErrUserNotFound, ddhttp.WithStatusCode(406))
+			return vo.UserVo{}, rest.NewBizError(lib.ErrUserNotFound, rest.WithStatusCode(406))
 		}
 		panic(err)
 	}
-	err = copier.DeepCopy(get, &data)
-	if err != nil {
-		panic(err)
-	}
+	copier.DeepCopy(user, &data)
 	return
 }
 
@@ -237,7 +213,7 @@ func (receiver *UsersvcImpl) GetLogout(ctx context.Context) (data string, err er
 	claims := token.Claims.(jwt.MapClaims)
 	expireAt := time.Unix(int64(claims["exp"].(float64)), 0).Local()
 	tokenDao := dao.NewInvalidTokenDao(receiver.db)
-	_, err = tokenDao.UpsertNoneZero(ctx, domain.InvalidToken{
+	_, err = tokenDao.UpsertNoneZero(ctx, &domain.InvalidToken{
 		Token:    tokenString,
 		ExpireAt: &expireAt,
 	})
@@ -247,7 +223,7 @@ func (receiver *UsersvcImpl) GetLogout(ctx context.Context) (data string, err er
 	return "OK", nil
 }
 
-func ValidateToken(ctx context.Context, tokenString string, conn *sqlx.DB) (int, bool, error) {
+func ValidateToken(ctx context.Context, tokenString string, db wrapper.GddDB) (int, bool, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -262,10 +238,10 @@ func ValidateToken(ctx context.Context, tokenString string, conn *sqlx.DB) (int,
 	if userId, exists := claims["userId"]; !exists {
 		return 0, false, nil
 	} else {
-		tokenDao := dao.NewInvalidTokenDao(conn)
+		tokenDao := dao.NewInvalidTokenDao(db)
 		tctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 		defer cancel()
-		cnt, err := tokenDao.CountMany(tctx, query.C().Col("token").Eq(tokenString))
+		cnt, err := tokenDao.CountMany(tctx, query.C().Col("token").Eq(tokenString).ToWhere())
 		if err != nil {
 			return 0, false, err
 		}

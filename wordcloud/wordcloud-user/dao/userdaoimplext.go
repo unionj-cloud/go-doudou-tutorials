@@ -3,15 +3,15 @@ package dao
 import (
 	"context"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/domain"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/query"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/query"
 )
 
-func (receiver UserDaoImpl) CheckUsernameExists(ctx context.Context, username string) (bool, error) {
-	many, err := receiver.SelectMany(ctx, query.C().Col("username").Eq(username))
+func (receiver UserDao) CheckUsernameExists(ctx context.Context, username string) (bool, error) {
+	var users []domain.User
+	err := receiver.SelectMany(ctx, &users, query.C().Col("username").Eq(username).ToWhere())
 	if err != nil {
 		return false, err
 	}
-	users := many.([]domain.User)
 	if len(users) > 0 {
 		return true, nil
 	}

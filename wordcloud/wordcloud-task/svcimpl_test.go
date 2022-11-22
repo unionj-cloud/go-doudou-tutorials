@@ -13,7 +13,8 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/db"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/domain"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
-	"github.com/unionj-cloud/go-doudou/toolkit/sqlext/sortenum"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/sortenum"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/wrapper"
 	"testing"
 	"time"
 )
@@ -40,11 +41,12 @@ func TestMain(m *testing.M) {
 		}
 	}()
 
-	svc = service.NewWordcloudTask(conf, conn)
+	wrapperDb := wrapper.NewGddDB(conn)
+	svc = service.NewWordcloudTask(conf, wrapperDb)
 
-	taskDao = dao.NewWordCloudTaskDao(conn)
+	taskDao = dao.NewWordCloudTaskDao(wrapperDb)
 	for i := 0; i < 25; i++ {
-		_, err = taskDao.Insert(context.Background(), domain.WordCloudTask{
+		_, err = taskDao.Insert(context.Background(), &domain.WordCloudTask{
 			Id:     0,
 			SrcUrl: "abc" + fmt.Sprint(i),
 			ImgUrl: "abc",

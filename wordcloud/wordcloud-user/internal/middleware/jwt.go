@@ -1,24 +1,27 @@
 package middleware
 
 import (
-	"github.com/gobwas/glob"
-	"github.com/jmoiron/sqlx"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/transport/httpsrv"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest/httprouter"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/wrapper"
 	"net/http"
 	"strings"
 )
 
-func Jwt(g glob.Glob, conn *sqlx.DB) func(inner http.Handler) http.Handler {
+func Jwt(db wrapper.GddDB) func(inner http.Handler) http.Handler {
 	return func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if g.Match(r.URL.Path) {
+			paramsFromCtx := httprouter.ParamsFromContext(r.Context())
+			routeName := paramsFromCtx.MatchedRouteName()
+			if !httpsrv.RouteAnnotationStore.HasAnnotation(routeName, "@role") {
 				inner.ServeHTTP(w, r)
 				return
 			}
 			authHeader := r.Header.Get("Authorization")
 			tokenString := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
 
-			userId, valid, err := service.ValidateToken(r.Context(), tokenString, conn)
+			userId, valid, err := service.ValidateToken(r.Context(), tokenString, db)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return

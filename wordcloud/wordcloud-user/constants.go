@@ -2,9 +2,9 @@ package service
 
 import (
 	"github.com/pkg/errors"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 )
 
 var (
-	errAvatarNotFound = ddhttp.NewBizError(errors.New("avatar not found"))
+	errAvatarNotFound = rest.NewBizError(errors.New("avatar not found"))
 )

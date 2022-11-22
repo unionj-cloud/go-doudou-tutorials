@@ -3,10 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/google/uuid"
-	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
-	"google.golang.org/protobuf/types/known/wrapperspb"
 	"io"
 	"io/ioutil"
 	"net/url"
@@ -14,6 +10,11 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	segpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-seg/transport/grpc"
 

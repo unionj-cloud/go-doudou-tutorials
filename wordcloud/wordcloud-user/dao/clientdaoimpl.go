@@ -21,53 +21,53 @@ import (
 	"time"
 )
 
-type InvalidTokenDao struct {
+type ClientDao struct {
 	db wrapper.GddDB
 }
 
-func NewInvalidTokenDao(querier wrapper.GddDB) InvalidTokenDao {
-	return InvalidTokenDao{
+func NewClientDao(querier wrapper.GddDB) ClientDao {
+	return ClientDao{
 		db: querier,
 	}
 }
 
-func (receiver InvalidTokenDao) BeforeSaveHook(ctx context.Context, data *domain.InvalidToken) {
+func (receiver ClientDao) BeforeSaveHook(ctx context.Context, data *domain.Client) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) BeforeBulkSaveHook(ctx context.Context, data []*domain.InvalidToken) {
+func (receiver ClientDao) BeforeBulkSaveHook(ctx context.Context, data []*domain.Client) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) AfterSaveHook(ctx context.Context, data *domain.InvalidToken, lastInsertID int64, affected int64) {
+func (receiver ClientDao) AfterSaveHook(ctx context.Context, data *domain.Client, lastInsertID int64, affected int64) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) AfterBulkSaveHook(ctx context.Context, data []*domain.InvalidToken, lastInsertID int64, affected int64) {
+func (receiver ClientDao) AfterBulkSaveHook(ctx context.Context, data []*domain.Client, lastInsertID int64, affected int64) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) BeforeUpdateManyHook(ctx context.Context, data []*domain.InvalidToken, where *query.Where) {
+func (receiver ClientDao) BeforeUpdateManyHook(ctx context.Context, data []*domain.Client, where *query.Where) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) AfterUpdateManyHook(ctx context.Context, data []*domain.InvalidToken, where *query.Where, affected int64) {
+func (receiver ClientDao) AfterUpdateManyHook(ctx context.Context, data []*domain.Client, where *query.Where, affected int64) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) BeforeDeleteManyHook(ctx context.Context, data []*domain.InvalidToken, where *query.Where) {
+func (receiver ClientDao) BeforeDeleteManyHook(ctx context.Context, data []*domain.Client, where *query.Where) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) AfterDeleteManyHook(ctx context.Context, data []*domain.InvalidToken, where *query.Where, affected int64) {
+func (receiver ClientDao) AfterDeleteManyHook(ctx context.Context, data []*domain.Client, where *query.Where, affected int64) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) BeforeReadManyHook(ctx context.Context, page *query.Page, where *query.Where) {
+func (receiver ClientDao) BeforeReadManyHook(ctx context.Context, page *query.Page, where *query.Where) {
 	// implement your business logic
 }
 
-func (receiver InvalidTokenDao) Insert(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) Insert(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -76,7 +76,7 @@ func (receiver InvalidTokenDao) Insert(ctx context.Context, data *domain.Invalid
 		affected     int64
 	)
 	receiver.BeforeSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -94,7 +94,7 @@ func (receiver InvalidTokenDao) Insert(ctx context.Context, data *domain.Invalid
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) InsertIgnore(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) InsertIgnore(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -102,7 +102,7 @@ func (receiver InvalidTokenDao) InsertIgnore(ctx context.Context, data *domain.I
 		affected     int64
 	)
 	receiver.BeforeSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertIgnoreInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertIgnoreClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -114,7 +114,7 @@ func (receiver InvalidTokenDao) InsertIgnore(ctx context.Context, data *domain.I
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) BulkInsert(ctx context.Context, data []*domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) BulkInsert(ctx context.Context, data []*domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -123,7 +123,7 @@ func (receiver InvalidTokenDao) BulkInsert(ctx context.Context, data []*domain.I
 		affected     int64
 	)
 	receiver.BeforeBulkSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -143,7 +143,7 @@ func (receiver InvalidTokenDao) BulkInsert(ctx context.Context, data []*domain.I
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) BulkInsertIgnore(ctx context.Context, data []*domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) BulkInsertIgnore(ctx context.Context, data []*domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -151,7 +151,7 @@ func (receiver InvalidTokenDao) BulkInsertIgnore(ctx context.Context, data []*do
 		affected     int64
 	)
 	receiver.BeforeBulkSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertIgnoreInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertIgnoreClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -168,7 +168,7 @@ func (receiver InvalidTokenDao) BulkInsertIgnore(ctx context.Context, data []*do
 // If you specify the CLIENT_FOUND_ROWS flag to the mysql_real_connect() C API function when connecting to mysqld,
 // the affected-rows value is 1 (not 0) if an existing row is set to its current values.
 // https://dev.mysql.com/doc/refman/5.7/en/insert-on-duplicate.html
-func (receiver InvalidTokenDao) Upsert(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) Upsert(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -177,7 +177,7 @@ func (receiver InvalidTokenDao) Upsert(ctx context.Context, data *domain.Invalid
 		affected     int64
 	)
 	receiver.BeforeSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpsertInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpsertClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -195,7 +195,7 @@ func (receiver InvalidTokenDao) Upsert(ctx context.Context, data *domain.Invalid
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) BulkUpsert(ctx context.Context, data []*domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) BulkUpsert(ctx context.Context, data []*domain.Client) (int64, error) {
 	var (
 		statement    string
 		updateClause string
@@ -205,14 +205,14 @@ func (receiver InvalidTokenDao) BulkUpsert(ctx context.Context, data []*domain.I
 		args      []interface{}
 	)
 	receiver.BeforeBulkSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	statement, args, err = receiver.db.BindNamed(statement, data)
 	if err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
-	if updateClause, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateClauseInvalidToken", nil); err != nil {
+	if updateClause, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClauseClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	statement += "\n" + updateClause
@@ -225,7 +225,7 @@ func (receiver InvalidTokenDao) BulkUpsert(ctx context.Context, data []*domain.I
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) BulkUpsertSelect(ctx context.Context, data []*domain.InvalidToken, columns []string) (int64, error) {
+func (receiver ClientDao) BulkUpsertSelect(ctx context.Context, data []*domain.Client, columns []string) (int64, error) {
 	var (
 		statement    string
 		updateClause string
@@ -235,14 +235,14 @@ func (receiver InvalidTokenDao) BulkUpsertSelect(ctx context.Context, data []*do
 		args      []interface{}
 	)
 	receiver.BeforeBulkSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "InsertInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "InsertClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	statement, args, err = receiver.db.BindNamed(statement, data)
 	if err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
-	if updateClause, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateClauseSelectInvalidToken", struct {
+	if updateClause, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClauseSelectClient", struct {
 		Columns []string
 	}{
 		Columns: columns,
@@ -259,7 +259,7 @@ func (receiver InvalidTokenDao) BulkUpsertSelect(ctx context.Context, data []*do
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) UpsertNoneZero(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) UpsertNoneZero(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement    string
 		err          error
@@ -269,10 +269,10 @@ func (receiver InvalidTokenDao) UpsertNoneZero(ctx context.Context, data *domain
 	)
 	receiver.BeforeSaveHook(ctx, data)
 	value := reflectutils.ValueOf(data).Interface()
-	if _, ok := value.(domain.InvalidToken); !ok {
-		return 0, errors.New("underlying type of data should be domain.InvalidToken")
+	if _, ok := value.(domain.Client); !ok {
+		return 0, errors.New("underlying type of data should be domain.Client")
 	}
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpsertInvalidTokenNoneZero", data); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpsertClientNoneZero", data); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -290,7 +290,7 @@ func (receiver InvalidTokenDao) UpsertNoneZero(ctx context.Context, data *domain
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) DeleteMany(ctx context.Context, where query.Where) (int64, error) {
+func (receiver ClientDao) DeleteMany(ctx context.Context, where query.Where) (int64, error) {
 	var (
 		err    error
 		result sql.Result
@@ -300,7 +300,7 @@ func (receiver InvalidTokenDao) DeleteMany(ctx context.Context, where query.Wher
 	)
 	receiver.BeforeDeleteManyHook(ctx, nil, &where)
 	w, args = where.Sql()
-	if result, err = receiver.db.ExecContext(ctx, receiver.db.Rebind(fmt.Sprintf("delete from t_invalid_token where %s;", w)), args...); err != nil {
+	if result, err = receiver.db.ExecContext(ctx, receiver.db.Rebind(fmt.Sprintf("delete from t_client where %s;", w)), args...); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if affected, err = result.RowsAffected(); err == nil {
@@ -309,7 +309,7 @@ func (receiver InvalidTokenDao) DeleteMany(ctx context.Context, where query.Wher
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) Update(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) Update(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement string
 		err       error
@@ -317,7 +317,7 @@ func (receiver InvalidTokenDao) Update(ctx context.Context, data *domain.Invalid
 		affected  int64
 	)
 	receiver.BeforeSaveHook(ctx, data)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClient", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -329,7 +329,7 @@ func (receiver InvalidTokenDao) Update(ctx context.Context, data *domain.Invalid
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) UpdateNoneZero(ctx context.Context, data *domain.InvalidToken) (int64, error) {
+func (receiver ClientDao) UpdateNoneZero(ctx context.Context, data *domain.Client) (int64, error) {
 	var (
 		statement string
 		err       error
@@ -338,10 +338,10 @@ func (receiver InvalidTokenDao) UpdateNoneZero(ctx context.Context, data *domain
 	)
 	receiver.BeforeSaveHook(ctx, data)
 	value := reflectutils.ValueOf(data).Interface()
-	if _, ok := value.(domain.InvalidToken); !ok {
-		return 0, errors.New("underlying type of data should be domain.InvalidToken")
+	if _, ok := value.(domain.Client); !ok {
+		return 0, errors.New("underlying type of data should be domain.Client")
 	}
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateInvalidTokenNoneZero", data); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClientNoneZero", data); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if result, err = receiver.db.NamedExecContext(ctx, statement, data); err != nil {
@@ -353,7 +353,7 @@ func (receiver InvalidTokenDao) UpdateNoneZero(ctx context.Context, data *domain
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) UpdateMany(ctx context.Context, data []*domain.InvalidToken, where query.Where) (int64, error) {
+func (receiver ClientDao) UpdateMany(ctx context.Context, data []*domain.Client, where query.Where) (int64, error) {
 	var (
 		statement string
 		err       error
@@ -365,7 +365,7 @@ func (receiver InvalidTokenDao) UpdateMany(ctx context.Context, data []*domain.I
 		affected  int64
 	)
 	receiver.BeforeUpdateManyHook(ctx, data, &where)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateInvalidTokens", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClients", nil); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if q, args, err = receiver.db.BindNamed(statement, data); err != nil {
@@ -385,7 +385,7 @@ func (receiver InvalidTokenDao) UpdateMany(ctx context.Context, data []*domain.I
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) UpdateManyNoneZero(ctx context.Context, data []*domain.InvalidToken, where query.Where) (int64, error) {
+func (receiver ClientDao) UpdateManyNoneZero(ctx context.Context, data []*domain.Client, where query.Where) (int64, error) {
 	var (
 		statement string
 		err       error
@@ -398,10 +398,10 @@ func (receiver InvalidTokenDao) UpdateManyNoneZero(ctx context.Context, data []*
 	)
 	receiver.BeforeUpdateManyHook(ctx, data, &where)
 	value := reflectutils.ValueOf(data).Interface()
-	if _, ok := value.(domain.InvalidToken); !ok {
-		return 0, errors.New("underlying type of data should be domain.InvalidToken")
+	if _, ok := value.(domain.Client); !ok {
+		return 0, errors.New("underlying type of data should be domain.Client")
 	}
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "UpdateInvalidTokensNoneZero", data); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "UpdateClientsNoneZero", data); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if q, args, err = receiver.db.BindNamed(statement, data); err != nil {
@@ -421,29 +421,29 @@ func (receiver InvalidTokenDao) UpdateManyNoneZero(ctx context.Context, data []*
 	return affected, err
 }
 
-func (receiver InvalidTokenDao) Get(ctx context.Context, dest *domain.InvalidToken, id int) error {
+func (receiver ClientDao) Get(ctx context.Context, dest *domain.Client, id int) error {
 	var (
 		statement string
 		err       error
-		invalidtoken      domain.InvalidToken
+		client      domain.Client
 	)
-	if statement, err = templateutils.BlockMysql("invalidtokendao.sql", invalidtokendaosql, "GetInvalidToken", nil); err != nil {
+	if statement, err = templateutils.BlockMysql("clientdao.sql", clientdaosql, "GetClient", nil); err != nil {
 		return errors.Wrap(err, caller.NewCaller().String())
 	}
-	if err = receiver.db.GetContext(ctx, &invalidtoken, receiver.db.Rebind(statement), id); err != nil {
+	if err = receiver.db.GetContext(ctx, &client, receiver.db.Rebind(statement), id); err != nil {
 		return errors.Wrap(err, caller.NewCaller().String())
 	}
 	return nil
 }
 
-func (receiver InvalidTokenDao) SelectMany(ctx context.Context, dest *[]domain.InvalidToken, where query.Where) error {
+func (receiver ClientDao) SelectMany(ctx context.Context, dest *[]domain.Client, where query.Where) error {
 	var (
 		statements []string
 		err       error
 		args       []interface{}
 	)
 	receiver.BeforeReadManyHook(ctx, nil, &where)
-    statements = append(statements, "select * from t_invalid_token")
+    statements = append(statements, "select * from t_client")
 	if !where.IsEmpty() {
 		statements = append(statements, "where")
 		q, wargs := where.Sql()
@@ -457,7 +457,7 @@ func (receiver InvalidTokenDao) SelectMany(ctx context.Context, dest *[]domain.I
 	return nil
 }
 
-func (receiver InvalidTokenDao) CountMany(ctx context.Context, where query.Where) (int, error) {
+func (receiver ClientDao) CountMany(ctx context.Context, where query.Where) (int, error) {
 	var (
 		statements []string
 		err       error
@@ -465,7 +465,7 @@ func (receiver InvalidTokenDao) CountMany(ctx context.Context, where query.Where
 		args       []interface{}
 	)
 	receiver.BeforeReadManyHook(ctx, nil, &where)
-	statements = append(statements, "select count(1) from t_invalid_token")
+	statements = append(statements, "select count(1) from t_client")
     if !where.IsEmpty() {
 		statements = append(statements, "where")
 		q, wargs := where.Sql()
@@ -479,22 +479,22 @@ func (receiver InvalidTokenDao) CountMany(ctx context.Context, where query.Where
 	return total, nil
 }
 
-type InvalidTokenPageRet struct {
-	Items    []domain.InvalidToken
+type ClientPageRet struct {
+	Items    []domain.Client
 	PageNo   int
 	PageSize int
 	Total    int
 	HasNext  bool
 }
 
-func (receiver InvalidTokenDao) PageMany(ctx context.Context, dest *InvalidTokenPageRet, page query.Page, where query.Where) error {
+func (receiver ClientDao) PageMany(ctx context.Context, dest *ClientPageRet, page query.Page, where query.Where) error {
 	var (
 		statements []string
 		err       error
 		args       []interface{}
 	)
 	receiver.BeforeReadManyHook(ctx, &page, &where)
-	statements = append(statements, "select * from t_invalid_token")
+	statements = append(statements, "select * from t_client")
     if !where.IsEmpty() {
 		statements = append(statements, "where")
 		q, wargs := where.Sql()
@@ -511,7 +511,7 @@ func (receiver InvalidTokenDao) PageMany(ctx context.Context, dest *InvalidToken
 	
 	args = nil
     statements = nil
-	statements = append(statements, "select count(1) from t_invalid_token")
+	statements = append(statements, "select count(1) from t_client")
     if !where.IsEmpty() {
 		statements = append(statements, "where")
 		q, wargs := where.Sql()
@@ -535,7 +535,7 @@ func (receiver InvalidTokenDao) PageMany(ctx context.Context, dest *InvalidToken
 	return nil
 }
 
-func (receiver InvalidTokenDao) DeleteManySoft(ctx context.Context, where query.Where) (int64, error) {
+func (receiver ClientDao) DeleteManySoft(ctx context.Context, where query.Where) (int64, error) {
 	var (
 		err      error
 		result   sql.Result
@@ -546,7 +546,7 @@ func (receiver InvalidTokenDao) DeleteManySoft(ctx context.Context, where query.
 	receiver.BeforeDeleteManyHook(ctx, nil, &where)
 	w, args = where.Sql()
 	args = append([]interface{}{time.Now()}, args...)
-	if result, err = receiver.db.ExecContext(ctx, receiver.db.Rebind(fmt.Sprintf("update t_invalid_token set delete_at=? where %s;", w)), args...); err != nil {
+	if result, err = receiver.db.ExecContext(ctx, receiver.db.Rebind(fmt.Sprintf("update t_client set delete_at=? where %s;", w)), args...); err != nil {
 		return 0, errors.Wrap(err, caller.NewCaller().String())
 	}
 	if affected, err = result.RowsAffected(); err == nil {

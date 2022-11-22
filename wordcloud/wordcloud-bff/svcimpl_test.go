@@ -4,14 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/slok/goresilience/metrics"
 	"github.com/stretchr/testify/require"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
-	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
+	taskpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/transport/grpc"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"os"
 	"testing"
+	"time"
 )
 
 var svc service.WordcloudBff
@@ -19,11 +22,22 @@ var svc service.WordcloudBff
 func TestMain(m *testing.M) {
 	conf := config.LoadFromEnv()
 	userClient := userclient.NewUsersvcClient()
-	taskClient := taskclient.NewWordcloudTaskClient()
-	rec := metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)
-	userClientProxy := userclient.NewUsersvcClientProxy(userClient, rec)
-	taskClientProxy := taskclient.NewWordcloudTaskClientProxy(taskClient, rec)
-	svc = service.NewWordcloudBff(conf, nil, nil, taskClientProxy, userClientProxy)
+
+	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
+	dialOptions := []grpc.DialOption{
+		tlsOption,
+	}
+
+	serverAddr := os.Getenv("WORDCLOUDTASK")
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	taskClientConn, err := grpc.DialContext(ctx, serverAddr, dialOptions...)
+	if err != nil {
+		zlogger.Panic().Err(err).Msgf("[go-doudou] failed to connect to server %s", serverAddr)
+	}
+	defer taskClientConn.Close()
+
+	svc = service.NewWordcloudBff(conf, nil, nil, taskpb.NewWordcloudTaskServiceClient(taskClientConn), userClient)
 
 	m.Run()
 }

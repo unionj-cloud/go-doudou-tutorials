@@ -2,25 +2,22 @@ package config
 
 import (
 	"github.com/kelseyhightower/envconfig"
-	"github.com/sirupsen/logrus"
-	"time"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 )
 
 type Config struct {
-	RedisConf RedisConf
-	BizConf   BizConf
-	ConConf   ConcurrencyConf
+	DbConf  DbConfig
+	BizConf BizConf
 }
 
-type RedisConf struct {
-	Host string
-}
-
-type ConcurrencyConf struct {
-	RatelimitRate       float64       `split_words:"true"`
-	RatelimitBurst      int           `split_words:"true"`
-	BulkheadWorkers     int           `split_words:"true"`
-	BulkheadMaxwaittime time.Duration `split_words:"true"`
+type DbConfig struct {
+	Driver  string `default:"mysql"`
+	Host    string `default:"localhost"`
+	Port    string `default:"3306"`
+	User    string
+	Passwd  string
+	Schema  string
+	Charset string `default:"utf8mb4"`
 }
 
 type BizConf struct {
@@ -32,24 +29,18 @@ type BizConf struct {
 }
 
 func LoadFromEnv() *Config {
-	var redisConf RedisConf
-	err := envconfig.Process("redis", &redisConf)
+	var dbconf DbConfig
+	err := envconfig.Process("db", &dbconf)
 	if err != nil {
-		logrus.Panicln("Error processing env", err)
+		zlogger.Panic().Err(err).Msg("Error processing env")
 	}
 	var bizConf BizConf
 	err = envconfig.Process("biz", &bizConf)
 	if err != nil {
-		logrus.Panicln("Error processing env", err)
-	}
-	var conConf ConcurrencyConf
-	err = envconfig.Process("concurrency", &conConf)
-	if err != nil {
-		logrus.Panicln("Error processing env", err)
+		zlogger.Panic().Err(err).Msg("Error processing env")
 	}
 	return &Config{
-		redisConf,
-		bizConf,
-		conConf,
+		DbConf:  dbconf,
+		BizConf: bizConf,
 	}
 }

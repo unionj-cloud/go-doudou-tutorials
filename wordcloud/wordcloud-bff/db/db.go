@@ -1,12 +1,12 @@
 package db
 
 import (
-	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/iancoleman/strcase"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
+	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
 )
 
 func NewDb(conf config.DbConfig) (*sqlx.DB, error) {

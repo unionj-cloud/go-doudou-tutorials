@@ -12,25 +12,16 @@ import (
 )
 
 type UsersvcHandler interface {
-	PageUsers(w http.ResponseWriter, r *http.Request)
 	GetUser(w http.ResponseWriter, r *http.Request)
 	GetMe(w http.ResponseWriter, r *http.Request)
-	PublicSignUp(w http.ResponseWriter, r *http.Request)
-	PublicLogIn(w http.ResponseWriter, r *http.Request)
-	UploadAvatar(w http.ResponseWriter, r *http.Request)
-	GetPublicDownloadAvatar(w http.ResponseWriter, r *http.Request)
+	SignUp(w http.ResponseWriter, r *http.Request)
+	LogIn(w http.ResponseWriter, r *http.Request)
 	GetLogout(w http.ResponseWriter, r *http.Request)
-	PublicTokenValidate(w http.ResponseWriter, r *http.Request)
+	GetTokenValidate(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler UsersvcHandler) []rest.Route {
 	return []rest.Route{
-		{
-			Name:        "PageUsers",
-			Method:      "POST",
-			Pattern:     "/page/users",
-			HandlerFunc: handler.PageUsers,
-		},
 		{
 			Name:        "GetUser",
 			Method:      "GET",
@@ -44,28 +35,16 @@ func Routes(handler UsersvcHandler) []rest.Route {
 			HandlerFunc: handler.GetMe,
 		},
 		{
-			Name:        "PublicSignUp",
+			Name:        "SignUp",
 			Method:      "POST",
-			Pattern:     "/public/sign/up",
-			HandlerFunc: handler.PublicSignUp,
+			Pattern:     "/sign/up",
+			HandlerFunc: handler.SignUp,
 		},
 		{
-			Name:        "PublicLogIn",
+			Name:        "LogIn",
 			Method:      "POST",
-			Pattern:     "/public/log/in",
-			HandlerFunc: handler.PublicLogIn,
-		},
-		{
-			Name:        "UploadAvatar",
-			Method:      "POST",
-			Pattern:     "/upload/avatar",
-			HandlerFunc: handler.UploadAvatar,
-		},
-		{
-			Name:        "GetPublicDownloadAvatar",
-			Method:      "GET",
-			Pattern:     "/public/download/avatar",
-			HandlerFunc: handler.GetPublicDownloadAvatar,
+			Pattern:     "/log/in",
+			HandlerFunc: handler.LogIn,
 		},
 		{
 			Name:        "GetLogout",
@@ -74,23 +53,15 @@ func Routes(handler UsersvcHandler) []rest.Route {
 			HandlerFunc: handler.GetLogout,
 		},
 		{
-			Name:        "PublicTokenValidate",
-			Method:      "POST",
-			Pattern:     "/public/token/validate",
-			HandlerFunc: handler.PublicTokenValidate,
+			Name:        "GetTokenValidate",
+			Method:      "GET",
+			Pattern:     "/token/validate",
+			HandlerFunc: handler.GetTokenValidate,
 		},
 	}
 }
 
 var RouteAnnotationStore = framework.AnnotationStore{
-	"PageUsers": {
-		{
-			Name: "@role",
-			Params: []string{
-				"USER",
-			},
-		},
-	},
 	"GetUser": {
 		{
 			Name: "@role",
@@ -100,14 +71,6 @@ var RouteAnnotationStore = framework.AnnotationStore{
 		},
 	},
 	"GetMe": {
-		{
-			Name: "@role",
-			Params: []string{
-				"USER",
-			},
-		},
-	},
-	"UploadAvatar": {
 		{
 			Name: "@role",
 			Params: []string{

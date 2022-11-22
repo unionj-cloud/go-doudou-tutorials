@@ -13,10 +13,8 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/vo"
-	makerclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/client"
-	makervo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/vo"
-	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
-	taskvo "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/vo"
+	makerpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/transport/grpc"
+	taskpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/transport/grpc"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
 	v3 "github.com/unionj-cloud/go-doudou/v2/toolkit/openapi/v3"
@@ -27,8 +25,8 @@ var _ WordcloudBff = (*WordcloudBffImpl)(nil)
 type WordcloudBffImpl struct {
 	conf        *config.Config
 	minioClient *minio.Client
-	makerClient makerclient.IWordcloudMakerClient
-	taskClient  taskclient.IWordcloudTaskClient
+	makerClient makerpb.WordcloudMakerServiceClient
+	taskClient  taskpb.WordcloudTaskServiceClient
 	userClient  userclient.IUsersvcClient
 }
 
@@ -90,36 +88,34 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 	srcUrl := getPublicOssUrl(receiver.conf.BizConf.OssEndpoint, bucketName, objectName)
 
 	// save task
-	tp := taskvo.TaskPayload{
-		UserId: userId,
+	tp := &taskpb.TaskPayload{
+		UserId: int32(userId),
 		SrcUrl: srcUrl,
 		Lang:   lang,
+		Top:    0,
 	}
-
 	if top != nil {
-		tp.Top = *top
+		tp.Top = int32(*top)
 	}
-
-	_, taskId, err := receiver.taskClient.TaskSave(ctx, nil, tp)
+	taskSaveResp, err := receiver.taskClient.TaskSaveRpc(ctx, tp)
 	if err != nil {
 		return vo.UploadResult{}, err
 	}
+	taskId := taskSaveResp.Data
 
 	// generate word cloud image
-	mp := makervo.MakePayload{
+	mp := &makerpb.MakePayload{
 		SrcUrl: srcUrl,
 		Lang:   lang,
 	}
-
 	if top != nil {
-		mp.Top = *top
+		mp.Top = int32(*top)
 	}
-
-	_, imgUrl, err := receiver.makerClient.Make(ctx, nil, mp)
+	makeResp, err := receiver.makerClient.MakeRpc(ctx, mp)
 	if err != nil {
 		// if fail call TaskFail api
 		old := err
-		_, _, err = receiver.taskClient.TaskFail(ctx, nil, taskvo.TaskFail{
+		_, err = receiver.taskClient.TaskFailRpc(ctx, &taskpb.TaskFail{
 			TaskId: taskId,
 			Error:  err.Error(),
 		})
@@ -128,9 +124,10 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 		}
 		return vo.UploadResult{}, old
 	}
+	imgUrl := makeResp.Data
 
 	// if success call TaskSuccess api
-	_, _, err = receiver.taskClient.TaskSuccess(ctx, nil, taskvo.TaskSuccess{
+	_, err = receiver.taskClient.TaskSuccessRpc(ctx, &taskpb.TaskSuccess{
 		TaskId: taskId,
 		ImgUrl: imgUrl,
 	})
@@ -139,59 +136,49 @@ func (receiver *WordcloudBffImpl) Upload(ctx context.Context, file v3.FileModel,
 	}
 
 	return vo.UploadResult{
-		TaskId: taskId,
+		TaskId: int(taskId),
 		SrcUrl: srcUrl,
 		ImgUrl: imgUrl,
 	}, nil
 }
 
 func NewWordcloudBff(conf *config.Config, minioClient *minio.Client,
-	makerClient makerclient.IWordcloudMakerClient, taskClient taskclient.IWordcloudTaskClient, userClient userclient.IUsersvcClient) WordcloudBff {
+	makerClient makerpb.WordcloudMakerServiceClient, taskClient taskpb.WordcloudTaskServiceClient, userClient userclient.IUsersvcClient) *WordcloudBffImpl {
 	return &WordcloudBffImpl{
-		conf,
-		minioClient,
-		makerClient,
-		taskClient,
-		userClient,
+		conf:        conf,
+		minioClient: minioClient,
+		makerClient: makerClient,
+		taskClient:  taskClient,
+		userClient:  userClient,
 	}
 }
 
 func (receiver *WordcloudBffImpl) GetTaskPage(ctx context.Context, page int, pageSize int) (result vo.TaskPageRet, err error) {
 	userId, _ := UserIdFromContext(ctx)
-	pq := taskvo.PageQuery{
-		Page: taskvo.Page{
-			PageNo: page,
-			Size:   pageSize,
+	pq := taskpb.PageQuery{
+		Page: &taskpb.Page{
+			PageNo: int32(page),
+			Size:   int32(pageSize),
 		},
 	}
 	for i, item := range pq.Page.Orders {
 		pq.Page.Orders[i].Col = strcase.ToSnake(item.Col)
 	}
-	pq.Filter.UserId = userId
-	_, ret, err := receiver.taskClient.TaskPage(ctx, nil, pq)
+	pq.Filter.UserId = int32(userId)
+	ret, err := receiver.taskClient.TaskPageRpc(ctx, &pq)
 	if err != nil {
 		return vo.TaskPageRet{}, err
 	}
-	copier.DeepCopy(ret.PageRet, &result.PageRet)
-	usermap := make(map[int]string)
-	for _, item := range ret.Items {
-		usermap[item.UserId] = ""
-	}
+	copier.DeepCopy(ret, &result)
 	token, _ := TokenFromContext(ctx)
 	headers := make(map[string]string)
 	headers["Authorization"] = fmt.Sprintf("Bearer %s", token)
-	for k, _ := range usermap {
-		_, user, err := receiver.userClient.GetUser(ctx, headers, k)
+	for i, item := range result.Items {
+		_, user, err := receiver.userClient.GetUser(ctx, headers, item.UserId)
 		if err != nil {
 			return vo.TaskPageRet{}, err
 		}
-		usermap[k] = user.Username
-	}
-	for _, item := range ret.Items {
-		var taskVo vo.TaskVo
-		copier.DeepCopy(item, &taskVo)
-		taskVo.Username = usermap[item.UserId]
-		result.Items = append(result.Items, taskVo)
+		result.Items[i].Username = user.Username
 	}
 	return
 }

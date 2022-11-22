@@ -2,62 +2,68 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"github.com/go-redis/redis/v8"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-	"github.com/opentracing/opentracing-go"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/slok/goresilience/metrics"
 	service "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-bff/transport/httpsrv"
-	makerclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/client"
-	taskclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/client"
+	makerpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-maker/transport/grpc"
+	taskpb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-task/transport/grpc"
 	userclient "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/client"
-	ddhttp "github.com/unionj-cloud/go-doudou/framework/http"
-	"github.com/unionj-cloud/go-doudou/framework/ratelimit"
-	"github.com/unionj-cloud/go-doudou/framework/ratelimit/redisrate"
-	"github.com/unionj-cloud/go-doudou/framework/tracing"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry/etcd"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/framework/restclient"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"os"
+	"time"
 )
 
 func main() {
 	defer etcd.CloseEtcdClient()
 	conf := config.LoadFromEnv()
 
+	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
+	dialOptions := []grpc.DialOption{
+		tlsOption,
+	}
+
 	var userClient *userclient.UsersvcClient
-	var makerClient *makerclient.WordcloudMakerClient
-	var taskClient *taskclient.WordcloudTaskClient
+	var makerClientConn *grpc.ClientConn
+	var taskClientConn *grpc.ClientConn
 
 	if os.Getenv("GDD_SERVICE_DISCOVERY_MODE") != "" {
 		userProvider := etcd.NewSWRRServiceProvider("wordcloud-usersvc_rest")
 		userClient = userclient.NewUsersvcClient(restclient.WithProvider(userProvider))
 
-		makerProvider := etcd.NewSWRRServiceProvider("wordcloud-makersvc_rest")
-		makerClient = makerclient.NewWordcloudMakerClient(ddhttp.WithProvider(makerProvider))
+		makerClientConn = etcd.NewSWRRGrpcClientConn("wordcloud-makersvc_grpc", dialOptions...)
+		defer makerClientConn.Close()
 
-		taskProvider := etcd.NewSWRRServiceProvider("wordcloud-tasksvc_rest")
-		taskClient = taskclient.NewWordcloudTaskClient(ddhttp.WithProvider(taskProvider))
+		taskClientConn = etcd.NewSWRRGrpcClientConn("wordcloud-tasksvc_grpc", dialOptions...)
+		defer taskClientConn.Close()
 	} else {
 		userClient = userclient.NewUsersvcClient()
-		makerClient = makerclient.NewWordcloudMakerClient()
-		taskClient = taskclient.NewWordcloudTaskClient()
+
+		serverAddr := os.Getenv("WORDCLOUDMAKER")
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		var err error
+		makerClientConn, err = grpc.DialContext(ctx, serverAddr, dialOptions...)
+		if err != nil {
+			zlogger.Panic().Err(err).Msgf("[go-doudou] failed to connect to server %s", serverAddr)
+		}
+		defer makerClientConn.Close()
+
+		serverAddr = os.Getenv("WORDCLOUDTASK")
+		ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		taskClientConn, err = grpc.DialContext(ctx, serverAddr, dialOptions...)
+		if err != nil {
+			zlogger.Panic().Err(err).Msgf("[go-doudou] failed to connect to server %s", serverAddr)
+		}
+		defer taskClientConn.Close()
 	}
-
-	tracer, closer := tracing.Init()
-	defer closer.Close()
-	opentracing.SetGlobalTracer(tracer)
-
-	rec := metrics.NewPrometheusRecorder(prometheus.DefaultRegisterer)
-
-	// 给User、Maker、Task服务的客户端增加熔断器、超时、重试等弹性与容错机制和Prometheus指标采集
-	userClientProxy := userclient.NewUsersvcClientProxy(userClient, rec)
-	makerClientProxy := makerclient.NewWordcloudMakerClientProxy(makerClient, rec)
-	taskClientProxy := taskclient.NewWordcloudTaskClientProxy(taskClient, rec)
 
 	endpoint := conf.BizConf.OssEndpoint
 	accessKeyID := conf.BizConf.OssKey
@@ -73,24 +79,13 @@ func main() {
 		panic(err)
 	}
 
-	svc := service.NewWordcloudBff(conf, minioClient, makerClientProxy, taskClientProxy, userClientProxy)
+	svc := service.NewWordcloudBff(conf, minioClient,
+		makerpb.NewWordcloudMakerServiceClient(makerClientConn),
+		taskpb.NewWordcloudTaskServiceClient(taskClientConn),
+		userClient)
 	handler := httpsrv.NewWordcloudBffHandler(svc)
 	srv := rest.NewRestServer()
-	srv.AddMiddleware(httpsrv.Auth(userClientProxy))
-
-	rdb := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:6379", conf.RedisConf.Host),
-	})
-
-	fn := redisrate.LimitFn(func(ctx context.Context) ratelimit.Limit {
-		return ratelimit.PerSecondBurst(conf.ConConf.RatelimitRate, conf.ConConf.RatelimitBurst)
-	})
-
-	srv.AddMiddleware(
-		ddhttp.BulkHead(conf.ConConf.BulkheadWorkers, conf.ConConf.BulkheadMaxwaittime),
-		httpsrv.RedisRateLimit(rdb, fn),
-	)
-
+	srv.AddMiddleware(httpsrv.Auth(userClient))
 	srv.AddRoute(httpsrv.Routes(handler)...)
 	srv.Run()
 }

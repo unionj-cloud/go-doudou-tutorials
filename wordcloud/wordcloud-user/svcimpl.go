@@ -4,14 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"io"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/wrapper"
+	"google.golang.org/protobuf/types/known/emptypb"
 
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/config"
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/dao"
@@ -20,17 +19,18 @@ import (
 	"github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/vo"
 
 	"github.com/pkg/errors"
+	pb "github.com/unionj-cloud/go-doudou-tutorials/wordcloud/wordcloud-user/transport/grpc"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/query"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/sqlext/sortenum"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
-
-	v3 "github.com/unionj-cloud/go-doudou/v2/toolkit/openapi/v3"
 )
+
+var _ pb.UsersvcServiceServer = (*UsersvcImpl)(nil)
 
 var _ Usersvc = (*UsersvcImpl)(nil)
 
 type UsersvcImpl struct {
+	pb.UnimplementedUsersvcServiceServer
+
 	conf *config.Config
 	db   wrapper.GddDB
 }
@@ -58,36 +58,6 @@ func TokenFromContext(ctx context.Context) (string, bool) {
 	return token, ok
 }
 
-func (receiver *UsersvcImpl) PageUsers(ctx context.Context, pageQuery vo.PageQuery) (data vo.PageRet, err error) {
-	userDao := dao.NewUserDao(receiver.db)
-	var q query.Where
-	if stringutils.IsNotEmpty(pageQuery.Filter.Name) {
-		q = q.And(query.C().Col("name").Like(fmt.Sprintf(`%s%%`, pageQuery.Filter.Name)))
-	}
-	if stringutils.IsNotEmpty(pageQuery.Filter.Dept) {
-		q = q.And(query.C().Col("dept").Eq(pageQuery.Filter.Dept))
-	}
-	var page query.Page
-	if len(pageQuery.Page.Orders) > 0 {
-		for _, item := range pageQuery.Page.Orders {
-			page = page.Order(query.Order{
-				Col:  item.Col,
-				Sort: sortenum.Sort(item.Sort),
-			})
-		}
-	}
-	if pageQuery.Page.PageNo == 0 {
-		pageQuery.Page.PageNo = 1
-	}
-	page = page.Limit((pageQuery.Page.PageNo-1)*pageQuery.Page.Size, pageQuery.Page.Size)
-	var dest dao.UserPageRet
-	err = userDao.PageMany(ctx, &dest, page, q)
-	if err != nil {
-		panic(err)
-	}
-	copier.DeepCopy(dest, &data)
-	return data, nil
-}
 func (receiver *UsersvcImpl) GetUser(ctx context.Context, userId int) (data vo.UserVo, err error) {
 	userDao := dao.NewUserDao(receiver.db)
 	var user domain.User
@@ -102,7 +72,7 @@ func (receiver *UsersvcImpl) GetUser(ctx context.Context, userId int) (data vo.U
 	copier.DeepCopy(user, &data)
 	return
 }
-func (receiver *UsersvcImpl) PublicSignUp(ctx context.Context, username string, password string, code *string) (data int, err error) {
+func (receiver *UsersvcImpl) SignUp(ctx context.Context, username string, password string) (data int, err error) {
 	hashPassword, _ := lib.HashPassword(password)
 	userDao := dao.NewUserDao(receiver.db)
 	var exists bool
@@ -123,7 +93,7 @@ func (receiver *UsersvcImpl) PublicSignUp(ctx context.Context, username string, 
 	}
 	return user.Id, nil
 }
-func (receiver *UsersvcImpl) PublicLogIn(ctx context.Context, username string, password string) (data string, err error) {
+func (receiver *UsersvcImpl) LogIn(ctx context.Context, username string, password string) (data string, err error) {
 	userDao := dao.NewUserDao(receiver.db)
 	var users []domain.User
 	err = userDao.SelectMany(ctx, &users, query.C().Col("username").Eq(username).ToWhere())
@@ -139,52 +109,6 @@ func (receiver *UsersvcImpl) PublicLogIn(ctx context.Context, username string, p
 		//"iat":    now.Unix(),
 		//"nbf":    now.Unix(),
 	})
-}
-
-func (receiver *UsersvcImpl) UploadAvatar(ctx context.Context, avatar v3.FileModel) (data string, err error) {
-	defer avatar.Close()
-	_ = os.MkdirAll(receiver.conf.BizConf.Output, os.ModePerm)
-	out := filepath.Join(receiver.conf.BizConf.Output, avatar.Filename)
-	var f *os.File
-	f, err = os.OpenFile(out, os.O_WRONLY|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	_, err = io.Copy(f, avatar.Reader)
-	if err != nil {
-		panic(err)
-	}
-	userId, _ := UserIdFromContext(ctx)
-	userDao := dao.NewUserDao(receiver.db)
-	_, err = userDao.UpdateNoneZero(ctx, &domain.User{
-		Id:     userId,
-		Avatar: out,
-	})
-	if err != nil {
-		panic(err)
-	}
-	return "OK", nil
-}
-func (receiver *UsersvcImpl) GetPublicDownloadAvatar(ctx context.Context, userId int) (data *os.File, err error) {
-	userDao := dao.NewUserDao(receiver.db)
-	var user domain.User
-	err = userDao.Get(ctx, &user, userId)
-	if err != nil {
-		panic(err)
-	}
-	avatar := user.Avatar
-	if stringutils.IsEmpty(avatar) {
-		return nil, errAvatarNotFound
-	}
-	return os.Open(avatar)
-}
-
-func NewUsersvc(conf *config.Config, db wrapper.GddDB) *UsersvcImpl {
-	return &UsersvcImpl{
-		conf: conf,
-		db:   db,
-	}
 }
 
 func (receiver *UsersvcImpl) GetMe(ctx context.Context) (data vo.UserVo, err error) {
@@ -252,10 +176,72 @@ func ValidateToken(ctx context.Context, tokenString string, db wrapper.GddDB) (i
 	}
 }
 
-func (receiver *UsersvcImpl) PublicTokenValidate(ctx context.Context, token string) (user vo.UserVo, err error) {
+func (receiver *UsersvcImpl) GetTokenValidate(ctx context.Context, token string) (user vo.UserVo, err error) {
 	userId, valid, err := ValidateToken(ctx, token, receiver.db)
 	if err != nil || !valid {
 		return vo.UserVo{}, err
 	}
 	return receiver.GetUser(ctx, userId)
+}
+
+func (receiver *UsersvcImpl) GetUserRpc(ctx context.Context, request *pb.GetUserRpcRequest) (*pb.UserVo, error) {
+	data, err := receiver.GetUser(ctx, int(request.UserId))
+	if err != nil {
+		return nil, err
+	}
+	var ret pb.UserVo
+	copier.DeepCopy(data, &ret)
+	return &ret, nil
+}
+func (receiver *UsersvcImpl) GetMeRpc(ctx context.Context, request *emptypb.Empty) (*pb.UserVo, error) {
+	data, err := receiver.GetMe(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var ret pb.UserVo
+	copier.DeepCopy(data, &ret)
+	return &ret, nil
+}
+func (receiver *UsersvcImpl) SignUpRpc(ctx context.Context, request *pb.SignUpRpcRequest) (*pb.SignUpRpcResponse, error) {
+	data, err := receiver.SignUp(ctx, request.Username, request.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SignUpRpcResponse{
+		Data: int32(data),
+	}, nil
+}
+func (receiver *UsersvcImpl) LogInRpc(ctx context.Context, request *pb.LogInRpcRequest) (*pb.LogInRpcResponse, error) {
+	data, err := receiver.LogIn(ctx, request.Username, request.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.LogInRpcResponse{
+		Data: data,
+	}, nil
+}
+func (receiver *UsersvcImpl) GetLogoutRpc(ctx context.Context, request *emptypb.Empty) (*pb.GetLogoutRpcResponse, error) {
+	data, err := receiver.GetLogout(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetLogoutRpcResponse{
+		Data: data,
+	}, nil
+}
+func (receiver *UsersvcImpl) GetTokenValidateRpc(ctx context.Context, request *pb.GetTokenValidateRpcRequest) (*pb.UserVo, error) {
+	data, err := receiver.GetTokenValidate(ctx, request.Token)
+	if err != nil {
+		return nil, err
+	}
+	var ret pb.UserVo
+	copier.DeepCopy(data, &ret)
+	return &ret, nil
+}
+
+func NewUsersvc(conf *config.Config, db wrapper.GddDB) *UsersvcImpl {
+	return &UsersvcImpl{
+		conf: conf,
+		db:   db,
+	}
 }

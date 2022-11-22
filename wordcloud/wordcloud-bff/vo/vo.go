@@ -20,6 +20,7 @@ type TaskVo struct {
 	Top      int    `json:"top"`
 	Status   int    `json:"status"`
 	Error    string `json:"error"`
+	UserId   int    `json:"userId"`
 	Username string `json:"username"`
 	CreateAt string `json:"createAt"`
 }

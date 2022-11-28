@@ -5,9 +5,11 @@
 package main
 
 import (
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	service "go-doudou-tutorials/go-stats"
 	"go-doudou-tutorials/go-stats/config"
 	pb "go-doudou-tutorials/go-stats/transport/grpc"
+	"go-doudou-tutorials/go-stats/transport/httpsrv"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
@@ -44,5 +46,12 @@ func main() {
 		)),
 	)
 	pb.RegisterGoStatsServiceServer(grpcServer, svc)
+
+	go func() {
+		handler := httpsrv.NewGoStatsHandler(svc)
+		srv := rest.NewRestServer()
+		srv.AddRoute(httpsrv.Routes(handler)...)
+		srv.Run()
+	}()
 	grpcServer.Run()
 }

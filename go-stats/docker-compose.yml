@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.5-alpine
+    env_file:
+      - ./telegraf_influxdb_grafana/influxv2.env
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdbv2:/var/lib/influxdb2:rw
+    ports:
+      - "8086:8086"
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.22-alpine
+    depends_on:
+      - influxdb
+    volumes:
+      # Mount for telegraf config
+      - ./telegraf_influxdb_grafana/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
+    env_file:
+      - ./telegraf_influxdb_grafana/influxv2.env
+  grafana:
+    image: grafana/grafana:9.2.6
+    container_name: grafana
+    hostname: grafana
+    volumes:
+      - ./telegraf_influxdb_grafana/grafana/provisioning:/etc/grafana/provisioning
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    ports:
+      - "3000:3000"
+
+  gostats:
+    container_name: gostats
+    hostname: gostats
+    image: gostats:latest
+    env_file:
+      - ./.env
+    ports:
+      - "6060:6060"
+
+volumes:
+  influxdbv2:
+  grafana-storage:

@@ -23,6 +23,7 @@ services:
       # Mount for telegraf config
       - ./telegraf_influxdb_grafana/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./telegraf_influxdb_grafana/telegraf/plugins:/home/telegraf/plugins
     env_file:
       - ./telegraf_influxdb_grafana/influxv2.env
   grafana:
@@ -49,6 +50,36 @@ services:
       - ./.env
     ports:
       - "6060:6060"
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 512M
+        reservations:
+          cpus: '1'
+          memory: 128M
+
+#  prometheus:
+#    container_name: prometheus
+#    hostname: prometheus
+#    image: prometheus:latest
+#    environment:
+#      - PROM_REFRESH_INTERVAL=10s
+##    volumes:
+##      - ./prometheus/:/etc/prometheus/
+#    ports:
+#      - "9090:9090"
+#    restart: always
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+#      interval: 10s
+#      timeout: 3s
+#      retries: 3
 
 volumes:
   influxdbv2:

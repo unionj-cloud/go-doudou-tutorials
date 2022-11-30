@@ -55,9 +55,17 @@ services:
       nofile:
         soft: 20000
         hard: 40000
-    mem_limit: 512M
-    mem_reservation: 128M
-    cpus: 1
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '1'
+          memory: 128M
+#    mem_limit: 512M
+#    mem_reservation: 128M
+#    cpus: 1
 
 #  prometheus:
 #    container_name: prometheus

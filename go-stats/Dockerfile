@@ -22,6 +22,9 @@ strip api && /usr/local/bin/upx api
 
 FROM alpine:3.14
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN apk add --no-cache bash
+
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ="Asia/Shanghai"
 

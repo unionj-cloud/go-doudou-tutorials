@@ -145,7 +145,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 6,
         "w": 5,
         "x": 0,
         "y": 1
@@ -191,7 +191,7 @@
           "measurement": "process_start_time_seconds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"elapsed\") FROM \"process_start_time_seconds\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT last(\"elapsed\") FROM \"process_start_time_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -222,6 +222,116 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 5,
+        "y": 1
+      },
+      "id": 40,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "process_start_time_seconds",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"gauge\") * 1000 FROM \"process_start_time_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "gauge"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "title": "Start time",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "description": "(usage - cache) / limit",
+      "fieldConfig": {
+        "defaults": {
           "decimals": 2,
           "mappings": [],
           "max": 100,
@@ -249,8 +359,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 6,
-        "x": 5,
+        "w": 7,
+        "x": 10,
         "y": 1
       },
       "id": 34,
@@ -287,10 +397,11 @@
               "type": "fill"
             }
           ],
+          "hide": false,
           "measurement": "docker_container_mem",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"usage_percent\") FROM \"docker_container_mem\" WHERE (\"container_name\" =~ /^$Service$/) AND $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"usage_percent\") FROM \"docker_container_mem\" WHERE (\"container_name\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -352,8 +463,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 12,
-        "x": 11,
+        "w": 7,
+        "x": 17,
         "y": 1
       },
       "id": 5,
@@ -399,7 +510,7 @@
           "measurement": "go_memstats_sys_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"process_resident_memory_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"process_resident_memory_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -431,19 +542,46 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "left",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 8,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "linearThreshold": null,
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
-          ],
+          },
+          "decimals": 2,
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -453,40 +591,45 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 85
               }
             ]
           },
-          "unit": "dateTimeAsIso"
+          "unit": "none"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
-        "w": 5,
+        "h": 7,
+        "w": 8,
         "x": 0,
-        "y": 4
+        "y": 7
       },
-      "id": 40,
-      "links": [],
-      "maxDataPoints": 100,
+      "id": 43,
       "options": {
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
+        "legend": {
           "calcs": [
-            "lastNotNull"
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
           ],
-          "fields": "",
-          "values": false
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "textMode": "auto"
+        "timezone": [
+          ""
+        ],
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
       },
       "pluginVersion": "9.2.6",
       "targets": [
         {
+          "alias": "load average 1m",
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
@@ -505,12 +648,107 @@
               "type": "fill"
             }
           ],
-          "measurement": "process_start_time_seconds",
+          "hide": false,
+          "measurement": "docker_container_mem",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT last(\"gauge\") * 1000 FROM \"process_start_time_seconds\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"usage_percent\") / 100 FROM \"docker_container_cpu\" WHERE (\"container_name\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time(1m) fill(null)",
           "rawQuery": true,
           "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "usage_percent"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "container_name",
+              "operator": "=~",
+              "value": "/^$Service$/"
+            }
+          ]
+        },
+        {
+          "alias": "cpu count",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": true,
+          "measurement": "docker",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"n_cpus\") FROM \"docker\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "n_cpus"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        },
+        {
+          "alias": "cpu limit",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "go_doudou_gomaxprocs",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT last(\"gauge\")  FROM \"go_doudou_gomaxprocs\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
           "resultFormat": "time_series",
           "select": [
             [
@@ -522,15 +760,15 @@
               },
               {
                 "params": [],
-                "type": "last"
+                "type": "mean"
               }
             ]
           ],
           "tags": []
         }
       ],
-      "title": "Start time",
-      "type": "stat"
+      "title": "Container Load Average",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -639,8 +877,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
-        "x": 0,
+        "w": 8,
+        "x": 8,
         "y": 7
       },
       "id": 2,
@@ -683,7 +921,7 @@
           "measurement": "go_goroutines",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT max(\"gauge\") FROM \"go_goroutines\" WHERE $timeFilter GROUP BY time(${Interval}) fill(none)",
+          "query": "SELECT max(\"gauge\") FROM \"go_goroutines\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -728,7 +966,7 @@
           "measurement": "go_goroutines",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_threads\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_threads\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -812,9 +1050,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 9,
-        "x": 12,
+        "h": 7,
+        "w": 8,
+        "x": 16,
         "y": 7
       },
       "id": 42,
@@ -856,7 +1094,7 @@
           "measurement": "process_open_fds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"process_open_fds\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"process_open_fds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -900,7 +1138,7 @@
           "measurement": "process_max_fds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"process_max_fds\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"process_max_fds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -1037,8 +1275,8 @@
         ]
       },
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 7,
+        "w": 8,
         "x": 0,
         "y": 15
       },
@@ -1079,7 +1317,7 @@
           "measurement": "go_doudou_http_request_count",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(max(\"counter\"), 1s) FROM \"go_doudou_http_request_count\" WHERE $timeFilter GROUP BY time(${Interval}) fill(null)",
+          "query": "SELECT non_negative_derivative(max(\"counter\"), 1s) FROM \"go_doudou_http_request_count\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1150,7 +1388,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1163,10 +1402,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 22
       },
       "id": 32,
       "options": {
@@ -1208,7 +1447,7 @@
           "measurement": "go_doudou_http_response_time_seconds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(last(\"sum\")) / non_negative_derivative(last(\"count\")) FROM \"go_doudou_http_response_time_seconds\" WHERE $timeFilter GROUP BY time(${Interval}), \"method\", \"path\" fill(null)",
+          "query": "SELECT non_negative_derivative(last(\"sum\")) / non_negative_derivative(last(\"count\")) FROM \"go_doudou_http_response_time_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time(${Interval}), \"method\", \"path\" fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1242,7 +1481,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 29
       },
       "id": 24,
       "panels": [],
@@ -1303,7 +1542,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1319,7 +1559,7 @@
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 32
+        "y": 30
       },
       "id": 26,
       "options": {
@@ -1358,7 +1598,7 @@
           "measurement": "go_memstats_next_gc_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_next_gc_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_next_gc_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1400,7 +1640,7 @@
         "h": 7,
         "w": 6,
         "x": 6,
-        "y": 32
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 8,
@@ -1454,7 +1694,7 @@
           "measurement": "go_gc_duration_seconds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(last(\"sum\")) / non_negative_derivative(last(\"count\")) FROM \"go_gc_duration_seconds\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT non_negative_derivative(last(\"sum\")) / non_negative_derivative(last(\"count\")) FROM \"go_gc_duration_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1528,7 +1768,7 @@
         "h": 7,
         "w": 6,
         "x": 12,
-        "y": 32
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 13,
@@ -1582,7 +1822,7 @@
           "measurement": "go_gc_duration_seconds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT non_negative_derivative(last(\"count\")) FROM \"go_gc_duration_seconds\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT non_negative_derivative(last(\"count\")) FROM \"go_gc_duration_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1654,7 +1894,7 @@
         "h": 7,
         "w": 6,
         "x": 18,
-        "y": 32
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 9,
@@ -1708,7 +1948,7 @@
           "measurement": "go_gc_duration_seconds",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"0\") FROM \"go_gc_duration_seconds\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"0\") FROM \"go_gc_duration_seconds\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -1953,7 +2193,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 37
       },
       "id": 21,
       "panels": [],
@@ -1988,7 +2228,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 38
       },
       "hiddenSeries": false,
       "id": 3,
@@ -2042,7 +2282,7 @@
           "measurement": "go_memstats_heap_objects",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_objects\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_objects\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2116,7 +2356,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 38
       },
       "hiddenSeries": false,
       "id": 17,
@@ -2170,7 +2410,7 @@
           "measurement": "go_memstats_heap_alloc_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_alloc_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_alloc_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2214,7 +2454,7 @@
           "measurement": "go_memstats_heap_sys_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_sys_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_sys_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -2258,7 +2498,7 @@
           "measurement": "go_memstats_heap_idle_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_idle_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_idle_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -2302,7 +2542,7 @@
           "measurement": "go_memstats_heap_inuse_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_inuse_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_inuse_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -2346,7 +2586,7 @@
           "measurement": "go_memstats_heap_released_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_released_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_heap_released_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "E",
           "resultFormat": "time_series",
@@ -2411,7 +2651,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 46
       },
       "id": 22,
       "panels": [],
@@ -2444,7 +2684,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 49
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 18,
@@ -2498,7 +2738,7 @@
           "measurement": "go_memstats_mallocs_total",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"counter\") FROM \"go_memstats_mallocs_total\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"counter\") FROM \"go_memstats_mallocs_total\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2614,7 +2854,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 49
+        "y": 47
       },
       "hiddenSeries": false,
       "id": 6,
@@ -2668,7 +2908,7 @@
           "measurement": "go_memstats_alloc_bytes_total",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"counter\") FROM \"go_memstats_alloc_bytes_total\" WHERE $timeFilter GROUP BY time($Interval) fill(none)",
+          "query": "SELECT mean(\"counter\") FROM \"go_memstats_alloc_bytes_total\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2733,7 +2973,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 54
       },
       "id": 23,
       "panels": [],
@@ -2764,7 +3004,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 57
+        "y": 55
       },
       "hiddenSeries": false,
       "id": 19,
@@ -2820,7 +3060,7 @@
           "measurement": "go_memstats_stack_inuse_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_stack_inuse_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_stack_inuse_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "A",
           "resultFormat": "time_series",
@@ -2864,7 +3104,7 @@
           "measurement": "go_memstats_stack_sys_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_stack_sys_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_stack_sys_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "B",
           "resultFormat": "time_series",
@@ -2908,7 +3148,7 @@
           "measurement": "go_memstats_mspan_inuse_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mspan_inuse_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mspan_inuse_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "C",
           "resultFormat": "time_series",
@@ -2952,7 +3192,7 @@
           "measurement": "go_memstats_mspan_sys_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mspan_sys_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mspan_sys_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "D",
           "resultFormat": "time_series",
@@ -2996,7 +3236,7 @@
           "measurement": "go_memstats_mcache_inuse_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mcache_inuse_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mcache_inuse_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "E",
           "resultFormat": "time_series",
@@ -3040,7 +3280,7 @@
           "measurement": "go_memstats_mcache_sys_bytes",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mcache_sys_bytes\" WHERE $timeFilter GROUP BY time($Interval) fill(null)",
+          "query": "SELECT mean(\"gauge\") FROM \"go_memstats_mcache_sys_bytes\" WHERE (\"url\" =~ /.*$Service.*/) AND $timeFilter GROUP BY time($Interval) fill(null)",
           "rawQuery": true,
           "refId": "F",
           "resultFormat": "time_series",

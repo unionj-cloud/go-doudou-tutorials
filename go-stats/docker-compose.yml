@@ -4,12 +4,15 @@ services:
   influxdb:
     container_name: influxdb
     hostname: influxdb
-    image: influxdb:2.5-alpine
+#    image: influxdb:2.5-alpine
+    image: influxdb:1.8.10
     env_file:
-      - ./telegraf_influxdb_grafana/influxv2.env
+#      - ./telegraf_influxdb_grafana/influxv2.env
+      - ./telegraf_influxdb_grafana/influx.env
     volumes:
       # Mount for influxdb data directory and configuration
-      - influxdbv2:/var/lib/influxdb2:rw
+#      - influxdbv2:/var/lib/influxdb2:rw
+      - influxdb:/var/lib/influxdb:rw
     ports:
       - "8086:8086"
   telegraf:
@@ -85,5 +88,6 @@ services:
 #      retries: 3
 
 volumes:
-  influxdbv2:
+#  influxdbv2:
+  influxdb:
   grafana-storage:

@@ -13,6 +13,7 @@ import (
 
 type GoStatsHandler interface {
 	LargestRemainder(w http.ResponseWriter, r *http.Request)
+	GetShelves_ShelfBooks_Book(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler GoStatsHandler) []rest.Route {
@@ -22,6 +23,12 @@ func Routes(handler GoStatsHandler) []rest.Route {
 			Method:      "POST",
 			Pattern:     "/largest/remainder",
 			HandlerFunc: handler.LargestRemainder,
+		},
+		{
+			Name:        "GetShelves_ShelfBooks_Book",
+			Method:      "GET",
+			Pattern:     "/shelves/:shelf/books/:book",
+			HandlerFunc: handler.GetShelves_ShelfBooks_Book,
 		},
 	}
 }

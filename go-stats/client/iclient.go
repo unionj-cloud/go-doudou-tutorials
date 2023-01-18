@@ -13,4 +13,5 @@ import (
 
 type IGoStatsClient interface {
 	LargestRemainder(ctx context.Context, _headers map[string]string, payload vo.PercentageReqVo) (_resp *resty.Response, data []vo.PercentageRespVo, err error)
+	GetShelves_ShelfBooks_Book(ctx context.Context, _headers map[string]string, shelf int, book string) (_resp *resty.Response, data string, err error)
 }

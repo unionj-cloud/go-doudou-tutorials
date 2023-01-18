@@ -13,6 +13,8 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest/httprouter"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/cast"
 )
 
 type GoStatsHandlerImpl struct {
@@ -57,6 +59,55 @@ func (receiver *GoStatsHandlerImpl) LargestRemainder(_writer http.ResponseWriter
 	}
 	if _err := json.NewEncoder(_writer).Encode(struct {
 		Data []vo.PercentageRespVo `json:"data"`
+	}{
+		Data: data,
+	}); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+func (receiver *GoStatsHandlerImpl) GetShelves_ShelfBooks_Book(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx   context.Context
+		shelf int
+		book  string
+		data  string
+		err   error
+	)
+	paramsFromCtx := httprouter.ParamsFromContext(_req.Context())
+	ctx = _req.Context()
+	if casted, _err := cast.ToIntE(paramsFromCtx.ByName("shelf")); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	} else {
+		shelf = casted
+	}
+	if _err := rest.ValidateVar(shelf, "", "shelf"); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	book = paramsFromCtx.ByName("book")
+	if _err := rest.ValidateVar(book, "", "book"); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	data, err = receiver.goStats.GetShelves_ShelfBooks_Book(
+		ctx,
+		shelf,
+		book,
+	)
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+		} else if _err, ok := err.(*rest.BizError); ok {
+			http.Error(_writer, _err.Error(), _err.StatusCode)
+		} else {
+			http.Error(_writer, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+		Data string `json:"data"`
 	}{
 		Data: data,
 	}); _err != nil {

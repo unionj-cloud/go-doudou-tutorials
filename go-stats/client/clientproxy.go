@@ -48,6 +48,27 @@ func (receiver *GoStatsClientProxy) LargestRemainder(ctx context.Context, _heade
 	}
 	return
 }
+func (receiver *GoStatsClientProxy) GetShelves_ShelfBooks_Book(ctx context.Context, _headers map[string]string, shelf int, book string) (_resp *resty.Response, data string, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, data, err = receiver.client.GetShelves_ShelfBooks_Book(
+			ctx,
+			_headers,
+			shelf,
+			book,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call GetShelves_ShelfBooks_Book fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		err = errors.Wrap(_err, "call GetShelves_ShelfBooks_Book fail")
+	}
+	return
+}
 
 type ProxyOption func(*GoStatsClientProxy)
 

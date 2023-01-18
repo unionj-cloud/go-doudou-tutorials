@@ -6,10 +6,12 @@ package service
 
 import (
 	"context"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/numberutils"
 	"go-doudou-tutorials/go-stats/config"
 	pb "go-doudou-tutorials/go-stats/transport/grpc"
+	"strconv"
+
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/numberutils"
 
 	"go-doudou-tutorials/go-stats/vo"
 )
@@ -64,4 +66,13 @@ func (receiver *GoStatsImpl) LargestRemainder(ctx context.Context, payload vo.Pe
 		})
 	}
 	return
+}
+
+func (receiver *GoStatsImpl) GetShelves_ShelfBooks_Book(ctx context.Context, shelf int, book string) (data string, err error) {
+	return strconv.Itoa(shelf) + ":" + book, err
+}
+
+func (receiver *GoStatsImpl) GetShelvesShelfBooksBookRpc(ctx context.Context, request *pb.GetShelvesShelfBooksBookRpcRequest) (*pb.GetShelvesShelfBooksBookRpcResponse, error) {
+	//TODO implement me
+	panic("implement me")
 }

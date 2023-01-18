@@ -5,15 +5,32 @@
 package main
 
 import (
+	"annotation/client"
+	pb "annotation/transport/grpc"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/memberlist"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/restclient"
 	service "github.com/unionj-cloud/helloworld"
 	"github.com/unionj-cloud/helloworld/config"
 	"github.com/unionj-cloud/helloworld/transport/httpsrv"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	conf := config.LoadFromEnv()
-	svc := service.NewHelloworld(conf)
+	restClient := client.NewAnnotationClient(restclient.WithProvider(memberlist.NewSWRRServiceProvider("annotation-svc_rest")))
+
+	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
+	dialOptions := []grpc.DialOption{
+		tlsOption,
+	}
+
+	// Set up a connection to the server.
+	grpcConn := memberlist.NewRRGrpcClientConn("annotation-svc_grpc", dialOptions...)
+	defer grpcConn.Close()
+
+	svc := service.NewHelloworld(conf, restClient, pb.NewAnnotationServiceClient(grpcConn))
 
 	//go func() {
 	//	grpcServer := grpcx.NewGrpcServer(

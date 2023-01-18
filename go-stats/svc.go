@@ -16,4 +16,7 @@ import (
 type GoStats interface {
 	// LargestRemainder implements Largest Remainder Method https://en.wikipedia.org/wiki/Largest_remainder_method
 	LargestRemainder(ctx context.Context, payload vo.PercentageReqVo) (data []vo.PercentageRespVo, err error)
+	// /shelves/:shelf/books/:book
+	// shelves_shelf_books_book
+	GetShelves_ShelfBooks_Book(ctx context.Context, shelf int, book string) (data string, err error)
 }

@@ -70,6 +70,36 @@ func (receiver *GoStatsClient) LargestRemainder(ctx context.Context, _headers ma
 	}
 	return _resp, _result.Data, nil
 }
+func (receiver *GoStatsClient) GetShelves_ShelfBooks_Book(ctx context.Context, _headers map[string]string, shelf int, book string) (_resp *resty.Response, data string, err error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_req.SetPathParam("shelf", fmt.Sprintf("%v", shelf))
+	_req.SetPathParam("book", fmt.Sprintf("%v", book))
+	_path := "/shelves/{shelf}/books/{book}"
+	_req.SetQueryParamsFromValues(_urlValues)
+	_resp, _err = _req.Get(_path)
+	if _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		err = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+		Data string `json:"data"`
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		err = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, _result.Data, nil
+}
 
 func NewGoStatsClient(opts ...restclient.RestClientOption) *GoStatsClient {
 	defaultProvider := restclient.NewServiceProvider("GOSTATS")

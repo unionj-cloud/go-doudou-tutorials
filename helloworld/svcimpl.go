@@ -5,11 +5,13 @@
 package service
 
 import (
+	"annotation/client"
 	"context"
 	"fmt"
+	"github.com/golang/protobuf/ptypes/empty"
 
+	annopb "annotation/transport/grpc"
 	"github.com/unionj-cloud/helloworld/config"
-
 	pb "github.com/unionj-cloud/helloworld/transport/grpc"
 )
 
@@ -20,25 +22,30 @@ var _ pb.HelloworldServiceServer = (*HelloworldImpl)(nil)
 type HelloworldImpl struct {
 	pb.UnimplementedHelloworldServiceServer
 
-	conf *config.Config
+	conf       *config.Config
+	restClient *client.AnnotationClient
+	grpcClient annopb.AnnotationServiceClient
 }
 
 func (receiver *HelloworldImpl) Greeting(ctx context.Context, greeting string) (data string, err error) {
-	return fmt.Sprintf("Hello %s", greeting), nil
+	//_, msg, err := receiver.restClient.GetGuest(ctx, nil)
+
+	resp, err := receiver.grpcClient.GetGuestRpc(ctx, &empty.Empty{})
+	if err != nil {
+		panic(err)
+	}
+	//return fmt.Sprintf("Hello %s %s", greeting, msg), nil
+	return fmt.Sprintf("Hello %s %s", greeting, resp.Data), nil
 }
 
-func NewHelloworld(conf *config.Config) *HelloworldImpl {
+func NewHelloworld(conf *config.Config, restClient *client.AnnotationClient, grpcClient annopb.AnnotationServiceClient) *HelloworldImpl {
 	return &HelloworldImpl{
-		conf: conf,
+		conf:       conf,
+		restClient: restClient,
+		grpcClient: grpcClient,
 	}
 }
 
 func (receiver *HelloworldImpl) GreetingRpc(ctx context.Context, request *pb.GreetingRpcRequest) (*pb.GreetingRpcResponse, error) {
-	data, err := receiver.Greeting(ctx, request.Greeting)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.GreetingRpcResponse{
-		Data: data,
-	}, nil
+	return nil, nil
 }

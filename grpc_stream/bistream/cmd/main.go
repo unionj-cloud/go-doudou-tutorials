@@ -5,9 +5,13 @@
 package main
 
 import (
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/utils"
 	service "go-doudou-tutorials/bistream"
 	"go-doudou-tutorials/bistream/config"
+	"go-doudou-tutorials/bistream/libs/raftx"
 	pb "go-doudou-tutorials/bistream/transport/grpc"
+	"golang.org/x/net/context"
+	"os"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
@@ -44,5 +48,8 @@ func main() {
 		)),
 	)
 	pb.RegisterBistreamServiceServer(grpcServer, svc)
+
+	raftId, _ := os.Hostname()
+	raftx.NewRaft(context.Background(), raftId, utils.GetRegisterHost())
 	grpcServer.Run()
 }

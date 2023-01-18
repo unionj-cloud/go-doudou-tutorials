@@ -1,0 +1,23 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+#rule_files:
+#  - 'alert.rules'
+rule_files:
+  - alert.rules.yml
+#alerting:
+#  alertmanagers:
+#    - static_configs:
+#      - targets:
+#        - 'alertmanager:9093'
+
+scrape_configs:
+  - job_name: "gostats"
+    basic_auth:
+      username: admin
+      password: admin
+    metrics_path: /go-doudou/prometheus
+    static_configs:
+      - targets:
+          - gostats:6060

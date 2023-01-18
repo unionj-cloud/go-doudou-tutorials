@@ -24,7 +24,7 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx/interceptors/grpcx_ratelimit"
 	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit"
 	"github.com/unionj-cloud/go-doudou/v2/framework/ratelimit/memrate"
-	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest/gorilla"
 	"github.com/unionj-cloud/go-doudou/v2/framework/tracing"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
@@ -61,7 +61,8 @@ func main() {
 
 	svc := service.NewAnnotation(conf)
 	handler := httpsrv.NewAnnotationHandler(svc)
-	srv := rest.NewRestServer()
+	//srv := rest.NewRestServer()
+	srv := gorilla.NewRestServer()
 
 	userStore := vo.UserStore{
 		vo.Auth{

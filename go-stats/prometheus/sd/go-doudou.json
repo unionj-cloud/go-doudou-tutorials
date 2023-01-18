@@ -1,0 +1,20 @@
+[
+    {
+        "targets": [
+            "172.28.0.5:6060"
+        ],
+        "labels": {
+            "base_url": "http://172.28.0.5:6060",
+            "build_time": "2022-03-12T01:01:42+0800",
+            "build_user": "",
+            "go_ver": "go1.16.12",
+            "godoudou_ver": "v1.0.2",
+            "hostname": "prometheus",
+            "service_id": "prometheus"
+        }
+    },
+    {
+        "targets": [],
+        "labels": {}
+    }
+]

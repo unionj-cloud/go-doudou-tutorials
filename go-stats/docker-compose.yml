@@ -29,21 +29,21 @@ services:
       - ./telegraf_influxdb_grafana/telegraf/plugins:/home/telegraf/plugins
     env_file:
       - ./telegraf_influxdb_grafana/influxv2.env
-  grafana:
-    image: grafana/grafana:9.2.6
-    container_name: grafana
-    hostname: grafana
-    volumes:
-      - ./telegraf_influxdb_grafana/grafana/provisioning:/etc/grafana/provisioning
-      - grafana-storage:/var/lib/grafana
-    environment:
-      - GF_AUTH_DISABLE_LOGIN_FORM=false
-      - GF_AUTH_ANONYMOUS_ENABLED=false
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-      - GF_SECURITY_ADMIN_USER=admin
-    ports:
-      - "3000:3000"
+#  grafana:
+#    image: grafana/grafana:9.2.6
+#    container_name: grafana
+#    hostname: grafana
+#    volumes:
+#      - ./telegraf_influxdb_grafana/grafana/provisioning:/etc/grafana/provisioning
+#      - grafana-storage:/var/lib/grafana
+#    environment:
+#      - GF_AUTH_DISABLE_LOGIN_FORM=false
+#      - GF_AUTH_ANONYMOUS_ENABLED=false
+#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+#      - GF_SECURITY_ADMIN_PASSWORD=admin
+#      - GF_SECURITY_ADMIN_USER=admin
+#    ports:
+#      - "3000:3000"
 
   gostats:
     container_name: gostats
@@ -70,24 +70,24 @@ services:
 #    mem_reservation: 128M
 #    cpus: 1
 
-#  prometheus:
-#    container_name: prometheus
-#    hostname: prometheus
-#    image: prometheus:latest
-#    environment:
-#      - PROM_REFRESH_INTERVAL=10s
-##    volumes:
-##      - ./prometheus/:/etc/prometheus/
-#    ports:
-#      - "9090:9090"
-#    restart: always
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
-#      interval: 10s
-#      timeout: 3s
-#      retries: 3
+  prometheus:
+    container_name: prometheus
+    hostname: prometheus
+    image: prom/prometheus:v2.41.0
+    environment:
+      - PROM_REFRESH_INTERVAL=10s
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    ports:
+      - "9091:9090"
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
 
 volumes:
 #  influxdbv2:
   influxdb:
-  grafana-storage:
+#  grafana-storage:

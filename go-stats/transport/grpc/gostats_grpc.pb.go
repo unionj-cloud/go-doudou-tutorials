@@ -20,6 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 type GoStatsServiceClient interface {
 	// LargestRemainder implements Largest Remainder Method https://en.wikipedia.org/wiki/Largest_remainder_method
 	LargestRemainderRpc(ctx context.Context, in *PercentageReqVo, opts ...grpc.CallOption) (*LargestRemainderRpcResponse, error)
+	// /shelves/:shelf/books/:book
+	// shelves_shelf_books_book
+	GetShelvesShelfBooksBookRpc(ctx context.Context, in *GetShelvesShelfBooksBookRpcRequest, opts ...grpc.CallOption) (*GetShelvesShelfBooksBookRpcResponse, error)
 }
 
 type goStatsServiceClient struct {
@@ -39,12 +42,24 @@ func (c *goStatsServiceClient) LargestRemainderRpc(ctx context.Context, in *Perc
 	return out, nil
 }
 
+func (c *goStatsServiceClient) GetShelvesShelfBooksBookRpc(ctx context.Context, in *GetShelvesShelfBooksBookRpcRequest, opts ...grpc.CallOption) (*GetShelvesShelfBooksBookRpcResponse, error) {
+	out := new(GetShelvesShelfBooksBookRpcResponse)
+	err := c.cc.Invoke(ctx, "/go_stats.GoStatsService/GetShelvesShelfBooksBookRpc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GoStatsServiceServer is the server API for GoStatsService service.
 // All implementations must embed UnimplementedGoStatsServiceServer
 // for forward compatibility
 type GoStatsServiceServer interface {
 	// LargestRemainder implements Largest Remainder Method https://en.wikipedia.org/wiki/Largest_remainder_method
 	LargestRemainderRpc(context.Context, *PercentageReqVo) (*LargestRemainderRpcResponse, error)
+	// /shelves/:shelf/books/:book
+	// shelves_shelf_books_book
+	GetShelvesShelfBooksBookRpc(context.Context, *GetShelvesShelfBooksBookRpcRequest) (*GetShelvesShelfBooksBookRpcResponse, error)
 	mustEmbedUnimplementedGoStatsServiceServer()
 }
 
@@ -54,6 +69,9 @@ type UnimplementedGoStatsServiceServer struct {
 
 func (UnimplementedGoStatsServiceServer) LargestRemainderRpc(context.Context, *PercentageReqVo) (*LargestRemainderRpcResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LargestRemainderRpc not implemented")
+}
+func (UnimplementedGoStatsServiceServer) GetShelvesShelfBooksBookRpc(context.Context, *GetShelvesShelfBooksBookRpcRequest) (*GetShelvesShelfBooksBookRpcResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetShelvesShelfBooksBookRpc not implemented")
 }
 func (UnimplementedGoStatsServiceServer) mustEmbedUnimplementedGoStatsServiceServer() {}
 
@@ -86,6 +104,24 @@ func _GoStatsService_LargestRemainderRpc_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GoStatsService_GetShelvesShelfBooksBookRpc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetShelvesShelfBooksBookRpcRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoStatsServiceServer).GetShelvesShelfBooksBookRpc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/go_stats.GoStatsService/GetShelvesShelfBooksBookRpc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoStatsServiceServer).GetShelvesShelfBooksBookRpc(ctx, req.(*GetShelvesShelfBooksBookRpcRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GoStatsService_ServiceDesc is the grpc.ServiceDesc for GoStatsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +132,10 @@ var GoStatsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LargestRemainderRpc",
 			Handler:    _GoStatsService_LargestRemainderRpc_Handler,
+		},
+		{
+			MethodName: "GetShelvesShelfBooksBookRpc",
+			Handler:    _GoStatsService_GetShelvesShelfBooksBookRpc_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

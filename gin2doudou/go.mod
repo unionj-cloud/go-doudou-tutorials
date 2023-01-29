@@ -17,6 +17,8 @@ require (
 	github.com/rs/zerolog v1.28.0
 	github.com/slok/goresilience v0.2.0
 	github.com/unionj-cloud/go-doudou/v2 v2.0.5
+	google.golang.org/grpc v1.50.0
+	google.golang.org/protobuf v1.28.1
 )
 
 require (
@@ -109,8 +111,6 @@ require (
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
 	golang.org/x/tools v0.5.0 // indirect
 	google.golang.org/genproto v0.0.0-20221010155953-15ba04fc1c0e // indirect
-	google.golang.org/grpc v1.50.0 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

@@ -1,49 +1,48 @@
 package vo
 
-import "encoding/json"
-
 //go:generate go-doudou name --file $GOFILE
+//go:generate go-doudou enum --file $GOFILE
 
 type PageFilter struct {
 	// 真实姓名，前缀匹配
-	Name string
+	Name string `json:"name"`
 	// 所属部门ID
-	Dept int
+	Dept int `json:"dept"`
 }
 
 type Order struct {
-	Col  string
-	Sort string
+	Col  string `json:"col"`
+	Sort string `json:"sort"`
 }
 
 type Page struct {
 	// 排序规则
-	Orders []Order
+	Orders []Order `json:"orders"`
 	// 页码
-	PageNo int
+	PageNo int `json:"pageNo"`
 	// 每页行数
-	Size int
+	Size int `json:"size"`
 }
 
 // 分页筛选条件
 type PageQuery struct {
-	Filter PageFilter
-	Page   Page
+	Filter PageFilter `json:"filter"`
+	Page   Page       `json:"page"`
 }
 
 type PageRet struct {
-	Items    interface{}
-	PageNo   int
-	PageSize int
-	Total    int
-	HasNext  bool
+	Items    interface{} `json:"items"`
+	PageNo   int         `json:"pageNo"`
+	PageSize int         `json:"pageSize"`
+	Total    int         `json:"total"`
+	HasNext  bool        `json:"hasNext"`
 }
 
 type UserVo struct {
-	Id    int
-	Name  string
-	Phone string
-	Dept  string
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Phone string `json:"phone"`
+	Dept  string `json:"dept"`
 }
 
 type RoleEnum int
@@ -54,49 +53,18 @@ const (
 	ADMIN
 )
 
-func (k *RoleEnum) StringSetter(value string) {
-	switch value {
-	case "GUEST":
-		*k = GUEST
-	case "USER":
-		*k = USER
-	case "ADMIN":
-		*k = ADMIN
-	default:
-		*k = GUEST
-	}
-}
+type KeyboardLayout int
 
-func (k *RoleEnum) StringGetter() string {
-	switch *k {
-	case GUEST:
-		return "GUEST"
-	case USER:
-		return "USER"
-	case ADMIN:
-		return "ADMIN"
-	default:
-		return "GUEST"
-	}
-}
-
-func (k *RoleEnum) UnmarshalJSON(bytes []byte) error {
-	var _k string
-	err := json.Unmarshal(bytes, &_k)
-	if err != nil {
-		return err
-	}
-	k.StringSetter(_k)
-	return nil
-}
-
-func (k RoleEnum) MarshalJSON() ([]byte, error) {
-	return json.Marshal(k.StringGetter())
-}
+const (
+	UNKNOWN KeyboardLayout = iota
+	QWERTZ
+	AZERTY
+	QWERTY
+)
 
 type Auth struct {
-	User string
-	Pass string
+	User string `json:"user"`
+	Pass string `json:"pass"`
 }
 
 type UserStore map[Auth]RoleEnum

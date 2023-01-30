@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest/httprouter"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/cast"
@@ -119,5 +120,56 @@ func (receiver *GoStatsHandlerImpl) GetShelves_ShelfBooks_Book(_writer http.Resp
 func NewGoStatsHandler(goStats service.GoStats) GoStatsHandler {
 	return &GoStatsHandlerImpl{
 		goStats,
+	}
+}
+
+func (receiver *GoStatsHandlerImpl) GetBook(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx   context.Context
+		price decimal.Decimal
+		data  string
+		err   error
+	)
+	ctx = _req.Context()
+	if _err := _req.ParseForm(); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusBadRequest)
+		return
+	}
+	if _, exists := _req.Form["price"]; exists {
+		if casted, _err := cast.ToDecimalE(_req.FormValue("price")); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		} else {
+			price = casted
+		}
+		if _err := rest.ValidateVar(price, "", "price"); _err != nil {
+			http.Error(_writer, _err.Error(), http.StatusBadRequest)
+			return
+		}
+	} else {
+		http.Error(_writer, "missing parameter price", http.StatusBadRequest)
+		return
+	}
+	data, err = receiver.goStats.GetBook(
+		ctx,
+		price,
+	)
+	if err != nil {
+		if errors.Is(err, context.Canceled) {
+			http.Error(_writer, err.Error(), http.StatusBadRequest)
+		} else if _err, ok := err.(*rest.BizError); ok {
+			http.Error(_writer, _err.Error(), _err.StatusCode)
+		} else {
+			http.Error(_writer, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+		Data string `json:"data"`
+	}{
+		Data: data,
+	}); _err != nil {
+		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
+		return
 	}
 }

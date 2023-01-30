@@ -4,6 +4,8 @@
  */
 package vo
 
+import "github.com/shopspring/decimal"
+
 //go:generate go-doudou name --file $GOFILE
 
 // request vo
@@ -29,4 +31,19 @@ type PercentageRespVo struct {
 	Percent float64 `json:"percent"`
 	// formatted percentage
 	PercentFormatted string `json:"percentFormatted"`
+}
+
+//go:generate go-doudou enum --file $GOFILE
+
+type KeyboardLayout int
+
+const (
+	UNKNOWN KeyboardLayout = iota
+	QWERTZ
+	AZERTY
+	QWERTY
+)
+
+type DecimalWrapper struct {
+	Data decimal.Decimal `json:"data"`
 }

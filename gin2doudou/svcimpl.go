@@ -10,19 +10,11 @@ import (
 	"gin2doudou/dto"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"google.golang.org/protobuf/types/known/anypb"
-	"google.golang.org/protobuf/types/known/emptypb"
-
-	pb "gin2doudou/transport/grpc"
 )
 
 var _ Gin2Doudou = (*Gin2DoudouImpl)(nil)
 
-var _ pb.Gin2DoudouServiceServer = (*Gin2DoudouImpl)(nil)
-
 type Gin2DoudouImpl struct {
-	pb.UnimplementedGin2DoudouServiceServer
-
 	conf *config.Config
 }
 
@@ -206,105 +198,4 @@ func NewGin2Doudou(conf *config.Config) *Gin2DoudouImpl {
 	return &Gin2DoudouImpl{
 		conf: conf,
 	}
-}
-
-func (receiver *Gin2DoudouImpl) ApiV1MenusRpc(ctx context.Context, request *pb.SchemaMenu) (*pb.SchemaIDResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) ApiV1PubLoginRpc(ctx context.Context, request *pb.SchemaLoginParam) (*pb.SchemaLoginTokenInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) ApiV1PubLoginExitRpc(ctx context.Context, request *emptypb.Empty) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) ApiV1PubRefreshtokenRpc(ctx context.Context, request *emptypb.Empty) (*pb.SchemaLoginTokenInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) ApiV1RolesRpc(ctx context.Context, request *pb.SchemaRole) (*pb.SchemaIDResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) ApiV1UsersRpc(ctx context.Context, request *pb.SchemaUser) (*pb.SchemaIDResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) DeleteApiV1MenusIdRpc(ctx context.Context, request *pb.DeleteApiV1MenusIdRpcRequest) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) DeleteApiV1RolesIdRpc(ctx context.Context, request *pb.DeleteApiV1RolesIdRpcRequest) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) DeleteApiV1UsersIdRpc(ctx context.Context, request *pb.DeleteApiV1UsersIdRpcRequest) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1MenusRpc(ctx context.Context, request *pb.GetApiV1MenusRpcRequest) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1MenusIdRpc(ctx context.Context, request *pb.GetApiV1MenusIdRpcRequest) (*pb.SchemaMenu, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1MenustreeRpc(ctx context.Context, request *pb.GetApiV1MenustreeRpcRequest) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1PubCurrentMenutreeRpc(ctx context.Context, request *emptypb.Empty) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1PubCurrentUserRpc(ctx context.Context, request *emptypb.Empty) (*pb.SchemaUserLoginInfo, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1PubLoginCaptchaRpc(ctx context.Context, request *pb.GetApiV1PubLoginCaptchaRpcRequest) (*pb.GetApiV1PubLoginCaptchaRpcResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1PubLoginCaptchaidRpc(ctx context.Context, request *emptypb.Empty) (*pb.SchemaLoginCaptcha, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1RolesRpc(ctx context.Context, request *pb.GetApiV1RolesRpcRequest) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1RolesIdRpc(ctx context.Context, request *pb.GetApiV1RolesIdRpcRequest) (*pb.SchemaRole, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1RolesselectRpc(ctx context.Context, request *pb.GetApiV1RolesselectRpcRequest) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1UsersRpc(ctx context.Context, request *pb.GetApiV1UsersRpcRequest) (*anypb.Any, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) GetApiV1UsersIdRpc(ctx context.Context, request *pb.GetApiV1UsersIdRpcRequest) (*pb.SchemaUser, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) PutApiV1MenusIdRpc(ctx context.Context, request *pb.PutApiV1MenusIdRpcRequest) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) PutApiV1PubCurrentPasswordRpc(ctx context.Context, request *pb.SchemaUpdatePasswordParam) (*pb.SchemaStatusResult, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) PutApiV1RolesIdRpc(ctx context.Context, request *pb.PutApiV1RolesIdRpcRequest) (*pb.SchemaRole, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *Gin2DoudouImpl) PutApiV1UsersIdRpc(ctx context.Context, request *pb.PutApiV1UsersIdRpcRequest) (*pb.SchemaUser, error) {
-	//TODO implement me
-	panic("implement me")
 }

@@ -1,1 +1,404 @@
-{"openapi":"3.0.2","info":{"title":"GoStats","description":"GoStats is a demo gRPC service developed by go-doudou","version":"v20230118"},"servers":[{"url":"http://localhost:6060"}],"paths":{"/largest/remainder":{"post":{"description":"LargestRemainder implements Largest Remainder Method https://en.wikipedia.org/wiki/Largest_remainder_method","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/PercentageReqVo"}}},"required":true},"responses":{"200":{"description":"","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LargestRemainderResp"}}}}}}},"/shelves/{shelf}/books/{book}":{"get":{"description":"/shelves/:shelf/books/:book\nshelves_shelf_books_book","parameters":[{"name":"shelf","in":"path","required":true,"schema":{"type":"integer","format":"int32"}},{"name":"book","in":"path","required":true,"schema":{"type":"string"}}],"responses":{"200":{"description":"","content":{"application/json":{"schema":{"$ref":"#/components/schemas/GetShelves_ShelfBooks_BookResp"}}}}}}}},"components":{"schemas":{"GetShelves_ShelfBooks_BookResp":{"title":"GetShelves_ShelfBooks_BookResp","type":"object","properties":{"data":{"type":"string"}},"required":["data"]},"LargestRemainderResp":{"title":"LargestRemainderResp","type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/PercentageRespVo"}}},"required":["data"]},"PercentageReqVo":{"title":"PercentageReqVo","type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/PercentageVo"},"description":"key value pairs"},"places":{"type":"integer","format":"int32","description":"digit number after dot"}},"description":"\nrequest vo","required":["data","places"]},"PercentageRespVo":{"title":"PercentageRespVo","type":"object","properties":{"key":{"type":"string"},"percent":{"type":"number","format":"double"},"percentFormatted":{"type":"string","description":"formatted percentage"},"value":{"type":"integer","format":"int32"}},"description":"result vo","required":["value","key","percent","percentFormatted"]},"PercentageVo":{"title":"PercentageVo","type":"object","properties":{"key":{"type":"string","description":"unique key for distinguishing something"},"value":{"type":"integer","format":"int32","description":"number for something"}},"description":"key value pair","required":["value","key"]}}}}
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "GoStats",
+    "description": "GoStats is a demo gRPC service developed by go-doudou",
+    "version": "v20230130"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:6060"
+    }
+  ],
+  "paths": {
+    "/book": {
+      "get": {
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "decimal"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBookResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/largest/remainder": {
+      "post": {
+        "description": "LargestRemainder implements Largest Remainder Method https://en.wikipedia.org/wiki/Largest_remainder_method",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PercentageReqVo"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LargestRemainderResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shelves/{shelf}/books/{book}": {
+      "get": {
+        "description": "/shelves/:shelf/books/:book\nshelves_shelf_books_book",
+        "parameters": [
+          {
+            "name": "shelf",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "book",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetShelves_ShelfBooks_BookResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CommonComment": {
+        "title": "CommonComment",
+        "type": "object",
+        "properties": {
+          "Content": {
+            "type": "string"
+          },
+          "CreateBy": {
+            "type": "string"
+          },
+          "CreateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DelFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Id": {
+            "type": "string"
+          },
+          "RelateBusinessId": {
+            "type": "string"
+          },
+          "RelateBusinessTable": {
+            "type": "string"
+          },
+          "ReplyTo": {
+            "type": "string"
+          },
+          "SysOrgCode": {
+            "type": "string"
+          }
+        }
+      },
+      "CommonConfig": {
+        "title": "CommonConfig",
+        "type": "object",
+        "properties": {
+          "Code": {
+            "type": "string"
+          },
+          "ConfigDesc": {
+            "type": "string"
+          },
+          "CreateBy": {
+            "type": "string"
+          },
+          "CreateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DefaultValue": {
+            "type": "string"
+          },
+          "DelFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "Id": {
+            "type": "string"
+          },
+          "Name": {
+            "type": "string"
+          },
+          "SysOrgCode": {
+            "type": "string"
+          },
+          "UpdateBy": {
+            "type": "string"
+          },
+          "UpdateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Value": {
+            "type": "string"
+          }
+        }
+      },
+      "CommonFile": {
+        "title": "CommonFile",
+        "type": "object",
+        "properties": {
+          "CreateBy": {
+            "type": "string"
+          },
+          "CreateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "DelFlag": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "FileName": {
+            "type": "string"
+          },
+          "FilePath": {
+            "type": "string"
+          },
+          "FileSize": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "FileType": {
+            "type": "string"
+          },
+          "Id": {
+            "type": "string"
+          },
+          "RelateBusinessId": {
+            "type": "string"
+          },
+          "RelateBusinessTable": {
+            "type": "string"
+          },
+          "SysOrgCode": {
+            "type": "string"
+          }
+        }
+      },
+      "CommonFollow": {
+        "title": "CommonFollow",
+        "type": "object",
+        "properties": {
+          "CreateBy": {
+            "type": "string"
+          },
+          "CreateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Id": {
+            "type": "string"
+          },
+          "RelateBusinessId": {
+            "type": "string"
+          },
+          "RelateBusinessTable": {
+            "type": "string"
+          },
+          "SysOrgCode": {
+            "type": "string"
+          }
+        }
+      },
+      "CommonLike": {
+        "title": "CommonLike",
+        "type": "object",
+        "properties": {
+          "CreateBy": {
+            "type": "string"
+          },
+          "CreateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "Id": {
+            "type": "string"
+          },
+          "RelateBusinessId": {
+            "type": "string"
+          },
+          "RelateBusinessTable": {
+            "type": "string"
+          },
+          "SysOrgCode": {
+            "type": "string"
+          }
+        }
+      },
+      "DecimalWrapper": {
+        "title": "DecimalWrapper",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string",
+            "format": "decimal"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "GetBookResp": {
+        "title": "GetBookResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "GetShelves_ShelfBooks_BookResp": {
+        "title": "GetShelves_ShelfBooks_BookResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "LargestRemainderResp": {
+        "title": "LargestRemainderResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PercentageRespVo"
+            }
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "PercentageReqVo": {
+        "title": "PercentageReqVo",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PercentageVo"
+            },
+            "description": "key value pairs"
+          },
+          "places": {
+            "type": "integer",
+            "format": "int32",
+            "description": "digit number after dot"
+          }
+        },
+        "description": "\nrequest vo",
+        "required": [
+          "data",
+          "places"
+        ]
+      },
+      "PercentageRespVo": {
+        "title": "PercentageRespVo",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "percent": {
+            "type": "number",
+            "format": "double"
+          },
+          "percentFormatted": {
+            "type": "string",
+            "description": "formatted percentage"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "result vo",
+        "required": [
+          "value",
+          "key",
+          "percent",
+          "percentFormatted"
+        ]
+      },
+      "PercentageVo": {
+        "title": "PercentageVo",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "unique key for distinguishing something"
+          },
+          "value": {
+            "type": "integer",
+            "format": "int32",
+            "description": "number for something"
+          }
+        },
+        "description": "key value pair",
+        "required": [
+          "value",
+          "key"
+        ]
+      }
+    }
+  }
+}

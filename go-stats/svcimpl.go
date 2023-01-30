@@ -10,10 +10,13 @@ import (
 	pb "go-doudou-tutorials/go-stats/transport/grpc"
 	"strconv"
 
+	"github.com/shopspring/decimal"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/copier"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/numberutils"
 
 	"go-doudou-tutorials/go-stats/vo"
+
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 var _ GoStats = (*GoStatsImpl)(nil)
@@ -75,4 +78,12 @@ func (receiver *GoStatsImpl) GetShelves_ShelfBooks_Book(ctx context.Context, she
 func (receiver *GoStatsImpl) GetShelvesShelfBooksBookRpc(ctx context.Context, request *pb.GetShelvesShelfBooksBookRpcRequest) (*pb.GetShelvesShelfBooksBookRpcResponse, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (receiver *GoStatsImpl) GetBook(ctx context.Context, price decimal.Decimal) (data string, err error) {
+	var _result struct {
+		Data string
+	}
+	_ = gofakeit.Struct(&_result)
+	return _result.Data, nil
 }

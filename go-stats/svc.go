@@ -6,6 +6,7 @@ package service
 
 import (
 	"context"
+	"github.com/shopspring/decimal"
 	"go-doudou-tutorials/go-stats/vo"
 )
 
@@ -19,4 +20,5 @@ type GoStats interface {
 	// /shelves/:shelf/books/:book
 	// shelves_shelf_books_book
 	GetShelves_ShelfBooks_Book(ctx context.Context, shelf int, book string) (data string, err error)
+	GetBook(ctx context.Context, price decimal.Decimal) (data string, err error)
 }

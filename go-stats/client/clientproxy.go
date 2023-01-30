@@ -13,6 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/rs/zerolog"
+	"github.com/shopspring/decimal"
 	"github.com/slok/goresilience"
 	"github.com/slok/goresilience/circuitbreaker"
 	rerrors "github.com/slok/goresilience/errors"
@@ -118,4 +119,26 @@ func NewGoStatsClientProxy(client *GoStatsClient, opts ...ProxyOption) *GoStatsC
 	}
 
 	return cp
+}
+
+func (receiver *GoStatsClientProxy) GetBook(ctx context.Context, _headers map[string]string, price decimal.Decimal, options Options) (_resp *resty.Response, data string, err error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, data, err = receiver.client.GetBook(
+			ctx,
+			_headers,
+			price,
+			options,
+		)
+		if err != nil {
+			return errors.Wrap(err, "call GetBook fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		err = errors.Wrap(_err, "call GetBook fail")
+	}
+	return
 }

@@ -1,6 +1,6 @@
 package vo
 
-//go:generate go-doudou name --file $GOFILE
+//go:generate go-doudou name --file $GOFILE --strategy snake
 //go:generate go-doudou enum --file $GOFILE
 
 type PageFilter struct {
@@ -19,7 +19,7 @@ type Page struct {
 	// 排序规则
 	Orders []Order `json:"orders"`
 	// 页码
-	PageNo int `json:"pageNo"`
+	PageNo int `json:"page_no"`
 	// 每页行数
 	Size int `json:"size"`
 }
@@ -32,10 +32,10 @@ type PageQuery struct {
 
 type PageRet struct {
 	Items    interface{} `json:"items"`
-	PageNo   int         `json:"pageNo"`
-	PageSize int         `json:"pageSize"`
+	PageNo   int         `json:"page_no"`
+	PageSize int         `json:"page_size"`
 	Total    int         `json:"total"`
-	HasNext  bool        `json:"hasNext"`
+	HasNext  bool        `json:"has_next"`
 }
 
 type UserVo struct {

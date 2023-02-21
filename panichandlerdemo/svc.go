@@ -15,5 +15,6 @@ type Testsvc interface {
 	// You can define your service methods as your need. Below is an example.
 	// You can also add annotations here like @role(admin) to add metadata to routes for
 	// implementing your own middlewares
-	GetGreeting(ctx context.Context) error
+	GetBookNotFoundException(ctx context.Context) error
+	GetConversionFailedException(ctx context.Context) error
 }

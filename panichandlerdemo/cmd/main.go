@@ -5,9 +5,12 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"net/http"
 	service "testsvc"
 	"testsvc/config"
@@ -22,9 +25,34 @@ func main() {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			defer func() {
 				if e := recover(); e != nil {
-					errmsg := fmt.Sprint(e)
-					zlogger.Error().Msg(errmsg)
-					http.Error(w, errmsg, http.StatusInternalServerError)
+					statusCode := http.StatusInternalServerError
+					if err, ok := e.(error); ok {
+						switch {
+						case errors.Is(err, context.Canceled):
+							statusCode = http.StatusBadRequest
+						case errors.Is(err, service.BookNotFoundException):
+							statusCode = http.StatusNotFound
+						case errors.Is(err, service.ConversionFailedException):
+							statusCode = http.StatusBadRequest
+						}
+					}
+					w.WriteHeader(statusCode)
+					message := fmt.Sprintf("%v", e)
+					if stringutils.IsEmpty(message) {
+						message = http.StatusText(statusCode)
+					}
+					if _err := json.NewEncoder(w).Encode(struct {
+						Code    int         `json:"code"`
+						Data    interface{} `json:"data"`
+						Message string      `json:"message"`
+					}{
+						Code:    1, // 1 indicates there is an error
+						Data:    nil,
+						Message: message,
+					}); _err != nil {
+						http.Error(w, _err.Error(), http.StatusInternalServerError)
+						return
+					}
 				}
 			}()
 			inner.ServeHTTP(w, req)

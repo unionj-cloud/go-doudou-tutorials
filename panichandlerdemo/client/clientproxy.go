@@ -94,3 +94,85 @@ func NewTestsvcClientProxy(client *TestsvcClient, opts ...ProxyOption) *TestsvcC
 
 	return cp
 }
+
+func (receiver *TestsvcClientProxy) GetBookNotFoundError(ctx context.Context, _headers map[string]string, options Options) (_resp *resty.Response, re error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, re = receiver.client.GetBookNotFoundError(
+			ctx,
+			_headers,
+			options,
+		)
+		if re != nil {
+			return errors.Wrap(re, "call GetBookNotFoundError fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		re = errors.Wrap(_err, "call GetBookNotFoundError fail")
+	}
+	return
+}
+func (receiver *TestsvcClientProxy) GetConversionFailedError(ctx context.Context, _headers map[string]string, options Options) (_resp *resty.Response, re error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, re = receiver.client.GetConversionFailedError(
+			ctx,
+			_headers,
+			options,
+		)
+		if re != nil {
+			return errors.Wrap(re, "call GetConversionFailedError fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		re = errors.Wrap(_err, "call GetConversionFailedError fail")
+	}
+	return
+}
+
+func (receiver *TestsvcClientProxy) GetBookNotFoundException(ctx context.Context, _headers map[string]string, options Options) (_resp *resty.Response, re error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, re = receiver.client.GetBookNotFoundException(
+			ctx,
+			_headers,
+			options,
+		)
+		if re != nil {
+			return errors.Wrap(re, "call GetBookNotFoundException fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		re = errors.Wrap(_err, "call GetBookNotFoundException fail")
+	}
+	return
+}
+func (receiver *TestsvcClientProxy) GetConversionFailedException(ctx context.Context, _headers map[string]string, options Options) (_resp *resty.Response, re error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, re = receiver.client.GetConversionFailedException(
+			ctx,
+			_headers,
+			options,
+		)
+		if re != nil {
+			return errors.Wrap(re, "call GetConversionFailedException fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		re = errors.Wrap(_err, "call GetConversionFailedException fail")
+	}
+	return
+}

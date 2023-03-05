@@ -6,6 +6,7 @@ package service
 
 import (
 	"context"
+	"testsvc/dto"
 )
 
 //go:generate go-doudou svc http -c
@@ -17,4 +18,5 @@ type Testsvc interface {
 	// implementing your own middlewares
 	GetBookNotFoundException(ctx context.Context) error
 	GetConversionFailedException(ctx context.Context) error
+	GetBookPage(ctx context.Context, name string, author string, page dto.Page) error
 }

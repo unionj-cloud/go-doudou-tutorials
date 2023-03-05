@@ -26,6 +26,7 @@ func main() {
 			defer func() {
 				if e := recover(); e != nil {
 					statusCode := http.StatusInternalServerError
+					errCode := 1
 					if err, ok := e.(error); ok {
 						switch {
 						case errors.Is(err, context.Canceled):
@@ -34,6 +35,12 @@ func main() {
 							statusCode = http.StatusNotFound
 						case errors.Is(err, service.ConversionFailedException):
 							statusCode = http.StatusBadRequest
+						default:
+							var bizError rest.BizError
+							if errors.As(err, &bizError) {
+								statusCode = bizError.StatusCode
+								errCode = bizError.ErrCode
+							}
 						}
 					}
 					w.WriteHeader(statusCode)
@@ -42,11 +49,11 @@ func main() {
 						message = http.StatusText(statusCode)
 					}
 					if _err := json.NewEncoder(w).Encode(struct {
-						Code    int         `json:"code"`
-						Data    interface{} `json:"data"`
-						Message string      `json:"message"`
+						Code    int         `json:"code,omitempty"`
+						Data    interface{} `json:"data,omitempty"`
+						Message string      `json:"message,omitempty"`
 					}{
-						Code:    1, // 1 indicates there is an error
+						Code:    errCode, // 1 indicates there is an error
 						Data:    nil,
 						Message: message,
 					}); _err != nil {

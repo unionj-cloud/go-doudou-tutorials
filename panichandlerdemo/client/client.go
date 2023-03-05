@@ -10,12 +10,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"testsvc/dto"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/opentracing-contrib/go-stdlib/nethttp"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/registry"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/framework/restclient"
 )
 
@@ -72,6 +74,41 @@ func (receiver *TestsvcClient) GetConversionFailedException(ctx context.Context,
 	}
 	_req.SetContext(ctx)
 	_path := "/conversion/failed/exception"
+	_req.SetQueryParamsFromValues(_urlValues)
+	_resp, _err = _req.Get(_path)
+	if _err != nil {
+		re = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		re = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		re = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, nil
+}
+func (receiver *TestsvcClient) GetBookPage(ctx context.Context, _headers map[string]string, name string, author string, page dto.Page, options Options) (_resp *resty.Response, re error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_urlValues.Set("name", fmt.Sprintf("%v", name))
+	_urlValues.Set("author", fmt.Sprintf("%v", author))
+	pageUrlValues, _err := rest.EncodeForm(&page)
+	if _err != nil {
+		re = errors.Wrap(_err, "error")
+		return
+	}
+	_req.SetQueryParamsFromValues(pageUrlValues)
+	_path := "/book/page"
 	_req.SetQueryParamsFromValues(_urlValues)
 	_resp, _err = _req.Get(_path)
 	if _err != nil {

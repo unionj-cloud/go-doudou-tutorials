@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"net/http"
 	service "testsvc"
+	"testsvc/dto"
 
 	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
@@ -28,19 +29,11 @@ func (receiver *TestsvcHandlerImpl) GetBookNotFoundException(_writer http.Respon
 		ctx,
 	)
 	if re != nil {
-		if errors.Is(re, context.Canceled) {
-			http.Error(_writer, re.Error(), http.StatusBadRequest)
-		} else if _err, ok := re.(*rest.BizError); ok {
-			http.Error(_writer, _err.Error(), _err.StatusCode)
-		} else {
-			http.Error(_writer, re.Error(), http.StatusInternalServerError)
-		}
-		return
+		panic(re)
 	}
 	if _err := json.NewEncoder(_writer).Encode(struct {
 	}{}); _err != nil {
-		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
-		return
+		rest.HandleInternalServerError(_err)
 	}
 }
 func (receiver *TestsvcHandlerImpl) GetConversionFailedException(_writer http.ResponseWriter, _req *http.Request) {
@@ -53,19 +46,60 @@ func (receiver *TestsvcHandlerImpl) GetConversionFailedException(_writer http.Re
 		ctx,
 	)
 	if re != nil {
-		if errors.Is(re, context.Canceled) {
-			http.Error(_writer, re.Error(), http.StatusBadRequest)
-		} else if _err, ok := re.(*rest.BizError); ok {
-			http.Error(_writer, _err.Error(), _err.StatusCode)
-		} else {
-			http.Error(_writer, re.Error(), http.StatusInternalServerError)
-		}
-		return
+		panic(re)
 	}
 	if _err := json.NewEncoder(_writer).Encode(struct {
 	}{}); _err != nil {
-		http.Error(_writer, _err.Error(), http.StatusInternalServerError)
-		return
+		rest.HandleInternalServerError(_err)
+	}
+}
+func (receiver *TestsvcHandlerImpl) GetBookPage(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx    context.Context
+		name   string
+		author string
+		page   dto.Page
+		re     error
+	)
+	ctx = _req.Context()
+	if _err := _req.ParseForm(); _err != nil {
+		rest.HandleBadRequestErr(_err)
+	}
+	if _, exists := _req.Form["name"]; exists {
+		name = _req.FormValue("name")
+		if _err := rest.ValidateVar(name, "", "name"); _err != nil {
+			rest.HandleBadRequestErr(_err)
+		}
+	} else {
+		rest.HandleBadRequestErr(errors.New("missing parameter name"))
+	}
+	if _, exists := _req.Form["author"]; exists {
+		author = _req.FormValue("author")
+		if _err := rest.ValidateVar(author, "", "author"); _err != nil {
+			rest.HandleBadRequestErr(_err)
+		}
+	} else {
+		rest.HandleBadRequestErr(errors.New("missing parameter author"))
+	}
+	if _err := rest.DecodeForm(&page, _req.Form); _err != nil {
+		rest.HandleBadRequestErr(_err)
+	} else {
+		if _err := rest.ValidateStruct(page); _err != nil {
+			rest.HandleBadRequestErr(_err)
+		}
+	}
+	re = receiver.testsvc.GetBookPage(
+		ctx,
+		name,
+		author,
+		page,
+	)
+	if re != nil {
+		panic(re)
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+	}{}); _err != nil {
+		rest.HandleInternalServerError(_err)
 	}
 }
 

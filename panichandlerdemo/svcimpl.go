@@ -9,6 +9,10 @@ import (
 	"testsvc/config"
 
 	"github.com/pkg/errors"
+
+	"testsvc/dto"
+
+	"github.com/brianvoe/gofakeit/v6"
 )
 
 var BookNotFoundException = errors.New("Book not found")
@@ -31,4 +35,11 @@ func (receiver *TestsvcImpl) GetBookNotFoundException(ctx context.Context) (re e
 }
 func (receiver *TestsvcImpl) GetConversionFailedException(ctx context.Context) (re error) {
 	panic(ConversionFailedException)
+}
+
+func (receiver *TestsvcImpl) GetBookPage(ctx context.Context, name string, author string, page dto.Page) (re error) {
+	var _result struct {
+	}
+	_ = gofakeit.Struct(&_result)
+	return nil
 }

@@ -3,11 +3,13 @@ module testsvc
 go 1.18
 
 require (
+	github.com/brianvoe/gofakeit/v6 v6.20.1
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/iancoleman/strcase v0.2.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kelseyhightower/envconfig v1.4.0
+	github.com/klauspost/compress v1.15.15
 	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
@@ -33,6 +35,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
+	github.com/go-playground/form/v4 v4.2.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
@@ -56,7 +59,6 @@ require (
 	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

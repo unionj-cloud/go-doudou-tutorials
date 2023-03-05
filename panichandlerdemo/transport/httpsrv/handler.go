@@ -14,6 +14,7 @@ import (
 type TestsvcHandler interface {
 	GetBookNotFoundException(w http.ResponseWriter, r *http.Request)
 	GetConversionFailedException(w http.ResponseWriter, r *http.Request)
+	GetBookPage(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler TestsvcHandler) []rest.Route {
@@ -29,6 +30,12 @@ func Routes(handler TestsvcHandler) []rest.Route {
 			Method:      "GET",
 			Pattern:     "/conversion/failed/exception",
 			HandlerFunc: handler.GetConversionFailedException,
+		},
+		{
+			Name:        "GetBookPage",
+			Method:      "GET",
+			Pattern:     "/book/page",
+			HandlerFunc: handler.GetBookPage,
 		},
 	}
 }

@@ -4,46 +4,45 @@
  */
 package dto
 
-//go:generate go-doudou name --file $GOFILE
+//go:generate go-doudou name --file $GOFILE --form
 
 type PageFilter struct {
-	// 真实姓名，前缀匹配
-	Name string
-	// 所属部门ID
-	Dept int
+	BookName  string `form:"bookName" form:"name"`
+	BookShelf int    `form:"bookShelf" form:"dept"`
 }
 
 type Order struct {
-	Col  string
-	Sort string
+	Col  string `form:"col" form:"col"`
+	Sort string `form:"sort" form:"sort"`
 }
 
 type Page struct {
 	// 排序规则
-	Orders []Order
+	Orders []Order `form:"orders" form:"orders"`
 	// 页码
-	PageNo int
+	PageNo int `form:"pageNo" form:"pageNo"`
 	// 每页行数
-	Size int
+	Size   int        `form:"size" form:"size"`
+	Filter PageFilter `json:"filter" form:"filter"`
 }
 
 // 分页筛选条件
 type PageQuery struct {
-	Filter PageFilter
-	Page   Page
+	Filter PageFilter `form:"filter" form:"filter"`
+	Page   Page       `form:"page" form:"page"`
 }
 
 type PageRet struct {
-	Items    interface{}
-	PageNo   int
-	PageSize int
-	Total    int
-	HasNext  bool
+	Items    interface{} `form:"items" form:"items"`
+	PageNo   int         `form:"pageNo" form:"pageNo"`
+	PageSize int         `form:"pageSize" form:"pageSize"`
+	Total    int         `form:"total" form:"total"`
+	HasNext  bool        `form:"hasNext" form:"hasNext"`
 }
 
 type UserDto struct {
-	Id    int
-	Name  string
-	Phone string
-	Dept  string
+	Id    int    `form:"id" form:"id"`
+	Name  string `form:"name" form:"name"`
+	Phone string `form:"phone" form:"phone"`
+	Dept  string `form:"dept" form:"dept"`
 }

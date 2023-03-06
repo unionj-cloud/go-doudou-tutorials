@@ -7,8 +7,8 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"net/http"
@@ -21,12 +21,14 @@ func main() {
 	conf := config.LoadFromEnv()
 	svc := service.NewTestsvc(conf)
 	handler := httpsrv.NewTestsvcHandler(svc)
+	//srv := rest.NewRestServer()
 	srv := rest.NewRestServerWithOptions(rest.WithPanicHandler(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 			defer func() {
 				if e := recover(); e != nil {
 					statusCode := http.StatusInternalServerError
-					errCode := 1
+					errCode := 1 // 1 indicates there is an error
+					message := fmt.Sprintf("%v", e)
 					if err, ok := e.(error); ok {
 						switch {
 						case errors.Is(err, context.Canceled):
@@ -40,11 +42,11 @@ func main() {
 							if errors.As(err, &bizError) {
 								statusCode = bizError.StatusCode
 								errCode = bizError.ErrCode
+								message = bizError.Error()
 							}
 						}
 					}
 					w.WriteHeader(statusCode)
-					message := fmt.Sprintf("%v", e)
 					if stringutils.IsEmpty(message) {
 						message = http.StatusText(statusCode)
 					}
@@ -53,7 +55,7 @@ func main() {
 						Data    interface{} `json:"data,omitempty"`
 						Message string      `json:"message,omitempty"`
 					}{
-						Code:    errCode, // 1 indicates there is an error
+						Code:    errCode,
 						Data:    nil,
 						Message: message,
 					}); _err != nil {

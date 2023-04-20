@@ -126,8 +126,8 @@ func main() {
 	//grpcConn := etcd.NewSWRRGrpcClientConn("grpcdemo-server_grpc", dialOptions...)
 	defer grpcConn.Close()
 
-	restProvider := nacos.NewWRRServiceProvider("grpcdemo-server_rest")
-	//restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
+	//restProvider := nacos.NewWRRServiceProvider("grpcdemo-server_rest")
+	restProvider := etcd.NewRRServiceProvider("grpcdemo-server_rest")
 	//restProvider := etcd.NewSWRRServiceProvider("grpcdemo-server_rest")
 	svc := service.NewEnumDemo(conf, pb.NewHelloworldServiceClient(grpcConn),
 		client.NewHelloworldClient(restclient.WithClient(newClient()), restclient.WithProvider(restProvider)))

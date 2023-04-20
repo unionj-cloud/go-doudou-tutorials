@@ -127,6 +127,39 @@ func (receiver *TestsvcClient) GetBookPage(ctx context.Context, _headers map[str
 	}
 	return _resp, nil
 }
+func (receiver *TestsvcClient) PostBookPage(ctx context.Context, _headers map[string]string, name string, author string, options Options) (_resp *resty.Response, re error) {
+	var _err error
+	_urlValues := url.Values{}
+	_req := receiver.client.R()
+	if len(_headers) > 0 {
+		_req.SetHeaders(_headers)
+	}
+	_req.SetContext(ctx)
+	_urlValues.Set("name", fmt.Sprintf("%v", name))
+	_urlValues.Set("author", fmt.Sprintf("%v", author))
+	_path := "/book/page"
+	if _req.Body != nil {
+		_req.SetQueryParamsFromValues(_urlValues)
+	} else {
+		_req.SetFormDataFromValues(_urlValues)
+	}
+	_resp, _err = _req.Post(_path)
+	if _err != nil {
+		re = errors.Wrap(_err, "error")
+		return
+	}
+	if _resp.IsError() {
+		re = errors.New(_resp.String())
+		return
+	}
+	var _result struct {
+	}
+	if _err = json.Unmarshal(_resp.Body(), &_result); _err != nil {
+		re = errors.Wrap(_err, "error")
+		return
+	}
+	return _resp, nil
+}
 
 func NewTestsvcClient(opts ...restclient.RestClientOption) *TestsvcClient {
 	defaultProvider := restclient.NewServiceProvider("TESTSVC")

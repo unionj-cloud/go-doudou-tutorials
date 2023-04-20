@@ -43,3 +43,10 @@ func (receiver *TestsvcImpl) GetBookPage(ctx context.Context, name string, autho
 	_ = gofakeit.Struct(&_result)
 	return nil
 }
+
+func (receiver *TestsvcImpl) PostBookPage(ctx context.Context, name string, author string) (re error) {
+	var _result struct {
+	}
+	_ = gofakeit.Struct(&_result)
+	return nil
+}

@@ -19,4 +19,5 @@ type Testsvc interface {
 	GetBookNotFoundException(ctx context.Context) error
 	GetConversionFailedException(ctx context.Context) error
 	GetBookPage(ctx context.Context, name string, author string, page dto.Page) error
+	PostBookPage(ctx context.Context, name string, author string) error
 }

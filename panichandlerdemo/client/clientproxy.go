@@ -139,3 +139,26 @@ func NewTestsvcClientProxy(client *TestsvcClient, opts ...ProxyOption) *TestsvcC
 
 	return cp
 }
+
+func (receiver *TestsvcClientProxy) PostBookPage(ctx context.Context, _headers map[string]string, name string, author string, options Options) (_resp *resty.Response, re error) {
+	if _err := receiver.runner.Run(ctx, func(ctx context.Context) error {
+		_resp, re = receiver.client.PostBookPage(
+			ctx,
+			_headers,
+			name,
+			author,
+			options,
+		)
+		if re != nil {
+			return errors.Wrap(re, "call PostBookPage fail")
+		}
+		return nil
+	}); _err != nil {
+		// you can implement your fallback logic here
+		if errors.Is(_err, rerrors.ErrCircuitOpen) {
+			receiver.logger.Error().Err(_err).Msg("")
+		}
+		re = errors.Wrap(_err, "call PostBookPage fail")
+	}
+	return
+}

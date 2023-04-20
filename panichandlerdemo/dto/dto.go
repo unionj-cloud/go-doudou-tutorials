@@ -7,42 +7,35 @@ package dto
 //go:generate go-doudou name --file $GOFILE --form
 
 type PageFilter struct {
-	BookName  string `form:"bookName" form:"name"`
-	BookShelf int    `form:"bookShelf" form:"dept"`
+	BookName  string `form:"bookName" json:"bookName"`
+	BookShelf int    `form:"bookShelf" json:"bookShelf"`
 }
 
 type Order struct {
-	Col  string `form:"col" form:"col"`
-	Sort string `form:"sort" form:"sort"`
+	Col  string `form:"col" json:"col"`
+	Sort string `form:"sort" json:"sort"`
 }
 
 type Page struct {
 	// 排序规则
-	Orders []Order `form:"orders" form:"orders"`
+	Orders []Order `form:"orders" json:"orders"`
 	// 页码
-	PageNo int `form:"pageNo" form:"pageNo"`
+	PageNo int `form:"pageNo" json:"pageNo"`
 	// 每页行数
-	Size   int        `form:"size" form:"size"`
-	Filter PageFilter `json:"filter" form:"filter"`
+	Size   int        `form:"size" json:"size"`
+	Filter PageFilter `form:"filter" json:"filter"`
 }
 
 // 分页筛选条件
 type PageQuery struct {
-	Filter PageFilter `form:"filter" form:"filter"`
-	Page   Page       `form:"page" form:"page"`
+	Filter PageFilter `form:"filter" json:"filter"`
+	Page   Page       `form:"page" json:"page"`
 }
 
 type PageRet struct {
-	Items    interface{} `form:"items" form:"items"`
-	PageNo   int         `form:"pageNo" form:"pageNo"`
-	PageSize int         `form:"pageSize" form:"pageSize"`
-	Total    int         `form:"total" form:"total"`
-	HasNext  bool        `form:"hasNext" form:"hasNext"`
-}
-
-type UserDto struct {
-	Id    int    `form:"id" form:"id"`
-	Name  string `form:"name" form:"name"`
-	Phone string `form:"phone" form:"phone"`
-	Dept  string `form:"dept" form:"dept"`
+	Items    interface{} `form:"items" json:"items"`
+	PageNo   int         `form:"pageNo" json:"pageNo"`
+	PageSize int         `form:"pageSize" json:"pageSize"`
+	Total    int         `form:"total" json:"total"`
+	HasNext  bool        `form:"hasNext" json:"hasNext"`
 }

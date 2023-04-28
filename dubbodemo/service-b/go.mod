@@ -4,10 +4,6 @@ go 1.18
 
 require (
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4
-	github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2 v2.0.0-rc.2
-	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
-	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/opentracing/opentracing-go v1.2.0
@@ -22,7 +18,6 @@ require (
 
 require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704 // indirect
-	github.com/antlr/antlr4 v0.0.0-20200124162019-2d7f727a00b7 // indirect
 	github.com/apolloconfig/agollo/v4 v4.1.1-0.20220323095621-60ed86180f24 // indirect
 	github.com/arl/statsviz v0.5.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -58,7 +53,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
-	github.com/hyperjumptech/jiffy v1.0.0 // indirect
 	github.com/jeremywohl/flatten v1.0.1 // indirect
 	github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af // indirect
 	github.com/joho/godotenv v1.5.1 // indirect

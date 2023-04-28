@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	service "service-a"
 	"service-a/config"
+	protobuf "service-a/deps"
 	"service-a/transport/httpsrv"
 	"service-b/client"
 	pb "service-b/transport/grpc"
@@ -26,8 +27,8 @@ func main() {
 	conf := config.LoadFromEnv()
 	provider := zk.NewRRServiceProvider(zk.ServiceConfig{
 		Name:    "cloud.unionj.ServiceB_rest",
-		Group:   "",
-		Version: "",
+		Group:   "group",
+		Version: "v2.2.2",
 	})
 	defer provider.Close()
 	bClient := client.NewServiceBClient(restclient.WithProvider(provider))
@@ -54,12 +55,20 @@ func main() {
 	// Set up a connection to the server.
 	grpcConn := zk.NewSWRRGrpcClientConn(zk.ServiceConfig{
 		Name:    "cloud.unionj.ServiceB_grpc",
-		Group:   "",
-		Version: "",
+		Group:   "group",
+		Version: "v2.2.2",
 	}, dialOptions...)
 	defer grpcConn.Close()
 
-	svc := service.NewServiceA(conf, bClient, pb.NewServiceBServiceClient(grpcConn))
+	// Set up a connection to the server.
+	uConn := zk.NewSWRRGrpcClientConn(zk.ServiceConfig{
+		Name:    "org.apache.dubbo.UserProvider",
+		Group:   "group",
+		Version: "v3",
+	}, dialOptions...)
+	defer uConn.Close()
+
+	svc := service.NewServiceA(conf, bClient, pb.NewServiceBServiceClient(grpcConn), protobuf.NewGreeterClient(uConn))
 	handler := httpsrv.NewServiceAHandler(svc)
 	srv := rest.NewRestServer()
 	srv.AddRoute(httpsrv.Routes(handler)...)

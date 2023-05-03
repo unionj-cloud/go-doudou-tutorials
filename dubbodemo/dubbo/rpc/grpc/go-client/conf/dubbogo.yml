@@ -1,0 +1,21 @@
+# dubbo client yaml configure file
+
+dubbo:
+  registries:
+    demoZK:
+      protocol: zookeeper
+      timeout: 3s
+      address: 127.0.0.1:2181
+  consumer:
+    references:
+#      GreeterClientImpl:
+#        protocol: grpc
+#        interface: org.apache.dubbo.UserProvider
+      ServiceBServiceClientImpl:
+        protocol: grpc
+        interface: cloud.unionj.ServiceB_grpc
+        group: group
+        version: v2.2.2
+  logger:
+    zap-config:
+      level: info

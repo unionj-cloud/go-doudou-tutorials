@@ -13,7 +13,7 @@ const TableNameTClient = "t_client"
 // TClient mapped from table <t_client>
 type TClient struct {
 	ID              int32      `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Name            string     `gorm:"column:name;not null" json:"name"` // client name 客户端名称
+	Name            string     `gorm:"column:name;not null;comment:client name 客户端名称" json:"name"` // client name 客户端名称
 	PublicKey       string     `gorm:"column:public_key;not null" json:"public_key"`
 	EncryptedSecret string     `gorm:"column:encrypted_secret;not null" json:"encrypted_secret"`
 	CreateAt        *time.Time `gorm:"column:create_at;default:CURRENT_TIMESTAMP" json:"create_at"`

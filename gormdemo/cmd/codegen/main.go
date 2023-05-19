@@ -11,7 +11,7 @@ func main() {
 		FieldNullable:  false,
 		FieldCoverable: true,
 		FieldSignable:  true,
-		Mode:           gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
+		Mode:           gen.WithDefaultQuery | gen.WithQueryInterface,
 	})
 	g.UseDB(database.Db)
 	g.ApplyBasic(g.GenerateAllTable()...)

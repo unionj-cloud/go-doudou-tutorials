@@ -13,8 +13,8 @@ const TableNameTInvalidToken = "t_invalid_token"
 // TInvalidToken mapped from table <t_invalid_token>
 type TInvalidToken struct {
 	ID       int32      `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Token    string     `gorm:"column:token;not null" json:"token"` // revoked token
-	ExpireAt time.Time  `gorm:"column:expire_at" json:"expire_at"`  // expire time
+	Token    string     `gorm:"column:token;not null;comment:revoked token" json:"token"` // revoked token
+	ExpireAt time.Time  `gorm:"column:expire_at;comment:expire time" json:"expire_at"`    // expire time
 	CreateAt *time.Time `gorm:"column:create_at;default:CURRENT_TIMESTAMP" json:"create_at"`
 	UpdateAt *time.Time `gorm:"column:update_at;default:CURRENT_TIMESTAMP" json:"update_at"`
 	DeleteAt time.Time  `gorm:"column:delete_at" json:"delete_at"`

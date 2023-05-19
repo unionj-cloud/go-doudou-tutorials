@@ -6,7 +6,7 @@ require (
 	github.com/brianvoe/gofakeit/v6 v6.20.2
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/klauspost/compress v1.16.0
+	github.com/klauspost/compress v1.16.3
 	github.com/opentracing-contrib/go-stdlib v1.0.0
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
@@ -15,13 +15,15 @@ require (
 	github.com/slok/goresilience v0.2.0
 	github.com/unionj-cloud/go-doudou/v2 v2.0.5
 	gorm.io/gen v0.3.21
+	gorm.io/gorm v1.25.1-0.20230505075827-e61b98d69677
+	gorm.io/plugin/dbresolver v1.3.0
 )
 
 require (
 	github.com/ClickHouse/ch-go v0.48.0 // indirect
 	github.com/ClickHouse/clickhouse-go/v2 v2.3.0 // indirect
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1704 // indirect
-	github.com/andybalholm/brotli v1.0.4 // indirect
+	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/apolloconfig/agollo/v4 v4.1.1-0.20220323095621-60ed86180f24 // indirect
 	github.com/arl/statsviz v0.5.1 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -43,6 +45,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.11.2 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/go-zookeeper/zk v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
@@ -79,7 +82,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/microsoft/go-mssqldb v0.21.0 // indirect
-	github.com/miekg/dns v1.1.50 // indirect
+	github.com/miekg/dns v1.1.53 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -134,15 +137,15 @@ require (
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/datatypes v1.0.7 // indirect
+	gorm.io/datatypes v1.1.1-0.20230130040222-c43177d3cf8c // indirect
 	gorm.io/driver/clickhouse v0.5.0 // indirect
-	gorm.io/driver/mysql v1.4.7 // indirect
+	gorm.io/driver/mysql v1.5.1-0.20230509030346-3715c134c25b // indirect
 	gorm.io/driver/postgres v1.5.0 // indirect
 	gorm.io/driver/sqlite v1.4.4 // indirect
 	gorm.io/driver/sqlserver v1.4.2 // indirect
-	gorm.io/gorm v1.24.7-0.20230306060331-85eaf9eeda11 // indirect
 	gorm.io/hints v1.1.0 // indirect
-	gorm.io/plugin/dbresolver v1.3.0 // indirect
 )
 
 replace github.com/unionj-cloud/go-doudou/v2 v2.0.5 => /Users/wubin1989/workspace/cloud/go-doudou
+
+replace gorm.io/gen v0.3.21 => /Users/wubin1989/workspace/cloud/gen

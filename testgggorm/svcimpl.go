@@ -576,9 +576,8 @@ func (receiver *TestgggormImpl) GetTInvalidTokens(ctx context.Context, parameter
 	return
 }
 
-// TODO gorm数据库事务用法示例
 func (receiver *TestgggormImpl) TAuthorPosts(ctx context.Context, body dto.SaveAuthorReqDTO) (err error) {
-	err = errors.WithStack(receiver.q.Transaction(func(tx *query.Query) error {
+	return errors.WithStack(receiver.q.Transaction(func(tx *query.Query) error {
 		instance := receiver.clone(tx)
 		_, err1 := instance.PostTAuthor(ctx, body.TAuthor)
 		if err1 != nil {
@@ -590,7 +589,6 @@ func (receiver *TestgggormImpl) TAuthorPosts(ctx context.Context, body dto.SaveA
 		}
 		return nil
 	}))
-	return
 }
 
 // PostTDeptRpc mapped from table <t_dept>

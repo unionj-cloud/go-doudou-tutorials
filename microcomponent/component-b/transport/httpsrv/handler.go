@@ -12,55 +12,18 @@ import (
 )
 
 type ComponentBHandler interface {
-	PostUser(w http.ResponseWriter, r *http.Request)
-	GetUser_Id(w http.ResponseWriter, r *http.Request)
-	PutUser(w http.ResponseWriter, r *http.Request)
-	DeleteUser_Id(w http.ResponseWriter, r *http.Request)
-	GetUsers(w http.ResponseWriter, r *http.Request)
+	Greeting(w http.ResponseWriter, r *http.Request)
 }
 
 func Routes(handler ComponentBHandler) []rest.Route {
 	return []rest.Route{
 		{
-			Name:        "PostUser",
+			Name:        "Greeting",
 			Method:      "POST",
-			Pattern:     "/user",
-			HandlerFunc: handler.PostUser,
-		},
-		{
-			Name:        "GetUser_Id",
-			Method:      "GET",
-			Pattern:     "/user/:id",
-			HandlerFunc: handler.GetUser_Id,
-		},
-		{
-			Name:        "PutUser",
-			Method:      "PUT",
-			Pattern:     "/user",
-			HandlerFunc: handler.PutUser,
-		},
-		{
-			Name:        "DeleteUser_Id",
-			Method:      "DELETE",
-			Pattern:     "/user/:id",
-			HandlerFunc: handler.DeleteUser_Id,
-		},
-		{
-			Name:        "GetUsers",
-			Method:      "GET",
-			Pattern:     "/users",
-			HandlerFunc: handler.GetUsers,
+			Pattern:     "/greeting",
+			HandlerFunc: handler.Greeting,
 		},
 	}
 }
 
-var RouteAnnotationStore = framework.AnnotationStore{
-	"PostUser": {
-		{
-			Name: "@role",
-			Params: []string{
-				"admin",
-			},
-		},
-	},
-}
+var RouteAnnotationStore = framework.AnnotationStore{}

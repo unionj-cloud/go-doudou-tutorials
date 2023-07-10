@@ -6,6 +6,9 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"github.com/pkg/errors"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 
 	"github.com/brianvoe/gofakeit/v6"
 	"github.com/wubin1989/microcomponent/component-a/config"
@@ -13,6 +16,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	pb "github.com/wubin1989/microcomponent/component-a/transport/grpc"
+	bpb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
 )
 
 var _ ComponentA = (*ComponentAImpl)(nil)
@@ -22,7 +26,8 @@ var _ pb.ComponentAServiceServer = (*ComponentAImpl)(nil)
 type ComponentAImpl struct {
 	pb.UnimplementedComponentAServiceServer
 
-	conf *config.Config
+	conf             *config.Config
+	componentBClient bpb.ComponentBServiceClient
 }
 
 func (receiver *ComponentAImpl) PostUser(ctx context.Context, user dto.GddUser) (data int32, err error) {
@@ -33,11 +38,14 @@ func (receiver *ComponentAImpl) PostUser(ctx context.Context, user dto.GddUser) 
 	return _result.Data, nil
 }
 func (receiver *ComponentAImpl) GetUser_Id(ctx context.Context, id int32) (data dto.GddUser, err error) {
-	var _result struct {
-		Data dto.GddUser
+	resp, err := receiver.componentBClient.GreetingRpc(ctx, &bpb.GreetingRpcRequest{
+		Msg: fmt.Sprint(id),
+	})
+	if err != nil {
+		return dto.GddUser{}, errors.WithStack(err)
 	}
-	_ = gofakeit.Struct(&_result)
-	return _result.Data, nil
+	zlogger.Info().Msg(resp.Reply)
+	return
 }
 func (receiver *ComponentAImpl) PutUser(ctx context.Context, user dto.GddUser) (re error) {
 	var _result struct {
@@ -59,9 +67,10 @@ func (receiver *ComponentAImpl) GetUsers(ctx context.Context, parameter dto.Para
 	return _result.Data, nil
 }
 
-func NewComponentA(conf *config.Config) *ComponentAImpl {
+func NewComponentA(conf *config.Config, componentBClient bpb.ComponentBServiceClient) *ComponentAImpl {
 	return &ComponentAImpl{
-		conf: conf,
+		conf:             conf,
+		componentBClient: componentBClient,
 	}
 }
 

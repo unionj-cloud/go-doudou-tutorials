@@ -4,21 +4,11 @@
  */
 package service
 
-import (
-	"context"
-	"github.com/wubin1989/microcomponent/component-b/dto"
-)
+import "context"
 
-//go:generate go-doudou svc http -c
+//go:generate go-doudou svc http
 //go:generate go-doudou svc grpc
 
 type ComponentB interface {
-	// You can define your service methods as your need. Below is an example.
-	// You can also add annotations here like @role(admin) to add meta data to routes for
-	// implementing your own middlewares
-	PostUser(ctx context.Context, user dto.GddUser) (data int32, err error)
-	GetUser_Id(ctx context.Context, id int32) (data dto.GddUser, err error)
-	PutUser(ctx context.Context, user dto.GddUser) error
-	DeleteUser_Id(ctx context.Context, id int32) error
-	GetUsers(ctx context.Context, parameter dto.Parameter) (data dto.Page, err error)
+	Greeting(ctx context.Context, msg string) (reply string, err error)
 }

@@ -8,13 +8,4 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework"
 )
 
-var MethodAnnotationStore = framework.AnnotationStore{
-	"PostUserRpc": {
-		{
-			Name: "@role",
-			Params: []string{
-				"admin",
-			},
-		},
-	},
-}
+var MethodAnnotationStore = framework.AnnotationStore{}

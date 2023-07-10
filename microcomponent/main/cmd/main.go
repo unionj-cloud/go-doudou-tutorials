@@ -10,7 +10,9 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/pipe"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/pipeconn"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	componentAService "github.com/wubin1989/microcomponent/component-a"
 	apb "github.com/wubin1989/microcomponent/component-a/transport/grpc"
@@ -25,7 +27,12 @@ import (
 func main() {
 	srv := rest.NewRestServer()
 	conf := config.LoadFromEnv()
-	svcA := componentAService.NewComponentA(&conf.AConf)
+	lis, dialCtx := pipeconn.NewPipeListener()
+
+	grpcConn := pipe.NewGrpcClientConn(dialCtx)
+	defer grpcConn.Close()
+
+	svcA := componentAService.NewComponentA(&conf.AConf, bpb.NewComponentBServiceClient(grpcConn))
 	srv.AddRoute(componentAHttpsrv.Routes(componentAHttpsrv.NewComponentAHandler(svcA))...)
 
 	svcB := componentBService.NewComponentB(&conf.BConf)
@@ -52,7 +59,7 @@ func main() {
 		)
 		apb.RegisterComponentAServiceServer(grpcServer, svcA)
 		bpb.RegisterComponentBServiceServer(grpcServer, svcB)
-		grpcServer.Run()
+		grpcServer.RunWithPipe(lis)
 	}()
 
 	srv.Run()

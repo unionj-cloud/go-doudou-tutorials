@@ -5,14 +5,13 @@
 package service
 
 import (
+	"github.com/pkg/errors"
+	"github.com/wubin1989/microcomponent/component-b/config"
+	pb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
+
 	"context"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/wubin1989/microcomponent/component-b/config"
-	"github.com/wubin1989/microcomponent/component-b/dto"
-	"google.golang.org/protobuf/types/known/emptypb"
-
-	pb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
 )
 
 var _ ComponentB = (*ComponentBImpl)(nil)
@@ -25,63 +24,26 @@ type ComponentBImpl struct {
 	conf *config.Config
 }
 
-func (receiver *ComponentBImpl) PostUser(ctx context.Context, user dto.GddUser) (data int32, err error) {
-	var _result struct {
-		Data int32
-	}
-	_ = gofakeit.Struct(&_result)
-	return _result.Data, nil
-}
-func (receiver *ComponentBImpl) GetUser_Id(ctx context.Context, id int32) (data dto.GddUser, err error) {
-	var _result struct {
-		Data dto.GddUser
-	}
-	_ = gofakeit.Struct(&_result)
-	return _result.Data, nil
-}
-func (receiver *ComponentBImpl) PutUser(ctx context.Context, user dto.GddUser) (re error) {
-	var _result struct {
-	}
-	_ = gofakeit.Struct(&_result)
-	return nil
-}
-func (receiver *ComponentBImpl) DeleteUser_Id(ctx context.Context, id int32) (re error) {
-	var _result struct {
-	}
-	_ = gofakeit.Struct(&_result)
-	return nil
-}
-func (receiver *ComponentBImpl) GetUsers(ctx context.Context, parameter dto.Parameter) (data dto.Page, err error) {
-	var _result struct {
-		Data dto.Page
-	}
-	_ = gofakeit.Struct(&_result)
-	return _result.Data, nil
-}
-
 func NewComponentB(conf *config.Config) *ComponentBImpl {
 	return &ComponentBImpl{
 		conf: conf,
 	}
 }
 
-func (receiver *ComponentBImpl) PostUserRpc(ctx context.Context, request *pb.GddUser) (*pb.PostUserRpcResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (receiver *ComponentBImpl) Greeting(ctx context.Context, msg string) (reply string, err error) {
+	var _result struct {
+		Reply string
+	}
+	_ = gofakeit.Struct(&_result)
+	return _result.Reply, nil
 }
-func (receiver *ComponentBImpl) GetUserIdRpc(ctx context.Context, request *pb.GetUserIdRpcRequest) (*pb.GddUser, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *ComponentBImpl) PutUserRpc(ctx context.Context, request *pb.GddUser) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *ComponentBImpl) DeleteUserIdRpc(ctx context.Context, request *pb.DeleteUserIdRpcRequest) (*emptypb.Empty, error) {
-	//TODO implement me
-	panic("implement me")
-}
-func (receiver *ComponentBImpl) GetUsersRpc(ctx context.Context, request *pb.Parameter) (*pb.Page, error) {
-	//TODO implement me
-	panic("implement me")
+
+func (receiver *ComponentBImpl) GreetingRpc(ctx context.Context, request *pb.GreetingRpcRequest) (*pb.GreetingRpcResponse, error) {
+	resp, err := receiver.Greeting(ctx, request.Msg)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return &pb.GreetingRpcResponse{
+		Reply: resp,
+	}, nil
 }

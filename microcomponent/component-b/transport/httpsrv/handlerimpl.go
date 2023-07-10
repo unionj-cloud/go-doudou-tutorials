@@ -9,164 +9,45 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	"github.com/unionj-cloud/go-doudou/v2/framework/rest/httprouter"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/cast"
 	service "github.com/wubin1989/microcomponent/component-b"
-	"github.com/wubin1989/microcomponent/component-b/dto"
 )
 
 type ComponentBHandlerImpl struct {
 	componentB service.ComponentB
 }
 
-func (receiver *ComponentBHandlerImpl) PostUser(_writer http.ResponseWriter, _req *http.Request) {
+func (receiver *ComponentBHandlerImpl) Greeting(_writer http.ResponseWriter, _req *http.Request) {
 	var (
-		ctx  context.Context
-		user dto.GddUser
-		data int32
-		err  error
-	)
-	ctx = _req.Context()
-	if _err := json.NewDecoder(_req.Body).Decode(&user); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	} else {
-		if _err := rest.ValidateStruct(user); _err != nil {
-			rest.HandleBadRequestErr(_err)
-		}
-	}
-	data, err = receiver.componentB.PostUser(
-		ctx,
-		user,
-	)
-	if err != nil {
-		panic(err)
-	}
-	if _err := json.NewEncoder(_writer).Encode(struct {
-		Data int32 `json:"data"`
-	}{
-		Data: data,
-	}); _err != nil {
-		rest.HandleInternalServerError(_err)
-	}
-}
-func (receiver *ComponentBHandlerImpl) GetUser_Id(_writer http.ResponseWriter, _req *http.Request) {
-	var (
-		ctx  context.Context
-		id   int32
-		data dto.GddUser
-		err  error
-	)
-	paramsFromCtx := httprouter.ParamsFromContext(_req.Context())
-	ctx = _req.Context()
-	if casted, _err := cast.ToInt32E(paramsFromCtx.ByName("id")); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	} else {
-		id = casted
-	}
-	if _err := rest.ValidateVar(id, "", "id"); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	}
-	data, err = receiver.componentB.GetUser_Id(
-		ctx,
-		id,
-	)
-	if err != nil {
-		panic(err)
-	}
-	if _err := json.NewEncoder(_writer).Encode(struct {
-		Data dto.GddUser `json:"data"`
-	}{
-		Data: data,
-	}); _err != nil {
-		rest.HandleInternalServerError(_err)
-	}
-}
-func (receiver *ComponentBHandlerImpl) PutUser(_writer http.ResponseWriter, _req *http.Request) {
-	var (
-		ctx  context.Context
-		user dto.GddUser
-		re   error
-	)
-	ctx = _req.Context()
-	if _err := json.NewDecoder(_req.Body).Decode(&user); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	} else {
-		if _err := rest.ValidateStruct(user); _err != nil {
-			rest.HandleBadRequestErr(_err)
-		}
-	}
-	re = receiver.componentB.PutUser(
-		ctx,
-		user,
-	)
-	if re != nil {
-		panic(re)
-	}
-	if _err := json.NewEncoder(_writer).Encode(struct {
-	}{}); _err != nil {
-		rest.HandleInternalServerError(_err)
-	}
-}
-func (receiver *ComponentBHandlerImpl) DeleteUser_Id(_writer http.ResponseWriter, _req *http.Request) {
-	var (
-		ctx context.Context
-		id  int32
-		re  error
-	)
-	paramsFromCtx := httprouter.ParamsFromContext(_req.Context())
-	ctx = _req.Context()
-	if casted, _err := cast.ToInt32E(paramsFromCtx.ByName("id")); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	} else {
-		id = casted
-	}
-	if _err := rest.ValidateVar(id, "", "id"); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	}
-	re = receiver.componentB.DeleteUser_Id(
-		ctx,
-		id,
-	)
-	if re != nil {
-		panic(re)
-	}
-	if _err := json.NewEncoder(_writer).Encode(struct {
-	}{}); _err != nil {
-		rest.HandleInternalServerError(_err)
-	}
-}
-func (receiver *ComponentBHandlerImpl) GetUsers(_writer http.ResponseWriter, _req *http.Request) {
-	var (
-		ctx              context.Context
-		parameterWrapper struct {
-			Parameter dto.Parameter `form:"parameter"`
-		}
-		data dto.Page
-		err  error
+		ctx   context.Context
+		msg   string
+		reply string
+		err   error
 	)
 	ctx = _req.Context()
 	if _err := _req.ParseForm(); _err != nil {
 		rest.HandleBadRequestErr(_err)
 	}
-	if _err := rest.DecodeForm(&parameterWrapper, _req.Form); _err != nil {
-		rest.HandleBadRequestErr(_err)
-	} else {
-		if _err := rest.ValidateStruct(parameterWrapper.Parameter); _err != nil {
+	if _, exists := _req.Form["msg"]; exists {
+		msg = _req.FormValue("msg")
+		if _err := rest.ValidateVar(msg, "", "msg"); _err != nil {
 			rest.HandleBadRequestErr(_err)
 		}
+	} else {
+		rest.HandleBadRequestErr(errors.New("missing parameter msg"))
 	}
-	data, err = receiver.componentB.GetUsers(
+	reply, err = receiver.componentB.Greeting(
 		ctx,
-		parameterWrapper.Parameter,
+		msg,
 	)
 	if err != nil {
 		panic(err)
 	}
 	if _err := json.NewEncoder(_writer).Encode(struct {
-		Data dto.Page `json:"data"`
+		Reply string `json:"reply"`
 	}{
-		Data: data,
+		Reply: reply,
 	}); _err != nil {
 		rest.HandleInternalServerError(_err)
 	}

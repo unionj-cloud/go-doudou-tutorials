@@ -5,28 +5,61 @@
 package main
 
 import (
-	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	service "github.com/wubin1989/microcomponent/component-a"
-	"github.com/wubin1989/microcomponent/component-a/config"
-	"github.com/wubin1989/microcomponent/component-a/transport/httpsrv"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpczerolog "github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/tags"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
+	"github.com/unionj-cloud/go-doudou/v2/framework/registry/zk"
+	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	service "github.com/wubin1989/microcomponent/component-a"
+	"github.com/wubin1989/microcomponent/component-a/config"
 	pb "github.com/wubin1989/microcomponent/component-a/transport/grpc"
+	"github.com/wubin1989/microcomponent/component-a/transport/httpsrv"
+	bpb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/credentials/insecure"
+	"time"
 )
 
 func main() {
 	conf := config.LoadFromEnv()
-	svc := service.NewComponentA(conf)
+
+	tlsOption := grpc.WithTransportCredentials(insecure.NewCredentials())
+
+	opts := []grpc_retry.CallOption{
+		grpc_retry.WithBackoff(grpc_retry.BackoffLinear(100 * time.Millisecond)),
+		grpc_retry.WithCodes(codes.NotFound, codes.Aborted),
+	}
+
+	dialOptions := []grpc.DialOption{
+		tlsOption,
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+			grpc_opentracing.StreamClientInterceptor(),
+			grpc_retry.StreamClientInterceptor(opts...),
+		)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+			grpc_opentracing.UnaryClientInterceptor(),
+			grpc_retry.UnaryClientInterceptor(opts...),
+		)),
+	}
+
+	// Set up a connection to the server.
+	grpcConn := zk.NewSWRRGrpcClientConn(zk.ServiceConfig{
+		Name:    "cloud.unionj.ComponentB_grpc",
+		Group:   "group",
+		Version: "v1.0.0",
+	}, dialOptions...)
+	defer grpcConn.Close()
+
+	svc := service.NewComponentA(conf, bpb.NewComponentBServiceClient(grpcConn))
 
 	go func() {
 		grpcServer := grpcx.NewGrpcServer(

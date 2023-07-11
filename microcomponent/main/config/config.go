@@ -7,14 +7,10 @@ package config
 import (
 	"github.com/kelseyhightower/envconfig"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/errorx"
-	componentAConfig "github.com/wubin1989/microcomponent/component-a/config"
-	componentBConfig "github.com/wubin1989/microcomponent/component-b/config"
 )
 
 type Config struct {
 	BizConf BizConf
-	AConf   componentAConfig.Config
-	BConf   componentBConfig.Config
 }
 
 type BizConf struct {
@@ -27,19 +23,7 @@ func LoadFromEnv() *Config {
 	if err != nil {
 		errorx.Panic("Error processing environment variables")
 	}
-	var aConf componentAConfig.Config
-	err = envconfig.Process("a", &aConf)
-	if err != nil {
-		errorx.Panic("Error processing environment variables")
-	}
-	var bConf componentBConfig.Config
-	err = envconfig.Process("b", &bConf)
-	if err != nil {
-		errorx.Panic("Error processing environment variables")
-	}
 	return &Config{
 		BizConf: bizConf,
-		AConf:   aConf,
-		BConf:   bConf,
 	}
 }

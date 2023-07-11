@@ -13,6 +13,7 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/plugin"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/pipeconn"
+	"github.com/unionj-cloud/go-doudou/v2/toolkit/stringutils"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
 	service "github.com/wubin1989/microcomponent/component-b"
 	"github.com/wubin1989/microcomponent/component-b/config"
@@ -36,7 +37,11 @@ func (receiver *ComponentBPlugin) GoDoudouServicePlugin() {
 }
 
 func (receiver *ComponentBPlugin) GetName() string {
-	return os.Getenv("GDD_SERVICE_NAME")
+	name := os.Getenv("GDD_SERVICE_NAME")
+	if stringutils.IsEmpty(name) {
+		name = "cloud.unionj.ComponentB"
+	}
+	return name
 }
 
 func (receiver *ComponentBPlugin) Initialize(restServer *rest.RestServer, grpcServer *grpcx.GrpcServer, _ pipeconn.DialContextFunc) {

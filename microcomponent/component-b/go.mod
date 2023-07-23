@@ -1,4 +1,4 @@
-module github.com/wubin1989/microcomponent/component-b
+module go-doudou-tutorials/microcomponent/component-b
 
 go 1.18
 

@@ -8,7 +8,7 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/grpcx"
 	"github.com/unionj-cloud/go-doudou/v2/framework/plugin"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	_ "github.com/wubin1989/microcomponent/component-b/plugin"
+	_ "go-doudou-tutorials/microcomponent/component-b/plugin"
 )
 
 func main() {

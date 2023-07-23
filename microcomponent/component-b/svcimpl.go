@@ -5,9 +5,10 @@
 package service
 
 import (
+	"go-doudou-tutorials/microcomponent/component-b/config"
+	pb "go-doudou-tutorials/microcomponent/component-b/transport/grpc"
+
 	"github.com/pkg/errors"
-	"github.com/wubin1989/microcomponent/component-b/config"
-	pb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
 
 	"context"
 

@@ -9,11 +9,12 @@ import (
 	"encoding/json"
 	"net/http"
 
+	service "go-doudou-tutorials/microcomponent/component-a"
+	"go-doudou-tutorials/microcomponent/component-a/dto"
+
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest/httprouter"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/cast"
-	service "github.com/wubin1989/microcomponent/component-a"
-	"github.com/wubin1989/microcomponent/component-a/dto"
 )
 
 type ComponentAHandlerImpl struct {
@@ -175,5 +176,41 @@ func (receiver *ComponentAHandlerImpl) GetUsers(_writer http.ResponseWriter, _re
 func NewComponentAHandler(componentA service.ComponentA) ComponentAHandler {
 	return &ComponentAHandlerImpl{
 		componentA,
+	}
+}
+
+func (receiver *ComponentAHandlerImpl) GetMyUsers(_writer http.ResponseWriter, _req *http.Request) {
+	var (
+		ctx              context.Context
+		parameterWrapper struct {
+			Parameter dto.Parameter `form:"parameter"`
+		}
+		data dto.MyCustomPageResult
+		err  error
+	)
+	ctx = _req.Context()
+	if _err := _req.ParseForm(); _err != nil {
+		rest.HandleBadRequestErr(_err)
+	}
+	if _err := rest.DecodeForm(&parameterWrapper, _req.Form); _err != nil {
+		rest.HandleBadRequestErr(_err)
+	} else {
+		if _err := rest.ValidateStruct(parameterWrapper.Parameter); _err != nil {
+			rest.HandleBadRequestErr(_err)
+		}
+	}
+	data, err = receiver.componentA.GetMyUsers(
+		ctx,
+		parameterWrapper.Parameter,
+	)
+	if err != nil {
+		panic(err)
+	}
+	if _err := json.NewEncoder(_writer).Encode(struct {
+		Data dto.MyCustomPageResult `json:"data"`
+	}{
+		Data: data,
+	}); _err != nil {
+		rest.HandleInternalServerError(_err)
 	}
 }

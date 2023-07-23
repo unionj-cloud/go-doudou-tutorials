@@ -6,17 +6,14 @@ package service
 
 import (
 	"context"
-	"fmt"
-	"github.com/pkg/errors"
-	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
+	"go-doudou-tutorials/microcomponent/component-a/config"
+	"go-doudou-tutorials/microcomponent/component-a/dto"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/wubin1989/microcomponent/component-a/config"
-	"github.com/wubin1989/microcomponent/component-a/dto"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	pb "github.com/wubin1989/microcomponent/component-a/transport/grpc"
-	bpb "github.com/wubin1989/microcomponent/component-b/transport/grpc"
+	pb "go-doudou-tutorials/microcomponent/component-a/transport/grpc"
+	bpb "go-doudou-tutorials/microcomponent/component-b/transport/grpc"
 )
 
 var _ ComponentA = (*ComponentAImpl)(nil)
@@ -38,14 +35,14 @@ func (receiver *ComponentAImpl) PostUser(ctx context.Context, user dto.GddUser) 
 	return _result.Data, nil
 }
 func (receiver *ComponentAImpl) GetUser_Id(ctx context.Context, id int32) (data dto.GddUser, err error) {
-	resp, err := receiver.componentBClient.GreetingRpc(ctx, &bpb.GreetingRpcRequest{
-		Msg: fmt.Sprint(id),
-	})
-	if err != nil {
-		return dto.GddUser{}, errors.WithStack(err)
-	}
-	zlogger.Info().Msg(resp.Reply)
-	return
+	//resp, err := receiver.componentBClient.GreetingRpc(ctx, &bpb.GreetingRpcRequest{
+	//	Msg: fmt.Sprint(id),
+	//})
+	//if err != nil {
+	//	return dto.GddUser{}, errors.WithStack(err)
+	//}
+	//zlogger.Info().Msg(resp.Reply)
+	return dto.GddUser{}, nil
 }
 func (receiver *ComponentAImpl) PutUser(ctx context.Context, user dto.GddUser) (re error) {
 	var _result struct {
@@ -93,4 +90,12 @@ func (receiver *ComponentAImpl) DeleteUserIdRpc(ctx context.Context, request *pb
 func (receiver *ComponentAImpl) GetUsersRpc(ctx context.Context, request *pb.Parameter) (*pb.Page, error) {
 	//TODO implement me
 	panic("implement me")
+}
+
+func (receiver *ComponentAImpl) GetMyUsers(ctx context.Context, parameter dto.Parameter) (data dto.MyCustomPageResult, err error) {
+	var _result struct {
+		Data dto.MyCustomPageResult
+	}
+	_ = gofakeit.Struct(&_result)
+	return _result.Data, nil
 }

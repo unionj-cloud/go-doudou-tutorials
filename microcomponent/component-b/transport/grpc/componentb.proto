@@ -7,7 +7,7 @@
 syntax = "proto3";
 
 package component_b;
-option go_package = "github.com/wubin1989/microcomponent/component-b/transport/grpc";
+option go_package = "go-doudou-tutorials/microcomponent/component-b/transport/grpc";
 
 import "google/protobuf/any.proto";
 

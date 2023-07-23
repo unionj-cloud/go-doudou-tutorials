@@ -9,9 +9,10 @@ import (
 	"encoding/json"
 	"net/http"
 
+	service "go-doudou-tutorials/microcomponent/component-b"
+
 	"github.com/pkg/errors"
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
-	service "github.com/wubin1989/microcomponent/component-b"
 )
 
 type ComponentBHandlerImpl struct {

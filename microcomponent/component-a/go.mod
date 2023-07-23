@@ -1,22 +1,21 @@
-module github.com/wubin1989/microcomponent/component-a
+module go-doudou-tutorials/microcomponent/component-a
 
 go 1.18
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.10.0
-	github.com/go-resty/resty/v2 v2.7.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware/providers/zerolog/v2 v2.0.0-rc.2
 	github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.0.0-rc.2
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/klauspost/compress v1.16.3
-	github.com/opentracing-contrib/go-stdlib v1.0.0
-	github.com/opentracing/opentracing-go v1.2.0
+	github.com/klauspost/compress v1.16.3 // indirect
+	github.com/opentracing-contrib/go-stdlib v1.0.0 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.14.0
-	github.com/rs/zerolog v1.28.0
-	github.com/slok/goresilience v0.2.0
+	github.com/prometheus/client_golang v1.14.0 // indirect
+	github.com/rs/zerolog v1.28.0 // indirect
+	github.com/slok/goresilience v0.2.0 // indirect
 	github.com/unionj-cloud/go-doudou/v2 v2.1.4
 )
 

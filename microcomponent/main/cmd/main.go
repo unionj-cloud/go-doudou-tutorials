@@ -14,8 +14,6 @@ import (
 	"github.com/unionj-cloud/go-doudou/v2/framework/rest"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/pipeconn"
 	"github.com/unionj-cloud/go-doudou/v2/toolkit/zlogger"
-	_ "go-doudou-tutorials/microcomponent/component-a/plugin"
-	_ "go-doudou-tutorials/microcomponent/component-b/plugin"
 	"google.golang.org/grpc"
 )
 

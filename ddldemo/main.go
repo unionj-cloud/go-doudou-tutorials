@@ -71,7 +71,8 @@ func main() {
 		StatsEnabled: true,
 	})
 
-	u := dao.NewUserDao(wrapper.NewGddDB(db, wrapper.WithCache(mycache), wrapper.WithRedisKeyTTL(10*time.Second)))
+	wrapperDb := wrapper.NewGddDB(db, wrapper.WithCache(mycache), wrapper.WithRedisKeyTTL(10*time.Second))
+	u := dao.NewUserDao(wrapperDb)
 
 	avgScore, err := decimal.NewFromString("97.534")
 	if err != nil {

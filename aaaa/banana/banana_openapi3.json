@@ -1,0 +1,307 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Banana",
+    "version": "v20240517"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:6060"
+    }
+  ],
+  "paths": {
+    "/user": {
+      "post": {
+        "description": "You can define your service methods as your need. Below is an example.\nYou can also add annotations here like @role(admin) to add meta data to routes for\nimplementing your own middlewares",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GddUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostUserResp"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GddUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutUserResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUser_IdResp"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteUser_IdResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "parameters": [
+          {
+            "name": "parameter",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Parameter"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsersResp"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeleteUser_IdResp": {
+        "title": "DeleteUser_IdResp",
+        "type": "object"
+      },
+      "GddUser": {
+        "title": "GddUser",
+        "type": "object",
+        "properties": {
+          "dept": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        },
+        "description": "\n\n\n",
+        "required": [
+          "id",
+          "name",
+          "phone",
+          "dept"
+        ]
+      },
+      "GetUser_IdResp": {
+        "title": "GetUser_IdResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GddUser"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "GetUsersResp": {
+        "title": "GetUsersResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Page"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "Page": {
+        "title": "Page",
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "maxPage": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "visible": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "description": "\nPage result wrapper",
+        "required": [
+          "items",
+          "page",
+          "size",
+          "maxPage",
+          "totalPages",
+          "total",
+          "last",
+          "first",
+          "visible"
+        ]
+      },
+      "Parameter": {
+        "title": "Parameter",
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "string"
+          },
+          "order": {
+            "type": "string"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sort": {
+            "type": "string"
+          }
+        },
+        "description": "\nParameter struct",
+        "required": [
+          "page",
+          "size",
+          "sort",
+          "order",
+          "fields",
+          "filters"
+        ]
+      },
+      "PostUserResp": {
+        "title": "PostUserResp",
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "data"
+        ]
+      },
+      "PutUserResp": {
+        "title": "PutUserResp",
+        "type": "object"
+      }
+    }
+  }
+}

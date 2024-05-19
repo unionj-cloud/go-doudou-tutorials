@@ -1,6 +1,6 @@
 module go-doudou-tutorials/microcomponent/component-b
 
-go 1.20
+go 1.22
 
 require (
 	github.com/brianvoe/gofakeit/v6 v6.10.0
